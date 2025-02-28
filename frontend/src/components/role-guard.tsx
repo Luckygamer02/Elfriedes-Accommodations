@@ -1,4 +1,4 @@
-"use client"
+
 
 import { useAuthGuard } from '@/lib/auth/use-auth'
 import { Role } from '@/models/user/UserResponse'
