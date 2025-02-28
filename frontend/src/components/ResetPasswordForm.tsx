@@ -1,4 +1,4 @@
-"use client";
+
 
 import ErrorFeedback from "@/components/error-feedback";
 import SuccessFeedback from "@/components/success-feedback";
