@@ -2,10 +2,7 @@ package com.jgmt.backend.accommodation;
 
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Builder
@@ -36,7 +33,11 @@ public class Accommodation extends AbstractEntity {
     @ManyToMany()
     private Long discountid;
 
+    @ManyToOne
+    private Long userid;
 
+    @OneToOne
+    private Long spezificationid;
 
 
 }
