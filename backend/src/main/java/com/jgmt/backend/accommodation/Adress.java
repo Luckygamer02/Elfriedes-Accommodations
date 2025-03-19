@@ -2,12 +2,14 @@ package com.jgmt.backend.accommodation;
 
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

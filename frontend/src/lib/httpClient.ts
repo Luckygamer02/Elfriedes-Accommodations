@@ -3,7 +3,7 @@ import Axios from 'axios'
 require('dotenv').config()
 
 const httpClient = Axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL!,
+    baseURL: 'http://localhost:8080',
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
@@ -15,7 +15,7 @@ const httpClient = Axios.create({
 })
 
 const backendClient =  Axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BASE_URL!,
+    baseURL: 'http://localhost:8080',
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',

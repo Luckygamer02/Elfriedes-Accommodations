@@ -5,6 +5,7 @@ import com.jgmt.backend.util.Client;
 import jakarta.persistence.*;
 import lombok.*;
 
+@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,16 +28,16 @@ public class Accommodation extends AbstractEntity {
 
     private Long featurelistid;
     
-    @OneToOne()
+
     private Long adressid;
 
-    @ManyToMany()
+
     private Long discountid;
 
-    @ManyToOne
+
     private Long userid;
 
-    @OneToOne
+
     private Long spezificationid;
 
 

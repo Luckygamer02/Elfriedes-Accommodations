@@ -40,7 +40,7 @@ public class UserService {
     public UserResponse create(@Valid CreateUserRequest request) {
         User user = new User(request);
         user = userRepository.save(user);
-        sendVerificationEmail(user);
+        //sendVerificationEmail(user);
         return new UserResponse(user);
     }
 
