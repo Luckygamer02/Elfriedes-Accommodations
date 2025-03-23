@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -16,7 +17,12 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Client
-public class Applieddiscounts extends AbstractEntity {
-    Timestamp time;
-    Long discountid;
+public class AppliedDiscount extends AbstractEntity {
+    @ManyToOne
+    private Accommodation accommodation;
+
+    @ManyToOne
+    private Discount discount;
+
+    private LocalDateTime appliedDate;
 }

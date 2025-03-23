@@ -1,9 +1,9 @@
 "use client"
 import { Timeline, Text } from '@mantine/core';
 
-export default function uploadprogressbar(){
+export default function uploadprogressbar({ activeStep }: { activeStep: number }){
     return(
-      <Timeline active={0} className="h-full w-1/3"  bulletSize={24}  >
+      <Timeline active={activeStep} className="h-full w-1/3"  bulletSize={24}  >
           <Timeline.Item title="Location" >
             <Text>
                 Default

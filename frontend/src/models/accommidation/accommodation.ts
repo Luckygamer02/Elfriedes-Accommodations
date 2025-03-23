@@ -1,6 +1,7 @@
 import {AbstractEntity} from "@/models/backend";
 
 export default interface Accommodation extends AbstractEntity,Adress,Extras {
+    extras: any;
     title: string;
     description: string;
     price: number;

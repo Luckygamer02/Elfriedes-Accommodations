@@ -21,10 +21,10 @@ type Booking = {
 };
 
 import { useRouter } from "next/router";
-import { RestApplicationClient } from "../services/RestApplicationClient"; // Pfad ggf. anpassen
+//import { RestApplicationClient } from "../services/RestApplicationClient"; // Pfad ggf. anpassen
 
 
-const apiClient = new RestApplicationClient(httpClient);
+// const apiClient = new RestApplicationClient(httpClient);
 
 export default function AccommodationsList() {
     const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
@@ -34,52 +34,52 @@ export default function AccommodationsList() {
     const router = useRouter();
     const page = 1; // Aktuell statische Seite, kann dynamisch gemacht werden
 
-    const { data, error } = useSWR(`/api/admin/users?page=${page}`, async () => {
-        try {
-            const response = await apiClient.admin_getUsers({ page });
-            return response.data;
-        } catch (err) {
-            console.error("Fehler beim Laden der Benutzer:", err);
-            return null;
-        }
-    });
+    // const { data, error } = useSWR(`/api/admin/users?page=${page}`, async () => {
+    //     try {
+    //         const response = await apiClient.admin_getUsers({ page });
+    //         return response.data;
+    //     } catch (err) {
+    //         console.error("Fehler beim Laden der Benutzer:", err);
+    //         return null;
+    //     }
+    // });
+    //
+    // useEffect(() => {
+    //     const loadAccommodations = async () => {
+    //         if (!data) {
+    //             router.push("/upload"); // Weiterleitung zur Upload-Seite, falls keine Daten vorhanden
+    //             return;
+    //         }
+    //         try {
+    //             setAccommodations(data.items || []);
+    //         } catch (error) {
+    //             console.error("Error fetching accommodations:", error);
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     loadAccommodations();
+    // }, [data, router]);
 
-    useEffect(() => {
-        const loadAccommodations = async () => {
-            if (!data) {
-                router.push("/upload"); // Weiterleitung zur Upload-Seite, falls keine Daten vorhanden
-                return;
-            }
-            try {
-                setAccommodations(data.items || []);
-            } catch (error) {
-                console.error("Error fetching accommodations:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        loadAccommodations();
-    }, [data, router]);
+    // const handleSelectAccommodation = async (acc: Accommodation) => {
+    //     setSelectedAccommodation(acc);
+    //     try {
+    //         const response = await apiClient.getSession(); // Hier evtl. andere Methode nutzen
+    //         setBookings(response.data.bookings || []);
+    //     } catch (error) {
+    //         console.error("Error fetching bookings:", error);
+    //     }
+    // };
 
-    const handleSelectAccommodation = async (acc: Accommodation) => {
-        setSelectedAccommodation(acc);
-        try {
-            const response = await apiClient.getSession(); // Hier evtl. andere Methode nutzen
-            setBookings(response.data.bookings || []);
-        } catch (error) {
-            console.error("Error fetching bookings:", error);
-        }
-    };
-
-    const handleUpdateAccommodation = async () => {
-        if (!selectedAccommodation) return;
-        try {
-            await apiClient.updateUser(selectedAccommodation.id.toString(), selectedAccommodation);
-            alert("Accommodation updated successfully!");
-        } catch (error) {
-            console.error("Error updating accommodation:", error);
-        }
-    };
+    // const handleUpdateAccommodation = async () => {
+    //     if (!selectedAccommodation) return;
+    //     try {
+    //         await apiClient.updateUser(selectedAccommodation.id.toString(), selectedAccommodation);
+    //         alert("Accommodation updated successfully!");
+    //     } catch (error) {
+    //         console.error("Error updating accommodation:", error);
+    //     }
+    // };
 
     if (loading) {
         return <div className="p-6 text-center text-xl">Loading...</div>;

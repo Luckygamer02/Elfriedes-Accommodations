@@ -4,22 +4,20 @@ import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Client
 @Table(name = "adress")
-public class Adress extends AbstractEntity {
+public class Address extends AbstractEntity {
     private String street;
-    private String housenumber;
-    private String country;
+    private String houseNumber;
     private String city;
-    private String zip;
+    private String zipCode;
+    private String country;
 }

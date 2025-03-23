@@ -1,0 +1,92 @@
+package com.jgmt.backend.accommodation.controller;
+
+import com.jgmt.backend.accommodation.Accommodation;
+import com.jgmt.backend.accommodation.service.AccommodationService;
+import com.jgmt.backend.accommodation.service.AccommodationServiceInterface;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/accommodations")
+@Tag(name = "Accommodation Management", description = "Endpoints for managing accommodations")
+public class AccommodationController {
+
+    private final AccommodationService accommodationService;
+
+    public AccommodationController(AccommodationService accommodationService) {
+        this.accommodationService = accommodationService;
+    }
+
+    @PostMapping
+    @Operation(summary = "Create new accommodation", description = "Create a new accommodation listing")
+    @ApiResponse(responseCode = "201", description = "Accommodation created successfully")
+    public ResponseEntity<Accommodation> createAccommodation(
+            @Valid @RequestBody Accommodation accommodation) {
+        Accommodation createdAccommodation = accommodationService.createAccommodation(accommodation);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAccommodation);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get single accommodation", description = "Get accommodation by ID")
+    @ApiResponse(responseCode = "200", description = "Accommodation found")
+    @ApiResponse(responseCode = "404", description = "Accommodation not found")
+    public ResponseEntity<Accommodation> getAccommodationById(
+            @PathVariable Long id) {
+        return ResponseEntity.ok(accommodationService.getAccommodationById(id));
+    }
+
+    @GetMapping
+    @Operation(summary = "Get multiple accommodations", description = "Get paginated list of accommodations with optional filters")
+    public ResponseEntity<Page<Accommodation>> getAllAccommodations(
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Integer minPrice,
+            @RequestParam(required = false) Integer maxPrice,
+            Pageable pageable) {
+        return ResponseEntity.ok(accommodationService.getAllAccommodations(city, minPrice, maxPrice, pageable));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update accommodation", description = "Full update of existing accommodation")
+    @ApiResponse(responseCode = "200", description = "Accommodation updated successfully")
+    @ApiResponse(responseCode = "404", description = "Accommodation not found")
+    public ResponseEntity<Accommodation> updateAccommodation(
+            @PathVariable Long id,
+            @Valid @RequestBody Accommodation accommodation) {
+        return ResponseEntity.ok(accommodationService.updateAccommodation(id, accommodation));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete accommodation", description = "Delete accommodation by ID")
+    @ApiResponse(responseCode = "204", description = "Accommodation deleted successfully")
+    public ResponseEntity<Void> deleteAccommodation(
+            @PathVariable Long id) {
+        accommodationService.deleteAccommodation(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // Additional endpoints for partial updates and search
+    @PatchMapping("/{id}")
+    @Operation(summary = "Partial update accommodation", description = "Update specific fields of an accommodation")
+    public ResponseEntity<Accommodation> partialUpdateAccommodation(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> updates) {
+        return ResponseEntity.ok(accommodationService.partialUpdateAccommodation(id, updates));
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search accommodations", description = "Full-text search with multiple criteria")
+    public ResponseEntity<Page<Accommodation>> searchAccommodations(
+            @RequestParam String query,
+            Pageable pageable) {
+        return ResponseEntity.ok(accommodationService.searchAccommodations(query, pageable));
+    }
+}

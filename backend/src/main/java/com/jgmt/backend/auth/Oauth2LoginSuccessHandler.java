@@ -50,7 +50,7 @@ public class Oauth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        // At this point we don't have a connected account, so we either find a user by email and add the connected account
+        // At this point we don't have a connected account, so we either find a user by email and add the connected account,
         // or we create a new user
         User existingUser = userRepository.findByEmail(email).orElse(null);
         if (existingUser != null) {

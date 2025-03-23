@@ -15,8 +15,8 @@ import lombok.*;
 @Setter
 @ToString(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "discounts")
-public class Discounts extends AbstractEntity {
+@Table(name = "discount")
+public class Discount extends AbstractEntity {
 
     private float discountprocent;
     private String name;

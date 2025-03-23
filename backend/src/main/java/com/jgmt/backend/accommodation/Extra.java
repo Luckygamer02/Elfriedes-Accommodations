@@ -1,5 +1,6 @@
 package com.jgmt.backend.accommodation;
 
+import com.jgmt.backend.accommodation.enums.Extrastype;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Client
 @Table(name = "extras")
-public class Extras extends AbstractEntity {
+public class Extra extends AbstractEntity {
     Extrastype type;
     int price;
 }

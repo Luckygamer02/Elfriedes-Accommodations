@@ -23,6 +23,7 @@ public class VerificationCode extends AbstractEntity {
 
     public VerificationCode(User user) {
         this.user = user;
+
         this.code = RandomStringUtils.random(6, false, true);
     }
 }

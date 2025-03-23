@@ -24,4 +24,7 @@ public class Rating extends AbstractEntity {
     private Long userid;
     private int rating;
     private String comment;
+    @ManyToOne
+    private Accommodation manyToOne;
+
 }

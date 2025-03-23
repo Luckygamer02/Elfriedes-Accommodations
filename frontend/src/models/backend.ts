@@ -421,6 +421,7 @@ export interface HttpClient {
     request<R>(requestConfig: { method: string; url: string; queryParams?: any; data?: any; copyFn?: (data: R) => R; }): RestResponse<R>;
 }
 
+
 export class RestApplicationClient {
 
     constructor(protected httpClient: HttpClient) {
@@ -569,6 +570,59 @@ export class RestApplicationClient {
     updateProfilePicture(id: number, queryParams: { file: MultipartFile; }): RestResponse<UserResponse> {
         return this.httpClient.request({ method: "PATCH", url: uriEncoding`api/users/${id}/profile-picture`, queryParams: queryParams });
     }
+
+    // // Accomidation
+    //
+    // getAccommodation(id: number, queryParams?: { includeReviews?: boolean; }): RestResponse<AccommodationResponse> {
+    //     return this.httpClient.request({
+    //         method: "GET",
+    //         url: uriEncoding`api/accommodations/${id}`,
+    //         queryParams: queryParams
+    //     });
+    // }
+    //
+    // getAccommodations(queryParams?: { city?: string; type?: string; minPrice?: number; maxPrice?: number; }): RestResponse<AccommodationResponse[]> {
+    //     return this.httpClient.request({
+    //         method: "GET",
+    //         url: uriEncoding`api/accommodations`,
+    //         queryParams: queryParams
+    //     });
+    // }
+    //
+    // createAccommodation(body: CreateAccommodationRequest): RestResponse<AccommodationResponse> {
+    //     return this.httpClient.request({
+    //         method: "POST",
+    //         url: uriEncoding`api/accommodations`,
+    //         body: body
+    //     });
+    // }
+    //
+    // updateAccommodation(id: number, body: UpdateAccommodationRequest): RestResponse<AccommodationResponse> {
+    //     return this.httpClient.request({
+    //         method: "PATCH",
+    //         url: uriEncoding`api/accommodations/${id}`,
+    //         body: body
+    //     });
+    // }
+    //
+    // deleteAccommodation(id: number): RestResponse<void> {
+    //     return this.httpClient.request({
+    //         method: "DELETE",
+    //         url: uriEncoding`api/accommodations/${id}`
+    //     });
+    // }
+    //
+    // uploadAccommodationImage(id: number, queryParams: { file: MultipartFile; }): RestResponse<AccommodationResponse> {
+    //     return this.httpClient.request({
+    //         method: "PATCH",
+    //         url: uriEncoding`api/accommodations/${id}/image`,
+    //         queryParams: queryParams
+    //     });
+    // }
+    //
+
+
+
 }
 
 export type RestResponse<R> = Promise<{

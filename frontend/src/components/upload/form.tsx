@@ -12,10 +12,12 @@ import {useState} from "react";
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import Accommodation from "@/models/accommidation/accommodation";
 
+interface UploadFormProps {
+    activeStep: number;
+    setActiveStep: (step: number) => void;
+}
 
-
-export default function uploadform() {
-    const [activeStep, setActiveStep] = useState(0);
+export default function uploadform({ activeStep, setActiveStep }: UploadFormProps) {
     const [form, setForm] = useState<Accommodation>({
         ac: false,
         city: "",
@@ -35,31 +37,48 @@ export default function uploadform() {
         zip: "",
         title: '',
         description: '',
-        price: 0
+        price: 0,
+        extras: false,
     });
     const handleChange = (field: keyof Accommodation, value: any) => {
         setForm((current) => ({ ...current, [field]: value }));
     };
 
-    const handleImageUpload = (files: File[]) => {
-        handleChange('images', files);
+    const handleImageUpload =  async (files: File[]) => {
+        try {
+            // Upload images first
+            const uploadedImages = await Promise.all(
+                files.map(async (file) => {
+                    const formData = new FormData();
+                    formData.append('image', file);
+                    // const response = await axios.post('/api/upload', formData);
+                    // return response.data.url;
+                    return URL.createObjectURL(file); // temporary local URL
+                })
+            );
+
+            handleChange('images', [...form.images, ...uploadedImages]);
+        } catch (error) {
+            console.error('Image upload error:', error);
+            alert('Error uploading images');
+        }
     };
 
     const handleSubmit= () => {
     };
     const steps = [
         {
-            label: 'Base Details',
+            label: "Location",
             content: (
                 <>
-                    <TextInput
-                        label="Accommodation ID"
-                        placeholder="Enter your accommodation ID"
-                        value={form.id}
-                        onChange={(e) => handleChange('id', e.currentTarget.value)}
-                        required
-                        mb="sm"
-                    />
+
+                </>
+            ),
+        },
+        {
+            label: 'Base Information',
+            content: (
+                <>
                     <TextInput
                         label="Title"
                         placeholder="e.g. Cozy city apartment"
@@ -68,20 +87,15 @@ export default function uploadform() {
                         required
                         mb="sm"
                     />
+                    <Textarea
+                        label="Description"
+                        placeholder="Describe your accommodation"
+                        value={form.description}
+                        onChange={(e) => handleChange('description', e.currentTarget.value)}
+                        required
+                        mb="sm"
+                    />
                 </>
-            ),
-        },
-        {
-            label: 'Description',
-            content: (
-                <Textarea
-                    label="Description"
-                    placeholder="Describe your accommodation"
-                    value={form.description}
-                    onChange={(e) => handleChange('description', e.currentTarget.value)}
-                    required
-                    mb="sm"
-                />
             ),
         },
         {
@@ -131,15 +145,16 @@ export default function uploadform() {
 
     const nextStep = () => {
         if (activeStep < steps.length - 1) {
-            setActiveStep((current) => current + 1);
+            setActiveStep(activeStep + 1);
         }
     };
 
     const prevStep = () => {
         if (activeStep > 0) {
-            setActiveStep((current) => current - 1);
+            setActiveStep(activeStep - 1);
         }
     };
+
 
 
     return (
