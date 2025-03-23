@@ -15,8 +15,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Client
-@Table(name = "extras")
+@Table(name = "extra")
 public class Extra extends AbstractEntity {
     Extrastype type;
     int price;
+
+    @ManyToOne
+    @JoinColumn(name = "accommodation_id")  // Add this field
+    private Accommodation accommodation;
+
+    public Accommodation getAccommodation() {
+        return accommodation;
+    }
+
+    public void setAccommodation(Accommodation accommodation) {
+        this.accommodation = accommodation;
+    }
 }

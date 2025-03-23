@@ -18,11 +18,22 @@ import java.time.LocalDateTime;
 @Getter
 @Client
 public class AppliedDiscount extends AbstractEntity {
-    @ManyToOne
-    private Accommodation accommodation;
 
     @ManyToOne
     private Discount discount;
 
     private LocalDateTime appliedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "accommodation_id")
+    private Accommodation accommodation;
+
+    @ManyToOne
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
 }

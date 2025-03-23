@@ -36,4 +36,5 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
           "LEFT JOIN FETCH a.extras " +
           "WHERE a.id = :id")
   Optional<Accommodation> findByIdWithRelations(@Param("id") Long id);
+
 }

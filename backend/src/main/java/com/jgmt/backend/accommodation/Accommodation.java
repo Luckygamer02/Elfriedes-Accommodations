@@ -2,6 +2,7 @@ package com.jgmt.backend.accommodation;
 
 
 import com.jgmt.backend.accommodation.data.CreateAccommodationRequest;
+import com.jgmt.backend.accommodation.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.enums.AccommodationType;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.users.User;
@@ -59,12 +60,8 @@ public class Accommodation extends AbstractEntity {
     @Builder.Default
     private List<AppliedDiscount> appliedDiscounts = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "accommodation",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    @Builder.Default
+
+    @OneToMany(mappedBy = "accommodation")
     private List<Extra> extras = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -91,5 +88,18 @@ public class Accommodation extends AbstractEntity {
         this.livingRooms = request.getLivingRooms();
         this.type = request.getType();
         this.festivalistId = request.getFestivalistId();
+    }
+
+    public void updateFromRequest(@Valid UpdateAccommodation request) {
+    }
+
+    public void addExtra(Extra extra) {
+        extras.add(extra);
+        extra.setAccommodation(this);
+    }
+
+    public void removeExtra(Extra extra) {
+        extras.remove(extra);
+        extra.setAccommodation(null);
     }
 }

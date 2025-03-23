@@ -55,6 +55,17 @@ public class Booking extends AbstractEntity{
     @Builder.Default
     private List<AppliedDiscount> appliedDiscounts = new ArrayList<>();
 
+
+    // Add helper methods
+    public void addAppliedDiscount(AppliedDiscount discount) {
+        appliedDiscounts.add(discount);
+        discount.setBooking(this);
+    }
+
+    public void removeAppliedDiscount(AppliedDiscount discount) {
+        appliedDiscounts.remove(discount);
+        discount.setBooking(null);
+    }
     // Convenience methods
     public void addExtra(Extra extra, int quantity) {
         BookedExtra bookedExtra = new BookedExtra();

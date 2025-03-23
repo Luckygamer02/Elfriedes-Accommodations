@@ -1,5 +1,6 @@
 package com.jgmt.backend.accommodation.data;
 
+import com.jgmt.backend.accommodation.Accommodation;
 import com.jgmt.backend.accommodation.enums.AccommodationType;
 import lombok.*;
 
@@ -25,4 +26,6 @@ public class AccommodationResponse implements Serializable {
     Long festivalistId;
 
 
+    public AccommodationResponse(Accommodation accommodation) {
+    }
 }

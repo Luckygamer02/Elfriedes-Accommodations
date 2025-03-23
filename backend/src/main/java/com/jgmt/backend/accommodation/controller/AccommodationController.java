@@ -1,8 +1,10 @@
 package com.jgmt.backend.accommodation.controller;
 
 import com.jgmt.backend.accommodation.Accommodation;
+import com.jgmt.backend.accommodation.data.AccommodationResponse;
+import com.jgmt.backend.accommodation.data.CreateAccommodationRequest;
+import com.jgmt.backend.accommodation.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.service.AccommodationService;
-import com.jgmt.backend.accommodation.service.AccommodationServiceInterface;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,9 +31,9 @@ public class AccommodationController {
     @PostMapping
     @Operation(summary = "Create new accommodation", description = "Create a new accommodation listing")
     @ApiResponse(responseCode = "201", description = "Accommodation created successfully")
-    public ResponseEntity<Accommodation> createAccommodation(
-            @Valid @RequestBody Accommodation accommodation) {
-        Accommodation createdAccommodation = accommodationService.createAccommodation(accommodation);
+    public ResponseEntity<AccommodationResponse> createAccommodation(
+            @Valid @RequestBody CreateAccommodationRequest accommodation) {
+        AccommodationResponse createdAccommodation = accommodationService.createAccommodation(accommodation);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccommodation);
     }
 
@@ -39,14 +41,14 @@ public class AccommodationController {
     @Operation(summary = "Get single accommodation", description = "Get accommodation by ID")
     @ApiResponse(responseCode = "200", description = "Accommodation found")
     @ApiResponse(responseCode = "404", description = "Accommodation not found")
-    public ResponseEntity<Accommodation> getAccommodationById(
+    public ResponseEntity<AccommodationResponse> getAccommodationById(
             @PathVariable Long id) {
         return ResponseEntity.ok(accommodationService.getAccommodationById(id));
     }
 
     @GetMapping
     @Operation(summary = "Get multiple accommodations", description = "Get paginated list of accommodations with optional filters")
-    public ResponseEntity<Page<Accommodation>> getAllAccommodations(
+    public ResponseEntity<Page<AccommodationResponse>> getAllAccommodations(
             @RequestParam(required = false) String city,
             @RequestParam(required = false) Integer minPrice,
             @RequestParam(required = false) Integer maxPrice,
@@ -58,9 +60,9 @@ public class AccommodationController {
     @Operation(summary = "Update accommodation", description = "Full update of existing accommodation")
     @ApiResponse(responseCode = "200", description = "Accommodation updated successfully")
     @ApiResponse(responseCode = "404", description = "Accommodation not found")
-    public ResponseEntity<Accommodation> updateAccommodation(
+    public ResponseEntity<AccommodationResponse> updateAccommodation(
             @PathVariable Long id,
-            @Valid @RequestBody Accommodation accommodation) {
+            @Valid @RequestBody UpdateAccommodation accommodation) {
         return ResponseEntity.ok(accommodationService.updateAccommodation(id, accommodation));
     }
 
@@ -76,7 +78,7 @@ public class AccommodationController {
     // Additional endpoints for partial updates and search
     @PatchMapping("/{id}")
     @Operation(summary = "Partial update accommodation", description = "Update specific fields of an accommodation")
-    public ResponseEntity<Accommodation> partialUpdateAccommodation(
+    public ResponseEntity<AccommodationResponse> partialUpdateAccommodation(
             @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
         return ResponseEntity.ok(accommodationService.partialUpdateAccommodation(id, updates));
@@ -84,7 +86,7 @@ public class AccommodationController {
 
     @GetMapping("/search")
     @Operation(summary = "Search accommodations", description = "Full-text search with multiple criteria")
-    public ResponseEntity<Page<Accommodation>> searchAccommodations(
+    public ResponseEntity<Page<AccommodationResponse>> searchAccommodations(
             @RequestParam String query,
             Pageable pageable) {
         return ResponseEntity.ok(accommodationService.searchAccommodations(query, pageable));
