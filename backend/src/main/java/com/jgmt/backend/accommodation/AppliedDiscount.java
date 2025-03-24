@@ -1,5 +1,6 @@
 package com.jgmt.backend.accommodation;
 
+import com.jgmt.backend.accommodation.data.CreateAppliedDiscountRequest;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
 import jakarta.persistence.*;
@@ -32,6 +33,12 @@ public class AppliedDiscount extends AbstractEntity {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    public AppliedDiscount(CreateAppliedDiscountRequest discountRequest) {
+        this.appliedDate = LocalDateTime.now();
+        this.discount = new Discount(discountRequest.getDiscount());
+
+    }
+    public void setAccommodation(Accommodation accommodation) { this.accommodation = accommodation; }
     public void setBooking(Booking booking) {
         this.booking = booking;
     }

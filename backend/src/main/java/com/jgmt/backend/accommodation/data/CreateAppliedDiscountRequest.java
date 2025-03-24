@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateAppliedDiscountRequest implements Serializable {
     private Long id;
-    private GetDiscountRequest discount;
+    private CreateDiscountRequest discount;
     private LocalDateTime appliedDate;
 }

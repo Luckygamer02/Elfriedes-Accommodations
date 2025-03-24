@@ -1,5 +1,6 @@
 package com.jgmt.backend.accommodation;
 
+import com.jgmt.backend.accommodation.data.CreateExtraRequest;
 import com.jgmt.backend.accommodation.enums.Extrastype;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.util.Client;
@@ -23,6 +24,11 @@ public class Extra extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "accommodation_id")  // Add this field
     private Accommodation accommodation;
+
+    public Extra(CreateExtraRequest extraRequest) {
+        this.type = extraRequest.getType();
+        this.price = extraRequest.getPrice();
+    }
 
     public Accommodation getAccommodation() {
         return accommodation;

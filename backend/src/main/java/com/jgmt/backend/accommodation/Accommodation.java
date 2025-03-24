@@ -2,6 +2,8 @@ package com.jgmt.backend.accommodation;
 
 
 import com.jgmt.backend.accommodation.data.CreateAccommodationRequest;
+import com.jgmt.backend.accommodation.data.CreateAppliedDiscountRequest;
+import com.jgmt.backend.accommodation.data.CreateExtraRequest;
 import com.jgmt.backend.accommodation.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.enums.AccommodationType;
 import com.jgmt.backend.entity.AbstractEntity;
@@ -78,18 +80,6 @@ public class Accommodation extends AbstractEntity {
     private List<Booking> bookings = new ArrayList<>();
 
 
-    public Accommodation(@Valid CreateAccommodationRequest request) {
-        this.title = request.getTitle();
-        this.description = request.getDescription();
-        this.basePrice = request.getBasePrice();
-        this.bedrooms = request.getBedrooms();
-        this.bathrooms = request.getBathrooms();
-        this.people = request.getPeople();
-        this.livingRooms = request.getLivingRooms();
-        this.type = request.getType();
-        this.festivalistId = request.getFestivalistId();
-    }
-
     public void updateFromRequest(@Valid UpdateAccommodation request) {
     }
 
@@ -101,5 +91,42 @@ public class Accommodation extends AbstractEntity {
     public void removeExtra(Extra extra) {
         extras.remove(extra);
         extra.setAccommodation(null);
+    }
+    public Accommodation(@Valid CreateAccommodationRequest request) {
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.basePrice = request.getBasePrice();
+        this.bedrooms = request.getBedrooms();
+        this.bathrooms = request.getBathrooms();
+        this.people = request.getPeople();
+        this.livingRooms = request.getLivingRooms();
+        this.type = request.getType();
+        this.festivalistId = request.getFestivalistId();
+
+        // Convert Address
+        this.address = new Address(request.getAddress());
+
+        // Convert Features
+        this.features = new AccommodationFeature(request.getFeatures());
+
+        // Convert Applied Discounts
+        this.appliedDiscounts = new ArrayList<>();
+        if (request.getAppliedDiscounts() != null) {
+            for (CreateAppliedDiscountRequest discountRequest : request.getAppliedDiscounts()) {
+                AppliedDiscount discount = new AppliedDiscount(discountRequest);
+                discount.setAccommodation(this);
+                this.appliedDiscounts.add(discount);
+            }
+        }
+
+        // Convert Extras
+        this.extras = new ArrayList<>();
+        if (request.getExtras() != null) {
+            for (CreateExtraRequest extraRequest : request.getExtras()) {
+                Extra extra = new Extra(extraRequest);
+                extra.setAccommodation(this);
+                this.extras.add(extra);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.jgmt.backend.accommodation.data;
 
 import com.jgmt.backend.accommodation.Accommodation;
+import com.jgmt.backend.accommodation.Address;
 import com.jgmt.backend.accommodation.enums.AccommodationType;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccommodationResponse implements Serializable {
+public class AccommodationResponse extends CreateExtraRequest implements Serializable {
     Long id;
     String title;
     String description;
@@ -23,9 +24,22 @@ public class AccommodationResponse implements Serializable {
     int people;
     int livingRooms;
     AccommodationType type;
+    Address address;
     Long festivalistId;
 
 
     public AccommodationResponse(Accommodation accommodation) {
+        this.id = accommodation.getId();
+        this.title = accommodation.getTitle();
+        this.description = accommodation.getDescription();
+        this.basePrice = accommodation.getBasePrice();
+        this.bedrooms = accommodation.getBedrooms();
+        this.bathrooms = accommodation.getBathrooms();
+        this.people = accommodation.getPeople();
+        this.livingRooms = accommodation.getLivingRooms();
+        this.type = accommodation.getType();
+        this.address = accommodation.getAddress();
+        this.festivalistId = accommodation.getFestivalistId();
+
     }
 }
