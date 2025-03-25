@@ -1,13 +1,13 @@
 import {AbstractEntity} from "@/models/backend";
 
-enum AccommodationType {
+export enum AccommodationType {
     FLAT= 'FLAT',
     HOUSE = 'HOUSE',
     ROOM = 'ROOM',
     UNIQUE = 'UNIQUE'
 }
 
-enum Extrastype {
+export enum Extrastype {
     CLEANING = 'CLEANING',
     BREAKFAST = 'BREAKFAST',
     PARKING = 'PARKING',
@@ -62,7 +62,7 @@ interface CreateExtraRequest {
     price: number;
 }
 
-interface CreateAccommodationRequest {
+export interface CreateAccommodationRequest {
     title: string;
     description: string;
     basePrice: number;
@@ -80,7 +80,7 @@ interface CreateAccommodationRequest {
 }
 
 
-interface Accommodation extends AbstractEntity {
+export interface Accommodation extends AbstractEntity {
     title: string;
     description: string;
     price: number;

@@ -2,6 +2,8 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
+import {Accommodation, CreateAccommodationRequest} from "@/models/accommidation/accommodation";
+
 export interface Notification {
     id: number;
     title: string;
@@ -572,54 +574,61 @@ export class RestApplicationClient {
     }
 
     // // Accomidation
-    //
-    // getAccommodation(id: number, queryParams?: { includeReviews?: boolean; }): RestResponse<AccommodationResponse> {
-    //     return this.httpClient.request({
-    //         method: "GET",
-    //         url: uriEncoding`api/accommodations/${id}`,
-    //         queryParams: queryParams
-    //     });
-    // }
-    //
-    // getAccommodations(queryParams?: { city?: string; type?: string; minPrice?: number; maxPrice?: number; }): RestResponse<AccommodationResponse[]> {
-    //     return this.httpClient.request({
-    //         method: "GET",
-    //         url: uriEncoding`api/accommodations`,
-    //         queryParams: queryParams
-    //     });
-    // }
-    //
-    // createAccommodation(body: CreateAccommodationRequest): RestResponse<AccommodationResponse> {
-    //     return this.httpClient.request({
-    //         method: "POST",
-    //         url: uriEncoding`api/accommodations`,
-    //         body: body
-    //     });
-    // }
-    //
-    // updateAccommodation(id: number, body: UpdateAccommodationRequest): RestResponse<AccommodationResponse> {
-    //     return this.httpClient.request({
-    //         method: "PATCH",
-    //         url: uriEncoding`api/accommodations/${id}`,
-    //         body: body
-    //     });
-    // }
-    //
-    // deleteAccommodation(id: number): RestResponse<void> {
-    //     return this.httpClient.request({
-    //         method: "DELETE",
-    //         url: uriEncoding`api/accommodations/${id}`
-    //     });
-    // }
-    //
-    // uploadAccommodationImage(id: number, queryParams: { file: MultipartFile; }): RestResponse<AccommodationResponse> {
-    //     return this.httpClient.request({
-    //         method: "PATCH",
-    //         url: uriEncoding`api/accommodations/${id}/image`,
-    //         queryParams: queryParams
-    //     });
-    // }
-    //
+
+    getAccommodation(id: number, queryParams?: { includeReviews?: boolean; }): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/accommodations/${id}`,
+            queryParams: queryParams
+        });
+    }
+
+    getAccommodations(queryParams?: {city?: string; type?: string; minPrice?: number; maxPrice?: number; }): RestResponse<Accommodation[]> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/accommodations`,
+            queryParams: queryParams
+        });
+    }
+    getAccommodationsbyownerid(ownerid : number): RestResponse<Accommodation[]> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/accommodations/getbyUserid/{ownerId}`,
+            data: ownerid
+        });
+    }
+
+    createAccommodation(body: CreateAccommodationRequest): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "POST",
+            url: uriEncoding`api/accommodations`,
+            data: body
+        });
+    }
+
+    updateAccommodation(id: number, body: CreateAccommodationRequest): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "PATCH",
+            url: uriEncoding`api/accommodations/${id}`,
+            data: body
+        });
+    }
+
+    deleteAccommodation(id: number): RestResponse<void> {
+        return this.httpClient.request({
+            method: "DELETE",
+            url: uriEncoding`api/accommodations/${id}`
+        });
+    }
+
+    uploadAccommodationImage(id: number, queryParams: { file: MultipartFile; }): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "PATCH",
+            url: uriEncoding`api/accommodations/${id}/image`,
+            queryParams: queryParams
+        });
+    }
+
 
 
 

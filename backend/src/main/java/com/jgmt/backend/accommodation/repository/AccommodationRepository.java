@@ -37,4 +37,6 @@ public interface AccommodationRepository extends JpaRepository<Accommodation, Lo
           "WHERE a.id = :id")
   Optional<Accommodation> findByIdWithRelations(@Param("id") Long id);
 
+  Page<Accommodation> findByOwnerId(Long ownerId,
+                                    Pageable pageable);
 }

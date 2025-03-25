@@ -30,4 +30,5 @@ public class CreateAccommodationRequest implements Serializable {
     List<CreateAppliedDiscountRequest> appliedDiscounts;
     List<CreateExtraRequest> extras;
 
+
 }

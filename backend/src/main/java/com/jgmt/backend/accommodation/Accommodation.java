@@ -64,6 +64,7 @@ public class Accommodation extends AbstractEntity {
 
 
     @OneToMany(mappedBy = "accommodation")
+    @Builder.Default
     private List<Extra> extras = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

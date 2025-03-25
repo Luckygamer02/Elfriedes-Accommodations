@@ -10,9 +10,12 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +28,7 @@ public class AccommodationService {
     @Transactional
     public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request) {
         Accommodation accommodation = new Accommodation(request);
-        accommodation.setOwner(userRepository.getReferenceById(request.getOwner().getId()));
+        accommodation.setOwner(userRepository.getReferenceById(request.getOwnerId()));
         accommodation = accommodationRepository.save(accommodation);
         return new AccommodationResponse(accommodation);
     }
@@ -52,7 +55,7 @@ public class AccommodationService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AccommodationResponse> getAllAccommodations(String city, Integer minPrice, Integer maxPrice, Pageable pageable) {
+    public Page<AccommodationResponse> getAllAccommodations( String city, Integer minPrice, Integer maxPrice, Pageable pageable) {
         Page<Accommodation> accommodations;
 
         if (city != null || minPrice != null || maxPrice != null) {
@@ -88,5 +91,10 @@ public class AccommodationService {
                 query.toLowerCase(),
                 pageable
         ).map(AccommodationResponse::new);
+    }
+
+    public Page<AccommodationResponse> getAccommodationByOwnerId(Long id,  @PageableDefault(size = 100) Pageable pageable) {
+        return accommodationRepository.findByOwnerId(id,pageable)
+                .map(AccommodationResponse::new);
     }
 }

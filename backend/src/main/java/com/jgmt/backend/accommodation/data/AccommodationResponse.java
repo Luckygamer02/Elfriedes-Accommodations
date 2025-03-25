@@ -7,14 +7,12 @@ import lombok.*;
 
 import java.io.Serializable;
 
-/**
- * DTO for {@link com.jgmt.backend.accommodation.Accommodation}
- */
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccommodationResponse extends CreateExtraRequest implements Serializable {
+public class AccommodationResponse implements Serializable {
     Long id;
     String title;
     String description;
