@@ -6,6 +6,12 @@ import com.jgmt.backend.accommodation.infrastructure.controller.data.Accommodati
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.domain.repository.AccommodationRepository;
+import com.jgmt.backend.auth.SecurityUtil;
+import com.jgmt.backend.s3.UploadedFile;
+import com.jgmt.backend.s3.repository.UploadedFileRepository;
+import com.jgmt.backend.s3.services.FileUploadService;
+import com.jgmt.backend.users.User;
+import com.jgmt.backend.users.data.UserResponse;
 import com.jgmt.backend.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -15,7 +21,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Service
@@ -25,12 +33,17 @@ public class AccommodationService {
     private final AccommodationRepository accommodationRepository;
     private final UserRepository userRepository;
     private final RatingRepository ratingRepository;
+    private final UploadedFileRepository uploadedFileRepository;
+    private final FileUploadService fileUploadService;
 
     @Transactional
     public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request) {
         Accommodation accommodation = new Accommodation(request);
         accommodation.setOwner(userRepository.getReferenceById(request.getOwnerId()));
         accommodation = accommodationRepository.save(accommodation);
+        for(MultipartFile file : request.getPictures()){
+            updateAccommodationPicture(file, accommodation.getId());
+        };
         return new AccommodationResponse(accommodation);
     }
 
@@ -97,14 +110,36 @@ public class AccommodationService {
                 pageable
         ).map(AccommodationResponse::new);
     }
-
+    @Transactional
     public Page<AccommodationResponse> getAccommodationByOwnerId(Long id,  @PageableDefault(size = 100) Pageable pageable) {
         return accommodationRepository.findByOwnerId(id,pageable)
                 .map(AccommodationResponse::new);
     }
-
+    @Transactional
     public Integer getRating(Long accommodationid) {
         return  ratingRepository.getRatingforAccommodation(accommodationid);
 
+    }
+
+    @Transactional
+    public AccommodationResponse updateAccommodationPicture(MultipartFile file, Long accommodationId)  {
+        User user = SecurityUtil.getAuthenticatedUser();
+        Accommodation a = getAccommodation(accommodationId);
+
+        UploadedFile uploadedFile = new UploadedFile(file.getOriginalFilename(), file.getSize(), user);
+        try {
+
+            String url = fileUploadService.uploadFile(
+                    uploadedFile.buildPath("accommodationpicture"),
+                    file.getBytes());
+            uploadedFile.onUploaded(url);
+            a.getPictures().add(uploadedFile);
+            accommodationRepository.save(a);
+            uploadedFileRepository.save(uploadedFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new AccommodationResponse(a);
     }
 }

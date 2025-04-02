@@ -1,4 +1,4 @@
-import {AbstractEntity} from "@/models/backend";
+import {AbstractEntity, User} from "@/models/backend";
 
 export enum AccommodationType {
     FLAT= 'FLAT',
@@ -97,7 +97,7 @@ export interface Accommodation extends AbstractEntity {
     extras: CreateExtraRequest[];
 }
 
-interface Address {
+export interface Address {
     street: string;
     houseNumber: string;
     city: string;
@@ -115,4 +115,11 @@ interface AccommodationFeatures {
     tv: boolean;
     washingMachine: boolean;
     wifi: boolean;
+}
+export interface Rating {
+    id: string;
+    content: string;
+    rating: number;
+    User: User;
+    createdAt: string;
 }

@@ -1,19 +1,38 @@
 // app/accommodations/[id]/page.tsx
 "use client";
 import '@mantine/dates/styles.css';
-import { Accommodation } from "@/models/accommidation/accommodation";
-import {Card, Text, Badge, Group, Grid, Image, Stack, Title, Paper, Button, NumberInput} from '@mantine/core';
+import { Accommodation, Rating } from "@/models/accommidation/accommodation";
+import {
+    Card,
+    Text,
+    Badge,
+    Group,
+    Grid,
+    Image,
+    Stack,
+    Title,
+    Paper,
+    Button,
+    NumberInput,
+    TextInput,
+    Textarea
+} from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import useSWR from "swr";
 import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
 import {RatingBadge} from "@/components/RatingBadge";
 import {useParams, useRouter} from "next/navigation";
-import { IconStarFilled, IconBed, IconBath, IconUsers } from '@tabler/icons-react';
+import {IconStarFilled, IconBed, IconBath, IconUsers, IconStar, IconMessage} from '@tabler/icons-react';
 import { AccommodationMap } from '@/components/AccommodationMap';
 import { DatePicker } from '@mantine/dates';
 import {useState} from "react";
 import Link from "next/link";
+import {PaginatedResponse} from "@/models/backend";
+import { useAuthGuard } from '@/lib/auth/use-auth';
+import { useForm, zodResolver } from '@mantine/form';
+import { z } from 'zod';
+import {toast} from "sonner";
 
 export default function AccommodationDetailPage() {
     const router = useRouter();
@@ -24,6 +43,10 @@ export default function AccommodationDetailPage() {
     const { data: accommodation, error, isLoading } = useSWR<Accommodation>(
         `api/accommodations/${id}`,
         () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then(res => res.data)
+    );
+    const { data: Ratings } = useSWR<Rating[]>(
+        `api/reviews/${id}`,
+        () => httpClient.get<PaginatedResponse<Rating>>(`api/reviews/${id}`).then(res => res.data.content)
     );
     //const { data: images } = useSWR<>()
 
@@ -154,7 +177,115 @@ export default function AccommodationDetailPage() {
                         </Stack>
                     </Paper>
                 </Grid.Col>
+                <Grid.Col>
+                    <Paper p="md" shadow="sm">
+                        <Stack>
+                            <Title order={3} mb="sm">Reviews</Title>
+
+                            {Ratings?.length === 0 ? (
+                                <Text c="dimmed">No reviews yet. Be the first to write one!</Text>
+                            ) : (
+                                Ratings?.map(rating => (
+                                    <RatingComp key={rating.id} review={rating} />
+                                ))
+                            )}
+
+                            <RatingForm accommodationId={id} />
+                        </Stack>
+                    </Paper>
+                </Grid.Col>
             </Grid>
         </div>
+    );
+}
+const reviewSchema = z.object({
+    content: z.string().min(10, "Review must be at least 10 characters"),
+    rating: z.number().min(1).max(5)
+});
+
+function RatingForm({ accommodationId }: { accommodationId: string }) {
+    const { user } = useAuthGuard({ middleware: "auth" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const form = useForm({
+        initialValues: {
+            content: '',
+            rating: 5
+        },
+        validate: zodResolver(reviewSchema)
+    });
+
+    const handleSubmit = async (values: typeof form.values) => {
+        try {
+            setIsSubmitting(true);
+            await httpClient.post(`/api/reviews`, {
+                ...values,
+                accommodationId
+            });
+            form.reset();
+            setError(null);
+            toast.success("Review submitted successfully!");
+        } catch (err) {
+            setError("Failed to submit review");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <Paper p="md" shadow="sm" mt="lg">
+            <Title order={4} mb="md">Write a Review</Title>
+            <form onSubmit={form.onSubmit(handleSubmit)}>
+                <TextInput
+                    label="Rating"
+                    {...form.getInputProps('rating')}
+                    type="number"
+                    min={1}
+                    max={5}
+                />
+                <Textarea
+                    label="Review"
+                    placeholder="Share your experience..."
+                    {...form.getInputProps('content')}
+                    mt="sm"
+                />
+                {error && <Text c="red" mt="sm">{error}</Text>}
+                <Button
+                    type="submit"
+                    mt="md"
+                    loading={isSubmitting}
+                    leftSection={<IconMessage size={18} />}
+                >
+                    Submit Review
+                </Button>
+            </form>
+        </Paper>
+    );
+}
+
+function RatingComp({ review }: { review: Rating }) {
+    return (
+        <Paper p="md" shadow="sm" mb="md">
+            <Group justify="space-between" mb="xs">
+                <div>
+                    <Text fw={500}>{review.User.firstName} {review.User.lastName}</Text>
+                    <Text size="sm" c="dimmed">
+                        {new Date(review.createdAt).toLocaleDateString()}
+                    </Text>
+                </div>
+                <Group gap="xs">
+                    {[...Array(5)].map((_, i) => (
+                        <IconStar
+                            key={i}
+                            size={16}
+                            fill={i < review.rating ? '#ffd43b' : 'none'}
+                            color="#ffd43b"
+                        />
+                    ))}
+                </Group>
+            </Group>
+            <Text>{review.content}</Text>
+        </Paper>
     );
 }

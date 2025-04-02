@@ -1,6 +1,7 @@
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import { ActionIcon, Avatar, Button, Menu, MenuDivider, MenuItem } from "@mantine/core";
 import Link from "next/link";
+import React from "react";
 
 export function UserNav() {
   const { user, logout } = useAuthGuard({ middleware: "auth" });
@@ -9,7 +10,7 @@ export function UserNav() {
     <Menu>
       <Menu.Target>
         <ActionIcon variant="subtle" radius={100}>
-          <Avatar name={user?.firstName}></Avatar>
+          <Avatar name={user?.firstName} src={user?.profileImageUrl} color="initials"></Avatar>
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown className="w-56">
