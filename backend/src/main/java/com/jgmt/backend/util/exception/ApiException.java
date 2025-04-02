@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public class ApiException extends RuntimeException {
     private String message;
+    @Builder.Default
     private int status = 400;
     private Map<String, String> errors;
 }

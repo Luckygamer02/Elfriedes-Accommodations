@@ -324,6 +324,35 @@ export interface FilterRegistration extends Registration {
     urlPatternMappings: string[];
 }
 
+export interface PaginatedResponse<T> {
+    content: T[];
+    pageable: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            unsorted: boolean;
+            sorted: boolean;
+        };
+        offset: number;
+        paged: boolean;
+        unpaged: boolean;
+    };
+    totalElements: number;
+    totalPages: number;
+    last: boolean;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    numberOfElements: number;
+    first: boolean;
+    empty: boolean;
+}
+
 export interface SessionCookieConfig {
     name: string;
     path: string;
@@ -425,6 +454,7 @@ export interface HttpClient {
 
 
 export class RestApplicationClient {
+
 
     constructor(protected httpClient: HttpClient) {
     }
@@ -583,22 +613,18 @@ export class RestApplicationClient {
         });
     }
 
-    getAccommodations(queryParams?: {city?: string; type?: string; minPrice?: number; maxPrice?: number; }): RestResponse<Accommodation[]> {
+
+
+    async getAccommodationsbyownerid(
+        ownerid: number
+    ): RestResponse<PaginatedResponse<Accommodation>> {
         return this.httpClient.request({
             method: "GET",
-            url: uriEncoding`api/accommodations`,
-            queryParams: queryParams
-        });
-    }
-    getAccommodationsbyownerid(ownerid : number): RestResponse<Accommodation[]> {
-        return this.httpClient.request({
-            method: "GET",
-            url: uriEncoding`api/accommodations/getbyUserid/{ownerId}`,
-            data: ownerid
+            url: uriEncoding`api/accommodations/getbyUserid/${ownerid}`, // Ensure URI encoding
         });
     }
 
-    createAccommodation(body: CreateAccommodationRequest): RestResponse<Accommodation> {
+    createAccommodation(body: {}): RestResponse<Accommodation> {
         return this.httpClient.request({
             method: "POST",
             url: uriEncoding`api/accommodations`,

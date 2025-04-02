@@ -6,7 +6,7 @@ export interface UserResponse {
     email: string;
     profileImageUrl?: string;
     connectedAccounts: ConnectedAccount[];
-    authorities: string[]
+    authorities: string[];
 }
 
 interface ConnectedAccount {

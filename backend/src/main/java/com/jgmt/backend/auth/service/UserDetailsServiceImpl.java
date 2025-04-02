@@ -17,8 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws BadCredentialsException {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new BadCredentialsException("Cannot find user with email " + email));
-        return user;
     }
 }

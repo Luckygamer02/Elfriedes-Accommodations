@@ -14,7 +14,7 @@ export default function UploadAccommodation() {
     return (
         <div className="flex flex-row">
             <Uploadprogressbar activeStep={activeStep}/>
-            <Uploadform userid={1} step={activeStep} setActiveStep={setActiveStep} />
+            <Uploadform userid={user.id} step={activeStep} setActiveStep={setActiveStep} />
         </div>
 
     );
