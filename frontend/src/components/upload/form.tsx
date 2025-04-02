@@ -5,6 +5,8 @@ import {AccommodationType, Extrastype} from "@/models/accommidation/accommodatio
 import {DateInput} from "@mantine/dates";
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import {Dropzone, DropzoneProps, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import {restClient} from "@/lib/httpClient";
+import React from "react";
 
 const validationSchema = z.object({
     title: z.string().min(1),
@@ -68,8 +70,8 @@ export default function CreateAccommodationForm({
             basePrice: 0,
             bedrooms: 0,
             bathrooms: 0,
-            people: 1,
-            livingRooms: 0,
+            people: 0,
+            livingRooms: 1,
             type: AccommodationType.FLAT,
             festivalistId: 0,
             ownerId: userid,
@@ -97,9 +99,14 @@ export default function CreateAccommodationForm({
         validate: zodResolver(validationSchema),
     });
 
-    const handleSubmit = (values: typeof form.values) => {
-        console.log('Submitted values:', values);
-        // Submit to API
+    const handleSubmit = async (values: typeof form.values) => {
+            try {
+                const response = await restClient.createAccommodation(values);
+            } catch (err) {
+                console.error(err);
+            } finally {
+               console.log("success");
+            }
     };
     const stepcontent = () => {
         if (step === 1)

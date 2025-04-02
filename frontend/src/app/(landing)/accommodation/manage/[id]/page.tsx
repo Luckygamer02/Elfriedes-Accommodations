@@ -21,10 +21,10 @@ type Booking = {
 };
 
 import { useRouter } from "next/router";
-//import { RestApplicationClient } from "../services/RestApplicationClient"; // Pfad ggf. anpassen
+import {RestApplicationClient} from "@/models/backend";
 
 
-// const apiClient = new RestApplicationClient(httpClient);
+const apiClient = new RestApplicationClient(httpClient);
 
 export default function AccommodationsList() {
     const [accommodations, setAccommodations] = useState<Accommodation[]>([]);

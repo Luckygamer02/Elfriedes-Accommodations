@@ -4,7 +4,7 @@ export enum AccommodationType {
     FLAT= 'FLAT',
     HOUSE = 'HOUSE',
     ROOM = 'ROOM',
-    UNIQUE = 'UNIQUE'
+    UNIQUE = 'UNIQUE',
 }
 
 export enum Extrastype {
@@ -30,7 +30,7 @@ interface CreateAddressRequest {
     street: string;
     houseNumber: string;
     city: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
 }
 
@@ -49,7 +49,7 @@ interface CreateAccommodationFeatureRequest {
 interface CreateDiscountRequest {
     discountprocent: number;
     name: string;
-    expioringdate: string; // Use string or Date type based on your date handling
+    expiringDate: string; // Use string or Date type based on your date handling
 }
 
 interface CreateAppliedDiscountRequest {
@@ -65,14 +65,14 @@ interface CreateExtraRequest {
 export interface CreateAccommodationRequest {
     title: string;
     description: string;
-    basePrice: number;
+    baseprice: number;
     bedrooms: number;
     bathrooms: number;
     people: number;
     livingRooms: number;
     type: AccommodationType;
-    festivalistId: number;
-    ownerId: number;
+    festivalistid: number;
+    ownerid: number;
     address: CreateAddressRequest;
     features: CreateAccommodationFeatureRequest;
     appliedDiscounts: CreateAppliedDiscountRequest[];
@@ -83,12 +83,18 @@ export interface CreateAccommodationRequest {
 export interface Accommodation extends AbstractEntity {
     title: string;
     description: string;
-    price: number;
-    userid: string;
-    images: File[];
-    pricedExtras: string[];
-    address: Address;
-    features: AccommodationFeatures;
+    basePrice: number;
+    bedrooms: number;
+    bathrooms: number;
+    people: number;
+    livingRooms: number;
+    type: AccommodationType;
+    festivalistid: number;
+    ownerid: number;
+    address: CreateAddressRequest;
+    features: CreateAccommodationFeatureRequest;
+    appliedDiscounts: CreateAppliedDiscountRequest[];
+    extras: CreateExtraRequest[];
 }
 
 interface Address {
