@@ -1,25 +1,21 @@
 "use client"
 import '@mantine/carousel/styles.css';
 import {Accommodation, AccommodationType} from "@/models/accommidation/accommodation";
-import {Card, Grid, Text, Badge, Button, Group, TextInput, Popover} from '@mantine/core';
+import {Card, Text, Badge, Button, Group} from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { IconSearch, IconStarFilled } from '@tabler/icons-react';
+import { IconStarFilled } from '@tabler/icons-react';
 import useSWR from "swr";
 import {PaginatedResponse} from "@/models/backend";
-import httpClient, {restClient} from "@/lib/httpClient";
+import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
-import {useAuthGuard} from "@/lib/auth/use-auth";
-import {PagedResponse} from "@/models/http/PagedResponse";
 import {RatingBadge} from "@/components/RatingBadge";
 import {useMediaQuery} from "@mantine/hooks";
 import Link from "next/link";
-import DatePickerPopover from "@/components/uiELements/DatePickerPopover";
 
 export default function Home() {
     const {
         data,
         error,
-        mutate,
         isLoading
     } = useSWR<PaginatedResponse<Accommodation>>(`api/accommodations`,
         () => {
