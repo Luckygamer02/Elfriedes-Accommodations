@@ -41,8 +41,6 @@ export default function layout({children}: {children: React.ReactNode}) {
                 </div>
                 <Footer/>
             </AppShell.Main>
-
-
         </AppShell>
     )
 }

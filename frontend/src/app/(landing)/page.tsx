@@ -1,7 +1,7 @@
 "use client"
 import '@mantine/carousel/styles.css';
 import {Accommodation, AccommodationType} from "@/models/accommidation/accommodation";
-import {Card, Text, Badge, Button, Group} from '@mantine/core';
+import {Card, Grid, Text, Badge, Button, Group, TextInput, Popover} from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { IconStarFilled } from '@tabler/icons-react';
 import useSWR from "swr";
