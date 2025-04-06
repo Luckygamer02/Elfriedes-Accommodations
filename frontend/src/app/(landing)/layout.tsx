@@ -1,6 +1,5 @@
 "use client"
 
-import Logo from '@/components/NavbarElements/logo';
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/Footer';
 import { useSubscribeToPushNotifications } from '@/lib/hooks/useSubscribeToPushNotifications';
