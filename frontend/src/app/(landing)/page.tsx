@@ -1,7 +1,7 @@
 "use client"
 import '@mantine/carousel/styles.css';
 import {Accommodation, AccommodationType} from "@/models/accommidation/accommodation";
-import {Card, Grid, Text, Badge, Button, Group, TextInput } from '@mantine/core';
+import {Card, Grid, Text, Badge, Button, Group, TextInput, Popover} from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { IconSearch, IconStarFilled } from '@tabler/icons-react';
 import useSWR from "swr";
@@ -13,6 +13,7 @@ import {PagedResponse} from "@/models/http/PagedResponse";
 import {RatingBadge} from "@/components/RatingBadge";
 import {useMediaQuery} from "@mantine/hooks";
 import Link from "next/link";
+import DatePickerPopover from "@/components/uiELements/DatePickerPopover";
 
 export default function Home() {
     const {
@@ -43,7 +44,8 @@ export default function Home() {
 
 
   return (
-      <div>
+      <div className="min-h-screen flex flex-col">
+          <main className="flex-grow">
         <div className="category-rows">
           {categories.map((category) => (
               <div key={category.type} className="category-row">
@@ -109,6 +111,7 @@ export default function Home() {
               </div>
           ))}
         </div>
+          </main>
     </div>
   );
 }

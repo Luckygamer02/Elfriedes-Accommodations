@@ -1,7 +1,8 @@
 "use client"
 
-import Logo from '@/components/logo';
-import Navbar from '@/components/navbar';
+import Logo from '@/components/NavbarElements/logo';
+import Navbar from '@/components/layout/navbar';
+import Footer from '@/components/layout/Footer';
 import { useSubscribeToPushNotifications } from '@/lib/hooks/useSubscribeToPushNotifications';
 import { AppShell, Burger, Button, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
@@ -22,22 +23,27 @@ export default function layout({children}: {children: React.ReactNode}) {
         <AppShell
             header={{ height: 60 }}
             navbar={{ width: 300, breakpoint: 'sm', collapsed: { desktop: true, mobile: !opened } }}
-            padding="md"
+            //padding="md"
         >
             <AppShell.Header>
                 <Group h="100%" px="md" className='w-full max-w-screen-xl mx-auto'>
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-                    <Navbar className='w-3/4 max-w-screen-xl mx-auto'/>
+                    <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="md" />
+                    <Navbar className='hidden md:flex justify-center align-center w-full max-w-screen-xl mx-auto'/>
                 </Group>
             </AppShell.Header>
 
             <AppShell.Navbar py="md" px={4}>
-                <Navbar className='w-full' orientation="vertical"/>
+                <Navbar className='flex md:hidden w-full' orientation="vertical"/>
             </AppShell.Navbar>
 
             <AppShell.Main>
-                {children}
+                <div style={{ padding: 'var(--mantine-spacing-md)' }}>
+                    {children}
+                </div>
+                <Footer/>
             </AppShell.Main>
+
+
         </AppShell>
     )
 }
