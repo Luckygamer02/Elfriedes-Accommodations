@@ -1,27 +1,118 @@
 import {AbstractEntity} from "@/models/backend";
 
-export default interface Accommodation extends AbstractEntity,Adress,Extras {
-    title: string;
-    description: string;
-    price: number;
-    userid: string;
-    images: File[];
-    pricedExtras: String[];
+export enum AccommodationType {
+    FLAT= 'FLAT',
+    HOUSE = 'HOUSE',
+    ROOM = 'ROOM',
+    UNIQUE = 'UNIQUE',
 }
 
-export interface Extras{
-    wifi: boolean;
-    garden: boolean;
-    tv: boolean;
-    pool: boolean;
-    kitchen: boolean;
-    washingmaschine: boolean;
-    ac: boolean;
-    microwave: boolean;
+export enum Extrastype {
+    CLEANING = 'CLEANING',
+    BREAKFAST = 'BREAKFAST',
+    PARKING = 'PARKING',
+    SPA_ACCESS = 'SPA_ACCESS',
+    GYM_ACCESS = 'GYM_ACCESS',
+    LATE_CHECKOUT = 'LATE_CHECKOUT',
+    EARLY_CHECKIN = 'EARLY_CHECKIN',
+    ROOM_SERVICE = 'ROOM_SERVICE',
+    AIRPORT_SHUTTLE = 'AIRPORT_SHUTTLE',
+    PET_FRIENDLY = 'PET_FRIENDLY',
+    MINIBAR = 'MINIBAR',
+    EXTRA_BED = 'EXTRA_BED',
+    LAUNDRY_SERVICE = 'LAUNDRY_SERVICE',
+    CITY_TOUR = 'CITY_TOUR',
+    CONCIERGE_SERVICE = 'CONCIERGE_SERVICE',
+
 }
-export interface Adress{
+
+interface CreateAddressRequest {
     street: string;
+    houseNumber: string;
     city: string;
-    state: string;
-    zip: string;
+    postalCode: string;
+    country: string;
+}
+
+interface CreateAccommodationFeatureRequest {
+    ac: boolean;
+    garden: boolean;
+    kitchen: boolean;
+    microwave: boolean;
+    meetingTable: boolean;
+    pool: boolean;
+    tv: boolean;
+    washingMachine: boolean;
+    wifi: boolean;
+}
+
+interface CreateDiscountRequest {
+    discountprocent: number;
+    name: string;
+    expiringDate: string; // Use string or Date type based on your date handling
+}
+
+interface CreateAppliedDiscountRequest {
+    discount: CreateDiscountRequest;
+    appliedDate: string; // Use string or Date type based on your date handling
+}
+
+interface CreateExtraRequest {
+    type: Extrastype;
+    price: number;
+}
+
+export interface CreateAccommodationRequest {
+    title: string;
+    description: string;
+    baseprice: number;
+    bedrooms: number;
+    bathrooms: number;
+    people: number;
+    livingRooms: number;
+    type: AccommodationType;
+    festivalistid: number;
+    ownerid: number;
+    address: CreateAddressRequest;
+    features: CreateAccommodationFeatureRequest;
+    appliedDiscounts: CreateAppliedDiscountRequest[];
+    extras: CreateExtraRequest[];
+}
+
+
+export interface Accommodation extends AbstractEntity {
+    title: string;
+    description: string;
+    basePrice: number;
+    bedrooms: number;
+    bathrooms: number;
+    people: number;
+    livingRooms: number;
+    type: AccommodationType;
+    festivalistid: number;
+    ownerid: number;
+    address: CreateAddressRequest;
+    features: CreateAccommodationFeatureRequest;
+    appliedDiscounts: CreateAppliedDiscountRequest[];
+    extras: CreateExtraRequest[];
+}
+
+interface Address {
+    street: string;
+    houseNumber: string;
+    city: string;
+    zipCode: string;
+    country: string;
+}
+
+interface AccommodationFeatures {
+    ac: boolean;
+    garden: boolean;
+    kitchen: boolean;
+    microwave: boolean;
+    meetingTable: boolean;
+    pool: boolean;
+    tv: boolean;
+    washingMachine: boolean;
+    wifi: boolean;
 }

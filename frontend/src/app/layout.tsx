@@ -29,8 +29,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
+    return (
+    <html lang="en"
+          data-mantine-color-scheme="light"
+          style={{ colorScheme: 'light' }}
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

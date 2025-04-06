@@ -1,9 +1,9 @@
 "use client"
 import { Timeline, Text } from '@mantine/core';
 
-export default function uploadprogressbar(){
+export default function uploadprogressbar({ activeStep }: { activeStep: number }){
     return(
-      <Timeline active={0} className="h-full w-1/3"  bulletSize={24}  >
+      <Timeline active={activeStep - 1 } className="h-full w-1/3"  bulletSize={24}  >
           <Timeline.Item title="Location" >
             <Text>
                 Default
@@ -15,7 +15,13 @@ export default function uploadprogressbar(){
           <Timeline.Item title="Image Upload">
 
           </Timeline.Item>
-          <Timeline.Item title="Extras">
+          <Timeline.Item title="Features">
+
+          </Timeline.Item>
+          <Timeline.Item title="Features">
+
+          </Timeline.Item>
+          <Timeline.Item title="Discounts & Payed Extras">
 
           </Timeline.Item>
       </Timeline>

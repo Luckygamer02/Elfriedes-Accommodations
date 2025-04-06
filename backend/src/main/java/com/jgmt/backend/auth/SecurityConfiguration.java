@@ -62,6 +62,7 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/notifications/subscribe")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/notifications/delivery/**")).permitAll()
+                    .requestMatchers("/api/accommodations/**").permitAll()
                     .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
                     .requestMatchers(antMatcher("/swagger-resources/**")).permitAll()

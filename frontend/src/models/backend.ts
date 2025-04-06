@@ -2,6 +2,8 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
+import {Accommodation, CreateAccommodationRequest} from "@/models/accommidation/accommodation";
+
 export interface Notification {
     id: number;
     title: string;
@@ -322,6 +324,35 @@ export interface FilterRegistration extends Registration {
     urlPatternMappings: string[];
 }
 
+export interface PaginatedResponse<T> {
+    content: T[];
+    pageable: {
+        pageNumber: number;
+        pageSize: number;
+        sort: {
+            empty: boolean;
+            unsorted: boolean;
+            sorted: boolean;
+        };
+        offset: number;
+        paged: boolean;
+        unpaged: boolean;
+    };
+    totalElements: number;
+    totalPages: number;
+    last: boolean;
+    size: number;
+    number: number;
+    sort: {
+        empty: boolean;
+        unsorted: boolean;
+        sorted: boolean;
+    };
+    numberOfElements: number;
+    first: boolean;
+    empty: boolean;
+}
+
 export interface SessionCookieConfig {
     name: string;
     path: string;
@@ -421,7 +452,9 @@ export interface HttpClient {
     request<R>(requestConfig: { method: string; url: string; queryParams?: any; data?: any; copyFn?: (data: R) => R; }): RestResponse<R>;
 }
 
+
 export class RestApplicationClient {
+
 
     constructor(protected httpClient: HttpClient) {
     }
@@ -569,6 +602,62 @@ export class RestApplicationClient {
     updateProfilePicture(id: number, queryParams: { file: MultipartFile; }): RestResponse<UserResponse> {
         return this.httpClient.request({ method: "PATCH", url: uriEncoding`api/users/${id}/profile-picture`, queryParams: queryParams });
     }
+
+    // // Accomidation
+
+    getAccommodation(id: number, queryParams?: { includeReviews?: boolean; }): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/accommodations/${id}`,
+            queryParams: queryParams
+        });
+    }
+
+
+
+    async getAccommodationsbyownerid(
+        ownerid: number
+    ): RestResponse<PaginatedResponse<Accommodation>> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/accommodations/getbyUserid/${ownerid}`, // Ensure URI encoding
+        });
+    }
+
+    createAccommodation(body: {}): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "POST",
+            url: uriEncoding`api/accommodations`,
+            data: body
+        });
+    }
+
+    updateAccommodation(id: number, body: CreateAccommodationRequest): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "PATCH",
+            url: uriEncoding`api/accommodations/${id}`,
+            data: body
+        });
+    }
+
+    deleteAccommodation(id: number): RestResponse<void> {
+        return this.httpClient.request({
+            method: "DELETE",
+            url: uriEncoding`api/accommodations/${id}`
+        });
+    }
+
+    uploadAccommodationImage(id: number, queryParams: { file: MultipartFile; }): RestResponse<Accommodation> {
+        return this.httpClient.request({
+            method: "PATCH",
+            url: uriEncoding`api/accommodations/${id}/image`,
+            queryParams: queryParams
+        });
+    }
+
+
+
+
 }
 
 export type RestResponse<R> = Promise<{

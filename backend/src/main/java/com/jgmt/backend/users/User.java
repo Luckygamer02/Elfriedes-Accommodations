@@ -5,12 +5,8 @@ import com.jgmt.backend.users.data.CreateUserRequest;
 import com.jgmt.backend.users.data.UpdateUserRequest;
 import com.jgmt.backend.util.ApplicationContextProvider;
 import com.jgmt.backend.util.Client;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -45,7 +41,7 @@ public class User extends AbstractEntity implements UserDetails {
     private Role role;
 
     @Setter
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationCode verificationCode;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)

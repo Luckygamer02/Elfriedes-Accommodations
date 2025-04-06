@@ -59,7 +59,6 @@ public class UserService {
         User user = verificationCode.getUser();
         user.setVerified(true);
         userRepository.save(user);
-        verificationCodeRepository.delete(verificationCode);
     }
 
     @Transactional
@@ -109,7 +108,7 @@ public class UserService {
 
     public UserResponse updateProfilePicture(MultipartFile file) {
         User user = SecurityUtil.getAuthenticatedUser();
-        /*
+        /*Ó
         UploadedFile uploadedFile = new UploadedFile(file.getOriginalFilename(), file.getSize(), user);
         try {
             String url = fileUploadService.uploadFile(
