@@ -3,7 +3,7 @@
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/Footer';
 import { useSubscribeToPushNotifications } from '@/lib/hooks/useSubscribeToPushNotifications';
-import { AppShell, Burger, Button, Group } from '@mantine/core';
+import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import React, { useEffect } from 'react';
 
