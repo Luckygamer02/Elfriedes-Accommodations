@@ -1,9 +1,11 @@
 package com.jgmt.backend.accommodation.infrastructure.controller;
 
+import com.jgmt.backend.accommodation.domain.Accommodation;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.AccommodationResponse;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.application.service.AccommodationService;
+import com.jgmt.backend.users.data.UserResponse;
 import com.jgmt.backend.util.Client;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +17,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -101,6 +104,13 @@ public class AccommodationController {
     @GetMapping("rating/{accommodationid}")
     public ResponseEntity<Integer> getRating(@PathVariable Long accommodationid) {
         return ResponseEntity.ok(accommodationService.getRating(accommodationid));
+    }
+
+    @PatchMapping("/{id}/profile-picture")
+    public ResponseEntity<AccommodationResponse> updateProfilePicture(
+            @PathVariable Long id, @RequestParam("file") MultipartFile file) {
+        AccommodationResponse accommodation = accommodationService.updateAccommodationPicture( file, id);
+        return ResponseEntity.ok(accommodation);
     }
 
 }

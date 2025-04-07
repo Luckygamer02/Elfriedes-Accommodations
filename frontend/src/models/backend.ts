@@ -2,7 +2,8 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
-import {Accommodation, CreateAccommodationRequest} from "@/models/accommidation/accommodation";
+import {Accommodation, CreateAccommodationRequest} from "@/models/accommodation/accommodation";
+import {Address} from "node:cluster";
 
 export interface Notification {
     id: number;
@@ -98,6 +99,7 @@ export interface CreateUserRequest {
     passwordConfirmation: string;
     firstName?: string;
     lastName?: string;
+    Adress? : Address;
 }
 
 export interface ForgotPasswordRequest {
@@ -114,6 +116,8 @@ export interface UpdateUserPasswordRequest {
 export interface UpdateUserRequest {
     firstName: string;
     lastName: string;
+    PhoneNumber: string;
+    adress : Address;
 }
 
 export interface UserResponse {
@@ -591,7 +595,7 @@ export class RestApplicationClient {
      * HTTP PUT /api/users/{id}
      * Java method: com.example.backend.users.controller.UsersController.updateUser
      */
-    updateUser(id: string, request: UpdateUserRequest): RestResponse<UserResponse> {
+    updateUser(id: string, request: Schema): RestResponse<UserResponse> {
         return this.httpClient.request({ method: "PUT", url: uriEncoding`api/users/${id}`, data: request });
     }
 

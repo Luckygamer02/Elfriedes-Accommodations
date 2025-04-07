@@ -62,6 +62,7 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/impersonate/exit")).hasRole("PREVIOUS_ADMINISTRATOR")
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/notifications/subscribe")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/notifications/delivery/**")).permitAll()
+                    .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
                     .requestMatchers("/api/accommodations/**").permitAll()
                     .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
@@ -86,11 +87,11 @@ public class SecurityConfiguration {
 
         http.csrf(AbstractHttpConfigurer::disable); // TODO: Implement jwt token based authentication
 
-//    http.csrf(csrf -> {
-//      csrf
-//          .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-//          .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler());
-//    }).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+        http.csrf(csrf -> {
+          csrf
+              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+              .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler());
+        }).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
 
         http.cors(customizer -> {
             customizer.configurationSource(corsConfigurationSource());
@@ -110,7 +111,7 @@ public class SecurityConfiguration {
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(applicationProperties.getAllowedOrigins());
-                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                 config.setAllowedHeaders(List.of("*"));
                 config.setAllowCredentials(true);
                 return config;

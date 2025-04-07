@@ -4,6 +4,7 @@ import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.List;
@@ -44,6 +45,7 @@ public class CreateAccommodationRequest implements Serializable {
     CreateAccommodationFeatureRequest features;
     List<CreateAppliedDiscountRequest> appliedDiscounts;
     List<CreateExtraRequest> extras;
+    List<MultipartFile> pictures;
 
 
 }

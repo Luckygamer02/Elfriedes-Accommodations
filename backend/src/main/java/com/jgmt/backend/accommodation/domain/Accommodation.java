@@ -8,6 +8,7 @@ import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAppli
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateExtraRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.entity.AbstractEntity;
+import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -86,6 +87,15 @@ public class Accommodation extends AbstractEntity {
     )
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(
+
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<UploadedFile> pictures = new ArrayList<>();
+
+
 
 
     public void updateFromRequest(@Valid UpdateAccommodation request) {
