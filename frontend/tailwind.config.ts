@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
         vacation: {
+          5: '#fefeff',
+          10: '#fdfdff',
+          25: '#faf9ff',
           50: '#f5f3ff',
           100: '#ede9fe',
           200: '#ddd6fe',
@@ -23,6 +26,7 @@ export default {
           800: '#5b21b6',
           900: '#4c1d95',
         },
+
       },
     },
   },

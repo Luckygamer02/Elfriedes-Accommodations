@@ -36,11 +36,14 @@ export default function layout({children}: {children: React.ReactNode}) {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <div style={{ padding: 'var(--mantine-spacing-md)' }}>
-                    {children}
+                <div className="flex flex-col min-h-[calc(100vh-60px)]">
+                    <div className="flex-1">
+                        {children}
+                    </div>
                 </div>
                 <Footer/>
             </AppShell.Main>
+
         </AppShell>
     )
 }

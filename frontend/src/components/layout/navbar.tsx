@@ -3,7 +3,6 @@ import React from "react";
 import Logo from "@/components/NavbarElements/logo";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import { UserNavComponent } from "@/components/NavbarElements/userNavComponent";
-import { AccommodationNav } from "@/components/NavbarElements/accommodationNav";
 import TopicLinksNav from "@/components/NavbarElements/topicLinksNav";
 
 interface NavbarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -28,7 +27,6 @@ export default function Navbar({
             >
                 <Logo />
                 <TopicLinksNav />
-                <AccommodationNav user={user} />
                 <UserNavComponent user={user} />
             </div>
         </div>

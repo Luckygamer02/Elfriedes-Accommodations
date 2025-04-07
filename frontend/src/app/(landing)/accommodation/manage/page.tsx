@@ -4,7 +4,7 @@ import {Button} from "@mantine/core";
 import {restClient} from "@/lib/httpClient";
 import {useAuthGuard} from "@/lib/auth/use-auth";
 import Loading from "@/components/loading";
-import {Accommodation} from "@/models/accommidation/accommodation";
+import {Accommodation} from "@/models/accommodation/accommodation";
 import useSWR, {BareFetcher} from "swr";
 import {PaginatedResponse, RestResponse} from "@/models/backend";
 
