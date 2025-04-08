@@ -60,7 +60,7 @@ export default function Home() {
                       withControls
                       withIndicators
                   >
-                  {accommodations
+                  { accommodations
                       .filter(acc => acc.type === category.type)
                       .map((acc, index) => (
                           <Carousel.Slide key={index}>
@@ -71,10 +71,17 @@ export default function Home() {
                                 radius="md"
                             >
                               <Card.Section className="card-image-section">
-                                <div
-                                    className="card-image"
-                                    style={{ backgroundImage: `url(test)` }}
-                                />
+                                  {acc.picturesurls?.length ? (
+                                      <div
+                                          className="card-image"
+                                          style={{ backgroundImage: `url(${acc.picturesurls[0]})` }}
+                                      />
+                                  ) : (
+                                      <div
+                                          className="card-image"
+                                          style={{ backgroundImage: "url(/default-accommodation.jpg)" }}
+                                      />
+                                  )}
                                 <Badge className="rating-badge" variant="gradient">
                                   <IconStarFilled size={14} />
                                     <RatingBadge accommodationId={acc.id} />

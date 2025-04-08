@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Client
 @Table(name = "payment")
 public class Payment extends AbstractEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
