@@ -1,7 +1,7 @@
 // app/accommodations/[id]/page.tsx
 "use client";
 import '@mantine/dates/styles.css';
-import { Accommodation, Rating } from "@/models/accommidation/accommodation";
+import { Accommodation, Rating } from "@/models/accommodation/accommodation";
 import {
     Card,
     Text,

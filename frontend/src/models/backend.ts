@@ -2,7 +2,7 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
-import {Accommodation, CreateAccommodationRequest} from "@/models/accommidation/accommodation";
+import {Accommodation, CreateAccommodationRequest} from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
 
 export interface Notification {

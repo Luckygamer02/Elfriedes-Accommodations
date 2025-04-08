@@ -6,7 +6,8 @@ import {Button} from "@mantine/core";
 import Link from "next/link";
 import React from "react";
 
-export function UserNavComponent(props: { user: BlockingData<T, any> extends true ? T : (T | undefined) }) {
+export function UserNavComponent(props: { // @ts-ignore
+    user: BlockingData<T, any> extends true ? T : (T | undefined) }) {
     return <div className="flex gap-x-2 items-center">
         <ModeToggle/>
         <AdminNav/>
@@ -22,6 +23,11 @@ export function UserNavComponent(props: { user: BlockingData<T, any> extends tru
         {!props.user && (
             <Link href={"/auth/login"}>
                 <Button variant={"outline"}>Login</Button>
+            </Link>
+        )}
+        {!props.user && (
+            <Link href={"/auth/login"}>
+                <Button>Register</Button>
             </Link>
         )}
     </div>;

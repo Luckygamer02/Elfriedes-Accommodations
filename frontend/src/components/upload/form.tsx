@@ -1,7 +1,7 @@
 import {Button, TextInput,Text, NumberInput, Checkbox, Select, Textarea, Fieldset, Group} from "@mantine/core";
 import {useForm, zodResolver} from "@mantine/form";
 import {z} from "zod";
-import {AccommodationType, CreateAccommodationRequest, Extrastype} from "@/models/accommidation/accommodation";
+import {AccommodationType, CreateAccommodationRequest, Extrastype} from "@/models/accommodation/accommodation";
 import {DateInput} from "@mantine/dates";
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import {Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
