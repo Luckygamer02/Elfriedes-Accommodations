@@ -49,9 +49,8 @@ public class Booking extends AbstractEntity{
     @Builder.Default
     private List<BookedExtra> bookedExtras = new ArrayList<>();
 
-    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<Payment> payments = new ArrayList<>();
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Payment payment;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -84,7 +83,7 @@ public class Booking extends AbstractEntity{
         this.status = booking.getStatus();
         this.totalPrice = booking.getTotalPrice();
         this.bookedExtras = booking.getBookedExtras();
-        this.payments = booking.getPayments();
+        this.payment = booking.getPayments();
         this.appliedDiscounts = booking.getAppliedDiscounts();
     }
 }

@@ -54,11 +54,8 @@ public class AccommodationController {
     @GetMapping
     @Operation(summary = "Get multiple accommodations", description = "Get paginated list of accommodations with optional filters")
     public ResponseEntity<Page<AccommodationResponse>> getAllAccommodations(
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) Integer minPrice,
-            @RequestParam(required = false) Integer maxPrice,
             Pageable pageable) {
-        return ResponseEntity.ok(accommodationService.getAllAccommodations( city, minPrice, maxPrice, pageable));
+        return ResponseEntity.ok(accommodationService.getAllAccommodations( pageable));
     }
 
     @PutMapping("/{id}")
@@ -85,8 +82,8 @@ public class AccommodationController {
     @Operation(summary = "Partial update accommodation", description = "Update specific fields of an accommodation")
     public ResponseEntity<AccommodationResponse> partialUpdateAccommodation(
             @PathVariable Long id,
-            @RequestBody Map<String, Object> updates) {
-        return ResponseEntity.ok(accommodationService.partialUpdateAccommodation(id, updates));
+            @RequestBody UpdateAccommodation accommodation ) {
+        return ResponseEntity.ok(accommodationService.partialUpdateAccommodation(id, accommodation));
     }
 
     @GetMapping("/search")

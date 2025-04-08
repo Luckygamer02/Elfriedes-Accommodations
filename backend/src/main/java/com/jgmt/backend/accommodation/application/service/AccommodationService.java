@@ -63,7 +63,7 @@ public class AccommodationService {
         Accommodation accommodation = accommodationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Accommodation not found: " + id));
 
-        accommodation.updateFromRequest(request);
+        accommodation =  accommodation.updateFromRequest(request);
         return new AccommodationResponse(accommodationRepository.save(accommodation));
     }
 
@@ -73,34 +73,19 @@ public class AccommodationService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AccommodationResponse> getAllAccommodations( String city, Integer minPrice, Integer maxPrice, Pageable pageable) {
+    public Page<AccommodationResponse> getAllAccommodations( Pageable pageable) {
         Page<Accommodation> accommodations;
-
-        if (city != null || minPrice != null || maxPrice != null) {
-            accommodations = accommodationRepository.findByFilters(city, minPrice, maxPrice, pageable);
-        } else {
-            accommodations = accommodationRepository.findAll(pageable);
-        }
-
+        accommodations = accommodationRepository.findAll(pageable);
         return accommodations.map(AccommodationResponse::new);
     }
 
     @Transactional
-    public AccommodationResponse partialUpdateAccommodation(Long id, Map<String, Object> updates) {
+    public AccommodationResponse partialUpdateAccommodation(Long id, UpdateAccommodation accommodationupdates) {
         Accommodation accommodation = accommodationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Accommodation not found: " + id));
-
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "title" -> accommodation.setTitle((String) value);
-                case "description" -> accommodation.setDescription((String) value);
-                case "basePrice" -> accommodation.setBasePrice((Integer) value);
-                // Add other fields...
-                default -> throw new IllegalArgumentException("Invalid field: " + key);
-            }
-        });
-
-        return new AccommodationResponse(accommodationRepository.save(accommodation));
+        accommodation.updateFromRequest(accommodationupdates);
+        accommodation = accommodationRepository.save(accommodation);
+        return new AccommodationResponse(accommodation);
     }
 
     @Transactional(readOnly = true)

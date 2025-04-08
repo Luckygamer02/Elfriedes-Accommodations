@@ -1,4 +1,4 @@
-import {AbstractEntity, User} from "@/models/backend";
+import {AbstractEntity, MultipartFile, User} from "@/models/backend";
 
 export enum AccommodationType {
     FLAT= 'FLAT',
@@ -77,6 +77,7 @@ export interface CreateAccommodationRequest {
     features: CreateAccommodationFeatureRequest;
     appliedDiscounts: CreateAppliedDiscountRequest[];
     extras: CreateExtraRequest[];
+    pictures: MultipartFile[];
 }
 
 
@@ -95,6 +96,7 @@ export interface Accommodation extends AbstractEntity {
     features: CreateAccommodationFeatureRequest;
     appliedDiscounts: CreateAppliedDiscountRequest[];
     extras: CreateExtraRequest[];
+    picturesurls: string[];
 }
 
 export interface Address {
