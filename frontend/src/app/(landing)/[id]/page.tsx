@@ -24,7 +24,6 @@ import Loading from "@/components/loading";
 import {RatingBadge} from "@/components/RatingBadge";
 import {useParams, useRouter} from "next/navigation";
 import {IconStarFilled, IconBed, IconBath, IconUsers, IconStar, IconMessage} from '@tabler/icons-react';
-import { AccommodationMap } from '@/components/AccommodationMap';
 import { DatePicker } from '@mantine/dates';
 import {useState} from "react";
 import Link from "next/link";
@@ -41,7 +40,13 @@ export default function AccommodationDetailPage() {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState(1);
 
-
+    const AccommodationMap = dynamic(
+        () => import('@/components/AccommodationMap').then((mod) => mod.default),
+        {
+            ssr: false,
+            loading: () => <p>Loading map...</p>
+        }
+    );
     const { data: accommodation, error, isLoading } = useSWR<Accommodation>(
         `api/accommodations/${id}`,
         () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then(res => res.data)
