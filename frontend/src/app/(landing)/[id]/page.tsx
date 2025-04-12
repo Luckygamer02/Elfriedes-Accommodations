@@ -33,12 +33,14 @@ import { useAuthGuard } from '@/lib/auth/use-auth';
 import { useForm, zodResolver } from '@mantine/form';
 import { z } from 'zod';
 import {toast} from "sonner";
+import dynamic from 'next/dynamic';
 
 export default function AccommodationDetailPage() {
     const router = useRouter();
     const { id } = useParams<{ id: string }>();
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState(1);
+
 
     const { data: accommodation, error, isLoading } = useSWR<Accommodation>(
         `api/accommodations/${id}`,

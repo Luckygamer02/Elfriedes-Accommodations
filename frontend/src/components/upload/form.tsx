@@ -6,25 +6,25 @@ import {DateInput} from "@mantine/dates";
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import {Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import {restClient} from "@/lib/httpClient";
-import React from "react";
+import React, {useState} from "react";
 import {MultipartFile, URI} from "@/models/backend";
 
 const validationSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    basePrice: z.number().positive(),
+    baseprice: z.number().positive(),
     bedrooms: z.number().nonnegative(),
     bathrooms: z.number().nonnegative(),
     people: z.number().positive(),
     livingRooms: z.number().nonnegative(),
     type: z.nativeEnum(AccommodationType),
-    festivalistId: z.number().positive(),
-    ownerId: z.number().positive(),
+    festivalistid: z.number().positive(),
+    ownerid: z.number().positive(),
     address: z.object({
         street: z.string().min(1),
         houseNumber: z.string().min(1),
         city: z.string().min(1),
-        zipCode: z.string().min(1),
+        postalCode: z.string().min(1),
         country: z.string().min(1),
     }),
     features: z.object({
@@ -65,11 +65,12 @@ export default function CreateAccommodationForm({
                                                     setActiveStep,
 
                                                 }: UploadFormProps) {
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<CreateAccommodationRequest>({
         initialValues: {
             title: '',
             description: '',
-            baseprice: 0,
+            baseprice : 0,
             bedrooms: 0,
             bathrooms: 0,
             people: 0,
@@ -103,22 +104,31 @@ export default function CreateAccommodationForm({
     });
 
     const handleSubmit = async (values: CreateAccommodationRequest) => {
+        setSubmitting(true);
         try {
             const formData = new FormData();
 
-            // Append JSON data
-            formData.append('data', new Blob([JSON.stringify({
-                ...values,
-                pictures: undefined // Remove files from JSON data
-            })], { type: 'application/json' }));
+
+
+            const jsonBlob = new Blob(
+                [JSON.stringify({
+                    ...values,
+                    pictures: undefined
+                })],
+                { type: 'application/json' }
+            );
+
+            // 2. Append JSON data as a named part
+            formData.append('data', jsonBlob);
+
 
             // Append files
             values.pictures.forEach((file) => {
-                const blob = new Blob([new Uint8Array(file.bytes)], {
-                    type: file.contentType
-                });
+                const blob = new Blob([new Uint8Array(file.bytes)], { type: file.contentType });
                 formData.append('files', blob, file.originalFilename);
             });
+
+            console.log(formData);
 
             const response = await restClient.createAccommodation(formData);
 
@@ -126,6 +136,7 @@ export default function CreateAccommodationForm({
         } catch (err) {
             console.error("Error submitting form:", err);
         }
+        setSubmitting(false);
     };
     const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
         const arrayBuffer = await file.arrayBuffer();
@@ -165,7 +176,7 @@ export default function CreateAccommodationForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TextInput label="Title" {...form.getInputProps('title')} />
                         <Textarea label="Description" {...form.getInputProps('description')} />
-                        <NumberInput label="Base Price" {...form.getInputProps('basePrice')} />
+                        <NumberInput label="Base Price" {...form.getInputProps('baseprice')} />
                         <Select
                             label="Accommodation Type"
                             data={Object.values(AccommodationType)}
@@ -175,7 +186,7 @@ export default function CreateAccommodationForm({
                         <NumberInput label="Bathrooms" {...form.getInputProps('bathrooms')} />
                         <NumberInput label="Max People" {...form.getInputProps('people')} />
                         <NumberInput label="Living Rooms" {...form.getInputProps('livingRooms')} />
-                        <NumberInput label="Festivalist ID" {...form.getInputProps('festivalistId')} />
+                        <NumberInput label="Festivalist ID" {...form.getInputProps('festivalistid')} />
                     </div>
                 </Fieldset>
             );
@@ -188,7 +199,7 @@ export default function CreateAccommodationForm({
                     <TextInput label="Street" {...form.getInputProps('address.street')} />
                     <TextInput label="House Number" {...form.getInputProps('address.houseNumber')} />
                     <TextInput label="City" {...form.getInputProps('address.city')} />
-                    <TextInput label="Zip Code" {...form.getInputProps('address.zipCode')} />
+                    <TextInput label="Zip Code" {...form.getInputProps('address.postalCode')} />
                     <TextInput label="Country" {...form.getInputProps('address.country')} />
                 </div>
             </Fieldset>
@@ -261,6 +272,7 @@ export default function CreateAccommodationForm({
                         {Object.keys(form.values.features).map((feature) => (
                             <Checkbox
                                 key={feature}
+                                checked={form.values.features[feature as keyof typeof form.values.features]}
                                 label={feature.replace(/([A-Z])/g, ' $1').trim()}
                                 {...form.getInputProps(`features.${feature}`)}
                             />
@@ -356,7 +368,15 @@ export default function CreateAccommodationForm({
         <Group className="max-w-2xl mx-auto p-4">
             <h2 className="text-2xl font-bold mb-6">Create New Accommodation</h2>
 
-            <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={form.onSubmit(
+                (values) => {
+                    console.log("Form is valid. Submitting…");
+                    handleSubmit(values);
+                },
+                (validationErrors) => {
+                    console.warn("Validation failed:", validationErrors);
+                }
+            )} className="space-y-6">
 
                 {stepcontent()}
 
@@ -373,9 +393,13 @@ export default function CreateAccommodationForm({
                 )}
 
                 {step === 5 ? (
-                    <Button type="submit"   className="">
-                        Create Accommodation
-                    </Button>
+                        <Button
+                            type="submit"
+                            loading={submitting}
+                            disabled={submitting}
+                        >
+                            Create Accommodation
+                        </Button>
                 ):
                 (
                 <Button

@@ -11,7 +11,6 @@ import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.s3.repository.UploadedFileRepository;
 import com.jgmt.backend.s3.services.FileUploadService;
 import com.jgmt.backend.users.User;
-import com.jgmt.backend.users.data.UserResponse;
 import com.jgmt.backend.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,11 +36,11 @@ public class AccommodationService {
     private final FileUploadService fileUploadService;
 
     @Transactional
-    public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request) {
+    public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request, List<MultipartFile> files) {
         Accommodation accommodation = new Accommodation(request);
         accommodation.setOwner(userRepository.getReferenceById(request.getOwnerId()));
         accommodation = accommodationRepository.save(accommodation);
-        for(MultipartFile file : request.getPictures()){
+        for(MultipartFile file : files){
             updateAccommodationPicture(file, accommodation.getId());
         };
         return new AccommodationResponse(accommodation);

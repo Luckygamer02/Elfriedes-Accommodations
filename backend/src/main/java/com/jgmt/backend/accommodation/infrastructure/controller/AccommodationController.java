@@ -1,5 +1,7 @@
 package com.jgmt.backend.accommodation.infrastructure.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jgmt.backend.accommodation.domain.Accommodation;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.AccommodationResponse;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
@@ -15,11 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/accommodations")
@@ -33,12 +37,21 @@ public class AccommodationController {
         this.accommodationService = accommodationService;
     }
 
-    @PostMapping
     @Operation(summary = "Create new accommodation", description = "Create a new accommodation listing")
     @ApiResponse(responseCode = "201", description = "Accommodation created successfully")
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AccommodationResponse> createAccommodation(
-            @Valid @RequestBody CreateAccommodationRequest accommodation) {
-        AccommodationResponse createdAccommodation = accommodationService.createAccommodation(accommodation);
+            @RequestPart("data") String dataJson,
+            @RequestPart("files") List<MultipartFile> files
+    ) throws JsonProcessingException {
+
+        CreateAccommodationRequest accommodation =
+                new ObjectMapper().readValue(dataJson, CreateAccommodationRequest.class);
+
+
+        AccommodationResponse createdAccommodation =
+                accommodationService.createAccommodation(accommodation, files);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccommodation);
     }
 
