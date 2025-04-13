@@ -11,7 +11,6 @@ import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.s3.repository.UploadedFileRepository;
 import com.jgmt.backend.s3.services.FileUploadService;
 import com.jgmt.backend.users.User;
-import com.jgmt.backend.users.data.UserResponse;
 import com.jgmt.backend.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -24,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +38,25 @@ public class AccommodationService {
     private final FileUploadService fileUploadService;
 
     @Transactional
-    public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request) {
+    public AccommodationResponse createAccommodation(@Valid CreateAccommodationRequest request, List<MultipartFile> files) {
+        // Validate files first
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("At least one image is required");
+        }
+
+        // Create and save accommodation
         Accommodation accommodation = new Accommodation(request);
         accommodation.setOwner(userRepository.getReferenceById(request.getOwnerId()));
         accommodation = accommodationRepository.save(accommodation);
-        for(MultipartFile file : request.getPictures()){
+
+        // Process files using existing picture update logic
+        for(MultipartFile file : files) {
+            if (file.isEmpty()) {
+                throw new IllegalArgumentException("Uploaded file is empty");
+            }
             updateAccommodationPicture(file, accommodation.getId());
-        };
+        }
+
         return new AccommodationResponse(accommodation);
     }
 
@@ -107,18 +120,33 @@ public class AccommodationService {
     }
 
     @Transactional
-    public AccommodationResponse updateAccommodationPicture(MultipartFile file, Long accommodationId)  {
+    public AccommodationResponse updateAccommodationPicture(MultipartFile file, Long accommodationId) {
         User user = SecurityUtil.getAuthenticatedUser();
         Accommodation a = getAccommodation(accommodationId);
 
-        UploadedFile uploadedFile = new UploadedFile(file.getOriginalFilename(), file.getSize(), user);
-        try {
+        // 1. Create NEW uploaded file with unique identifier
+        UploadedFile uploadedFile = new UploadedFile(
+                file.getOriginalFilename(),
+                file.getSize(),
+                user
+        );
 
+        try {
             String url = fileUploadService.uploadFile(
                     uploadedFile.buildPath("accommodationpicture"),
-                    file.getBytes());
+                    file.getBytes()
+            );
             uploadedFile.onUploaded(url);
+
+            // 2. Initialize list if null
+            if (a.getPictures() == null) {
+                a.setPictures(new ArrayList<>());
+            }
+
+            // 3. Add ONLY ONCE
             a.getPictures().add(uploadedFile);
+
+            // 4. Save both entities
             accommodationRepository.save(a);
             uploadedFileRepository.save(uploadedFile);
         } catch (IOException e) {

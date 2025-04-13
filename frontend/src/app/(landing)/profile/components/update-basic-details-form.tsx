@@ -112,7 +112,7 @@ export default function UpdateBasicDetailsForm() {
                         <TextInput
                             label="Postal Code"
                             className="w-1/3"
-                            {...form.getInputProps('address.postalCode')}
+                            {...form.getInputProps('address.zipCode')}
                         />
                     </div>
 

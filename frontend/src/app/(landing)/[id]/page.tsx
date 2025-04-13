@@ -24,7 +24,6 @@ import Loading from "@/components/loading";
 import {RatingBadge} from "@/components/RatingBadge";
 import {useParams, useRouter} from "next/navigation";
 import {IconStarFilled, IconBed, IconBath, IconUsers, IconStar, IconMessage} from '@tabler/icons-react';
-import { AccommodationMap } from '@/components/AccommodationMap';
 import { DatePicker } from '@mantine/dates';
 import {useState} from "react";
 import Link from "next/link";
@@ -33,6 +32,7 @@ import { useAuthGuard } from '@/lib/auth/use-auth';
 import { useForm, zodResolver } from '@mantine/form';
 import { z } from 'zod';
 import {toast} from "sonner";
+import dynamic from 'next/dynamic';
 
 export default function AccommodationDetailPage() {
     const router = useRouter();
@@ -40,6 +40,13 @@ export default function AccommodationDetailPage() {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState(1);
 
+    const AccommodationMap = dynamic(
+        () => import('@/components/AccommodationMap').then((mod) => mod.default),
+        {
+            ssr: false,
+            loading: () => <p>Loading map...</p>
+        }
+    );
     const { data: accommodation, error, isLoading } = useSWR<Accommodation>(
         `api/accommodations/${id}`,
         () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then(res => res.data)
@@ -112,7 +119,7 @@ export default function AccommodationDetailPage() {
                             <Title order={3} mb="sm">Location</Title>
                             <Text>
                                 {accommodation.address.street} {accommodation.address.houseNumber}<br />
-                                {accommodation.address.postalCode} {accommodation.address.city}<br />
+                                {accommodation.address.zipCode} {accommodation.address.city}<br />
                                 {accommodation.address.country}
                             </Text>
                         </Paper>
@@ -123,7 +130,7 @@ export default function AccommodationDetailPage() {
                         <Title order={3} mb="sm">Location Map</Title>
                         <AccommodationMap address={
                             `${accommodation.address.street} ${accommodation.address.houseNumber}, 
-                             ${accommodation.address.postalCode} ${accommodation.address.city}, 
+                             ${accommodation.address.zipCode} ${accommodation.address.city}, 
                              ${accommodation.address.country}`
                         } />
                     </Paper>

@@ -6,7 +6,7 @@ import {DateInput} from "@mantine/dates";
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import {Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import {restClient} from "@/lib/httpClient";
-import React from "react";
+import React, {useState} from "react";
 import {MultipartFile, URI} from "@/models/backend";
 
 const validationSchema = z.object({
@@ -65,23 +65,24 @@ export default function CreateAccommodationForm({
                                                     setActiveStep,
 
                                                 }: UploadFormProps) {
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<CreateAccommodationRequest>({
         initialValues: {
             title: '',
             description: '',
-            baseprice: 0,
+            basePrice : 0,
             bedrooms: 0,
             bathrooms: 0,
             people: 0,
             livingRooms: 1,
             type: AccommodationType.FLAT,
-            festivalistid: 0,
-            ownerid: userid,
+            festivalistId: 0,
+            ownerId: userid,
             address: {
                 street: '',
                 houseNumber: '',
                 city: '',
-                postalCode: '',
+                zipCode: '',
                 country: '',
             },
             features: {
@@ -103,30 +104,45 @@ export default function CreateAccommodationForm({
     });
 
     const handleSubmit = async (values: CreateAccommodationRequest) => {
+        setSubmitting(true);
         try {
             const formData = new FormData();
 
-            // Append JSON data
-            formData.append('data', new Blob([JSON.stringify({
-                ...values,
-                pictures: undefined // Remove files from JSON data
-            })], { type: 'application/json' }));
+            // 1. Create clean JSON data without files
+            const { pictures, ...jsonData } = values;
 
-            // Append files
+            // Append JSON as Blob
+            formData.append(
+                "data",
+                new Blob([JSON.stringify(jsonData)], { type: "application/json" }),
+                "data.json"
+            );
+
+            // 2. Append files properly
             values.pictures.forEach((file) => {
-                const blob = new Blob([new Uint8Array(file.bytes)], {
-                    type: file.contentType
-                });
-                formData.append('files', blob, file.originalFilename);
+                const fileObj = new File(
+                    [new Uint8Array(file.bytes)],
+                    file.originalFilename,
+                    { type: file.contentType }
+                );
+                formData.append("files", fileObj);
             });
 
-            const response = await restClient.createAccommodation(formData);
+            // 3. Remove explicit headers - let browser set boundary
+            const response = await restClient.createAccommodation(formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
-            console.log("success", response.data);
+            console.log("Success:", response.data);
         } catch (err) {
             console.error("Error submitting form:", err);
+        } finally {
+            setSubmitting(false);
         }
     };
+
     const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
         const arrayBuffer = await file.arrayBuffer();
         const objectUrl = URL.createObjectURL(file);
@@ -261,6 +277,7 @@ export default function CreateAccommodationForm({
                         {Object.keys(form.values.features).map((feature) => (
                             <Checkbox
                                 key={feature}
+                                checked={form.values.features[feature as keyof typeof form.values.features]}
                                 label={feature.replace(/([A-Z])/g, ' $1').trim()}
                                 {...form.getInputProps(`features.${feature}`)}
                             />
@@ -356,7 +373,15 @@ export default function CreateAccommodationForm({
         <Group className="max-w-2xl mx-auto p-4">
             <h2 className="text-2xl font-bold mb-6">Create New Accommodation</h2>
 
-            <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={form.onSubmit(
+                (values) => {
+                    console.log("Form is valid. Submitting…");
+                    handleSubmit(values);
+                },
+                (validationErrors) => {
+                    console.warn("Validation failed:", validationErrors);
+                }
+            )} className="space-y-6">
 
                 {stepcontent()}
 
@@ -373,9 +398,13 @@ export default function CreateAccommodationForm({
                 )}
 
                 {step === 5 ? (
-                    <Button type="submit"   className="">
-                        Create Accommodation
-                    </Button>
+                        <Button
+                            type="submit"
+                            loading={submitting}
+                            disabled={submitting}
+                        >
+                            Create Accommodation
+                        </Button>
                 ):
                 (
                 <Button
