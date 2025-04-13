@@ -25,7 +25,7 @@ public class BookingResponse implements Serializable {
     private BookingStatus status;
     private BigDecimal totalPrice;
     private List<BookedExtra> bookedExtras;
-    private List<Payment> payments;
+    private Payment payments;
     private List<AppliedDiscount> appliedDiscounts;
 
     public BookingResponse(Booking booking) {
@@ -35,7 +35,7 @@ public class BookingResponse implements Serializable {
         this.status = booking.getStatus();
         this.totalPrice = booking.getTotalPrice();
         this.bookedExtras = booking.getBookedExtras();
-        this.payments = booking.getPayments();
+        this.payments = booking.getPayment();
         this.appliedDiscounts = booking.getAppliedDiscounts();
     }
 }

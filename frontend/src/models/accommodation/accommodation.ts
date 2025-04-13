@@ -1,4 +1,4 @@
-import {AbstractEntity, User} from "@/models/backend";
+import {AbstractEntity, MultipartFile, User} from "@/models/backend";
 
 export enum AccommodationType {
     FLAT= 'FLAT',
@@ -30,7 +30,7 @@ interface CreateAddressRequest {
     street: string;
     houseNumber: string;
     city: string;
-    postalCode: string;
+    zipCode: string;
     country: string;
 }
 
@@ -65,18 +65,19 @@ interface CreateExtraRequest {
 export interface CreateAccommodationRequest {
     title: string;
     description: string;
-    baseprice: number;
+    basePrice: number;
     bedrooms: number;
     bathrooms: number;
     people: number;
     livingRooms: number;
     type: AccommodationType;
-    festivalistid: number;
-    ownerid: number;
+    festivalistId: number;
+    ownerId: number;
     address: CreateAddressRequest;
     features: CreateAccommodationFeatureRequest;
     appliedDiscounts: CreateAppliedDiscountRequest[];
     extras: CreateExtraRequest[];
+    pictures: MultipartFile[];
 }
 
 
@@ -89,12 +90,13 @@ export interface Accommodation extends AbstractEntity {
     people: number;
     livingRooms: number;
     type: AccommodationType;
-    festivalistid: number;
-    ownerid: number;
+    festivalistId: number;
+    ownerId: number;
     address: CreateAddressRequest;
     features: CreateAccommodationFeatureRequest;
     appliedDiscounts: CreateAppliedDiscountRequest[];
     extras: CreateExtraRequest[];
+    picturesurls: string[];
 }
 
 export interface Address {

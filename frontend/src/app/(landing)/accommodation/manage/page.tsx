@@ -74,7 +74,7 @@ export default function ManageAccommodation() {
                                             <p className="text-gray-600">
                                                 <strong>Address:</strong><br/>
                                                 {acc.address.street} {acc.address.houseNumber}<br/>
-                                                {acc.address.postalCode} {acc.address.city}<br/>
+                                                {acc.address.zipCode} {acc.address.city}<br/>
                                                 {acc.address.country}
                                             </p>
                                         </div>

@@ -4,6 +4,7 @@
 
 import {Accommodation, CreateAccommodationRequest} from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
+import {AxiosRequestConfig} from "axios";
 
 export interface Notification {
     id: number;
@@ -628,11 +629,12 @@ export class RestApplicationClient {
         });
     }
 
-    createAccommodation(body: {}): RestResponse<Accommodation> {
+    createAccommodation(body: {}, config?: AxiosRequestConfig): RestResponse<Accommodation> {
         return this.httpClient.request({
             method: "POST",
             url: uriEncoding`api/accommodations`,
-            data: body
+            data: body,
+            ...config  // Merge optional config with base request configuration
         });
     }
 

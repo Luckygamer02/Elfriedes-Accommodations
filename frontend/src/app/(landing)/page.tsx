@@ -58,30 +58,42 @@ export default function Home() {
                                 {category.title}
                             </Text>
 
-                            <Carousel
-                                slideSize={{ base: '100%', sm: '50%', md: '33.333%', lg: '25%' }}
-                                slideGap="md"
-                                align="start"
-                                slidesToScroll={isMobile ? 1 : 2}
-                                dragFree
-                                withControls
-                                withIndicators
+                  <Carousel
+                      slideSize={{ base: '100%', sm: '50%', md: '33.333%', lg: '25%' }}
+                      slideGap="md"
+                      align="start"
+                      slidesToScroll={isMobile ? 1 : 2}
+                      dragFree
+                      withControls
+                      withIndicators
+                  >
+                  {accommodations
+                      .filter(acc => acc.type === category.type)
+                      .map((acc) => (
+                          <Carousel.Slide key={acc.id}>
+                            <Card
+                                p="lg"
+                                shadow="md"
+                                className="accommodation-card"
+                                radius="md"
                             >
-                                {accommodations
-                                    .filter(acc => acc.type === category.type)
-                                    .map((acc) => (
-                                        <Carousel.Slide key={acc.id}>
-                                            <Card p="lg" shadow="md" className="accommodation-card" radius="md" style={{ backgroundColor: '#faf9ff'}}>
-                                                <Card.Section className="card-image-section">
-                                                    <div
-                                                        className="card-image"
-                                                        style={{ backgroundImage: `url("test")` }}
-                                                    />
-                                                    <Badge className="rating-badge" variant="gradient">
-                                                        <IconStarFilled size={14} />
-                                                        <RatingBadge accommodationId={acc.id} />
-                                                    </Badge>
-                                                </Card.Section>
+                                <Card.Section className="card-image-section">
+                                    {acc.picturesurls?.length ? (
+                                        <div
+                                            className="card-image"
+                                            style={{ backgroundImage: `url(${acc.picturesurls[0]})` }}
+                                        />
+                                    ) : (
+                                        <div
+                                            className="card-image"
+                                            style={{ backgroundImage: "url(/default-accommodation.jpg)" }}
+                                        />
+                                    )}
+                                    <Badge className="rating-badge" variant="gradient">
+                                        <IconStarFilled size={14} />
+                                        <RatingBadge accommodationId={acc.id} />
+                                    </Badge>
+                                </Card.Section>
 
                                                 <Group mt="md">
                                                     <Text>{acc.title}</Text>

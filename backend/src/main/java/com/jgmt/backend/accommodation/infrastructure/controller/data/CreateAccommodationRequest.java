@@ -45,7 +45,4 @@ public class CreateAccommodationRequest implements Serializable {
     CreateAccommodationFeatureRequest features;
     List<CreateAppliedDiscountRequest> appliedDiscounts;
     List<CreateExtraRequest> extras;
-    List<MultipartFile> pictures;
-
-
 }

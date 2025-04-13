@@ -1,12 +1,13 @@
 import {Button, TextInput,Text, NumberInput, Checkbox, Select, Textarea, Fieldset, Group} from "@mantine/core";
 import {useForm, zodResolver} from "@mantine/form";
 import {z} from "zod";
-import {AccommodationType, Extrastype} from "@/models/accommodation/accommodation";
+import {AccommodationType, CreateAccommodationRequest, Extrastype} from "@/models/accommodation/accommodation";
 import {DateInput} from "@mantine/dates";
 import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
-import {Dropzone, DropzoneProps, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import {Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import {restClient} from "@/lib/httpClient";
-import React from "react";
+import React, {useState} from "react";
+import {MultipartFile, URI} from "@/models/backend";
 
 const validationSchema = z.object({
     title: z.string().min(1),
@@ -49,6 +50,7 @@ const validationSchema = z.object({
         type: z.nativeEnum(Extrastype),
         price: z.number().positive(),
     })),
+    pictures: z.array(z.custom<MultipartFile>()).min(1, "At least one image is required")
 });
 
 interface UploadFormProps {
@@ -63,11 +65,12 @@ export default function CreateAccommodationForm({
                                                     setActiveStep,
 
                                                 }: UploadFormProps) {
-    const form = useForm({
+    const [submitting, setSubmitting] = useState(false);
+    const form = useForm<CreateAccommodationRequest>({
         initialValues: {
             title: '',
             description: '',
-            basePrice: 0,
+            basePrice : 0,
             bedrooms: 0,
             bathrooms: 0,
             people: 0,
@@ -95,19 +98,81 @@ export default function CreateAccommodationForm({
             },
             appliedDiscounts: [],
             extras: [],
+            pictures: []
         },
         validate: zodResolver(validationSchema),
     });
 
-    const handleSubmit = async (values: typeof form.values) => {
-            try {
-                const response = await restClient.createAccommodation(values);
-            } catch (err) {
-                console.error(err);
-            } finally {
-               console.log("success");
-            }
+    const handleSubmit = async (values: CreateAccommodationRequest) => {
+        setSubmitting(true);
+        try {
+            const formData = new FormData();
+
+            // 1. Create clean JSON data without files
+            const { pictures, ...jsonData } = values;
+
+            // Append JSON as Blob
+            formData.append(
+                "data",
+                new Blob([JSON.stringify(jsonData)], { type: "application/json" }),
+                "data.json"
+            );
+
+            // 2. Append files properly
+            values.pictures.forEach((file) => {
+                const fileObj = new File(
+                    [new Uint8Array(file.bytes)],
+                    file.originalFilename,
+                    { type: file.contentType }
+                );
+                formData.append("files", fileObj);
+            });
+
+            // 3. Remove explicit headers - let browser set boundary
+            const response = await restClient.createAccommodation(formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            console.log("Success:", response.data);
+        } catch (err) {
+            console.error("Error submitting form:", err);
+        } finally {
+            setSubmitting(false);
+        }
     };
+
+    const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
+        const arrayBuffer = await file.arrayBuffer();
+        const objectUrl = URL.createObjectURL(file);
+        const byteArray = new Uint8Array(arrayBuffer);
+
+        return {
+            contentType: file.type,
+            name: file.name,
+            bytes: Array.from(new Uint8Array(arrayBuffer)),
+            empty: file.size === 0,
+            inputStream: () => new Blob([byteArray]).stream(),
+            resource: {
+                open: false,
+                file: file,
+                readable: true,
+                url: new URL(objectUrl),
+                description: file.name,
+                uri: {
+                    scheme: 'file',
+                    path: file.name,
+                    toString: () => `file://${file.name}`
+                } as unknown as URI,
+                filename: file.name,
+                inputStream: () => new Blob([arrayBuffer]).stream()
+            },
+            size: file.size,
+            originalFilename: file.name
+        };
+    };
+
     const stepcontent = () => {
         if (step === 1)
         {
@@ -150,7 +215,12 @@ export default function CreateAccommodationForm({
             return (
                 <Fieldset legend="Features">
                     <Dropzone
-                        onDrop={(files) => console.log('accepted files', files)}
+                        onDrop={async (files: FileWithPath[]) => {
+                        const convertedFiles = await Promise.all(
+                            files.map(async (file) => convertFileToMultipart(file))
+                        );
+                        form.setFieldValue('pictures', convertedFiles);
+                        }}
                         onReject={(files) => console.log('rejected files', files)}
                         maxSize={5 * 1024 ** 2}
                         accept={IMAGE_MIME_TYPE}
@@ -176,6 +246,26 @@ export default function CreateAccommodationForm({
                             </div>
                         </Group>
                     </Dropzone>
+                    <div className="mt-4 grid grid-cols-3 gap-4">
+                        {form.values.pictures.map((file, index) => (
+                            <div key={index} className="relative">
+                                <img
+                                    src={URL.createObjectURL(new Blob([new Uint8Array(file.bytes)]))}
+                                    alt={`Preview ${index}`}
+                                    className="h-32 w-full object-cover rounded"
+                                />
+                                <Button
+                                    variant="subtle"
+                                    color="red"
+                                    size="xs"
+                                    className="absolute top-1 right-1"
+                                    onClick={() => form.removeListItem('pictures', index)}
+                                >
+                                    <IconX size={16} />
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
                 </Fieldset>
             );
         }
@@ -187,6 +277,7 @@ export default function CreateAccommodationForm({
                         {Object.keys(form.values.features).map((feature) => (
                             <Checkbox
                                 key={feature}
+                                checked={form.values.features[feature as keyof typeof form.values.features]}
                                 label={feature.replace(/([A-Z])/g, ' $1').trim()}
                                 {...form.getInputProps(`features.${feature}`)}
                             />
@@ -282,7 +373,15 @@ export default function CreateAccommodationForm({
         <Group className="max-w-2xl mx-auto p-4">
             <h2 className="text-2xl font-bold mb-6">Create New Accommodation</h2>
 
-            <form onSubmit={form.onSubmit(handleSubmit)} className="space-y-6">
+            <form onSubmit={form.onSubmit(
+                (values) => {
+                    console.log("Form is valid. Submitting…");
+                    handleSubmit(values);
+                },
+                (validationErrors) => {
+                    console.warn("Validation failed:", validationErrors);
+                }
+            )} className="space-y-6">
 
                 {stepcontent()}
 
@@ -299,9 +398,13 @@ export default function CreateAccommodationForm({
                 )}
 
                 {step === 5 ? (
-                    <Button type="submit"   className="">
-                        Create Accommodation
-                    </Button>
+                        <Button
+                            type="submit"
+                            loading={submitting}
+                            disabled={submitting}
+                        >
+                            Create Accommodation
+                        </Button>
                 ):
                 (
                 <Button
