@@ -73,6 +73,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                             label="Password"
                             {...form.getInputProps("password")}
                         />
+
                     </div>
 
                     <ErrorFeedback data={errors} />

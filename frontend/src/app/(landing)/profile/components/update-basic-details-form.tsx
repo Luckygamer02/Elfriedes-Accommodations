@@ -10,11 +10,20 @@ import React, { useEffect } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const schema = z.object({
-    firstName: z.string().min(2),
-    lastName: z.string().min(2)
-});
 
+
+const schema = z.object({
+    firstName: z.string().min(2, "First name must be at least 2 characters"),
+    lastName: z.string().min(2, "Last name must be at least 2 characters"),
+    phone: z.string().min(6, "Phone number must be at least 6 digits"),
+    address: z.object({
+        street: z.string().min(2, "Street must be at least 2 characters"),
+        houseNumber: z.string().min(1, "House number is required"),
+        city: z.string().min(2, "City must be at least 2 characters"),
+        zipCode: z.string().min(3, "Postal code must be at least 3 characters"),
+        country: z.string().min(2, "Country must be at least 2 characters")
+    })
+});
 type Schema = z.infer<typeof schema>;
 export default function UpdateBasicDetailsForm() {
     const { user, mutate } = useAuthGuard({ middleware: "auth" });
@@ -37,6 +46,21 @@ export default function UpdateBasicDetailsForm() {
         if (user) {
             form.setFieldValue("firstName", user.firstName || '');
             form.setFieldValue("lastName", user.lastName || '');
+            form.setFieldValue("address", user.address ? {
+                street: user.address.street || '',
+                houseNumber: user.address.houseNumber || '',
+                city: user.address.city || '',
+                zipCode: user.address.zipCode || '',
+                country: user.address.country || ''
+            } : {
+                street: '',
+                houseNumber: '',
+                city: '',
+                zipCode: '',
+                country: ''
+            }
+            );
+
         }
     }, [user])
 
@@ -44,6 +68,14 @@ export default function UpdateBasicDetailsForm() {
         initialValues: {
             firstName: "",
             lastName: "",
+            phone: "",
+            address: {
+                street: "",
+                houseNumber: "",
+                city: "",
+                zipCode: "",
+                country: ""
+            }
         },
         validate: zodResolver(schema),
     });
@@ -56,7 +88,39 @@ export default function UpdateBasicDetailsForm() {
             >
                 <TextInput {...form.getInputProps('firstName')} label="First name" />
                 <TextInput {...form.getInputProps('lastName')} label="Last name" />
+                <TextInput {...form.getInputProps('phone')} label="Phone number" />
+                <div className="space-y-4">
+                    <div className="flex gap-4">
+                        <TextInput
+                            label="Street"
+                            className="flex-1"
+                            {...form.getInputProps('address.street')}
+                        />
+                        <TextInput
+                            label="House Number"
+                            className="w-1/4"
+                            {...form.getInputProps('address.houseNumber')}
+                        />
+                    </div>
 
+                    <div className="flex gap-4">
+                        <TextInput
+                            label="City"
+                            className="flex-1"
+                            {...form.getInputProps('address.city')}
+                        />
+                        <TextInput
+                            label="Postal Code"
+                            className="w-1/3"
+                            {...form.getInputProps('address.zipCode')}
+                        />
+                    </div>
+
+                    <TextInput
+                        label="Country"
+                        {...form.getInputProps('address.country')}
+                    />
+                </div>
                 <Button type="submit">Update profile</Button>
             </form>
 

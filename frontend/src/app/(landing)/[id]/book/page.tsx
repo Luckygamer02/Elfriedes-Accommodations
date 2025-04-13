@@ -1,6 +1,6 @@
 // app/accommodations/[id]/book/page.tsx
 "use client";
-import { Accommodation } from "@/models/accommidation/accommodation";
+import { Accommodation } from "@/models/accommodation/accommodation";
 import { Text, Group, Stack, Title, Paper, Button, Radio, TextInput } from '@mantine/core';
 import useSWR from "swr";
 import httpClient from "@/lib/httpClient";

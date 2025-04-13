@@ -21,6 +21,14 @@ const registerSchema = z
         passwordConfirmation: z.string().min(8),
         firstName: z.string().optional(),
         lastName: z.string().optional(),
+        phone: z.string().regex(/^\+(?:[0-9] ?){6,14}[0-9]$/, "Invalid phone number format").optional(),
+        address: z.object({
+            street: z.string().min(2, "Street must be at least 2 characters"),
+            houseNumber: z.string().min(1, "House number is required"),
+            city: z.string().min(2, "City must be at least 2 characters"),
+            zipCode: z.string().min(3, "Postal code must be at least 3 characters"),
+            country: z.string().min(2, "Country must be at least 2 characters")
+        }).optional()
     })
     .refine((data) => data.password === data.passwordConfirmation, {
         message: "Passwords do not match",
@@ -60,6 +68,14 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
             passwordConfirmation: "",
             firstName: "",
             lastName: "",
+            phone: "",
+            address: {
+                street: "",
+                houseNumber: "",
+                city: "",
+                zipCode: "",
+                country: ""
+            }
         },
         validate: zodResolver(registerSchema),
     });
@@ -129,6 +145,65 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                             label="Last name"
                             {...form.getInputProps("lastName")}
                         />
+                        <TextInput
+                            id="phone"
+                            placeholder="+1234567890"
+                            type="tel"
+                            disabled={isLoading}
+                            label="Phone Number"
+                            {...form.getInputProps("phone")}
+                        />
+
+                        <div className="grid gap-2">
+                            {/* Street and House Number */}
+                            <div className="flex gap-2">
+                                <TextInput
+                                    id="street"
+                                    placeholder="Main Street"
+                                    disabled={isLoading}
+                                    label="Street"
+                                    className="flex-1"
+                                    {...form.getInputProps("address.street")}
+                                />
+                                <TextInput
+                                    id="houseNumber"
+                                    placeholder="123"
+                                    disabled={isLoading}
+                                    label="House Number"
+                                    className="w-1/4"
+                                    {...form.getInputProps("address.houseNumber")}
+                                />
+                            </div>
+
+                            {/* City and Postal Code */}
+                            <div className="flex gap-2">
+                                <TextInput
+                                    id="city"
+                                    placeholder="New York"
+                                    disabled={isLoading}
+                                    label="City"
+                                    className="flex-1"
+                                    {...form.getInputProps("address.city")}
+                                />
+                                <TextInput
+                                    id="zipCode"
+                                    placeholder="10001"
+                                    disabled={isLoading}
+                                    label="Postal Code"
+                                    className="w-1/3"
+                                    {...form.getInputProps("address.zipCode")}
+                                />
+                            </div>
+
+                            {/* Country */}
+                            <TextInput
+                                id="country"
+                                placeholder="Country"
+                                disabled={isLoading}
+                                label="Country"
+                                {...form.getInputProps("address.country")}
+                            />
+                        </div>
                     </div>
 
                     <ErrorFeedback data={errors} />

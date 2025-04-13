@@ -8,6 +8,7 @@ import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAppli
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateExtraRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.entity.AbstractEntity;
+import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -87,8 +88,72 @@ public class Accommodation extends AbstractEntity {
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
+    @OneToMany(
 
-    public void updateFromRequest(@Valid UpdateAccommodation request) {
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @Builder.Default
+    private List<UploadedFile> pictures = new ArrayList<>();
+
+
+
+
+    public Accommodation updateFromRequest(@Valid UpdateAccommodation request) {
+
+        if (request.getTitle() != null) {
+            this.title = request.getTitle();
+        }
+        if (request.getDescription() != null) {
+        this.description = request.getDescription();
+        }
+        if(request.getBasePrice() > 0) {
+            this.basePrice = request.getBasePrice();
+        }
+        if(request.getBedrooms() > 0) {
+            this.bedrooms = request.getBedrooms();
+        }
+        if(request.getBathrooms() > 0) {
+            this.bathrooms = request.getBathrooms();
+        }
+        if(request.getPeople() > 0) {
+         this.people = request.getPeople();
+        }
+        if(request.getLivingRooms() > 0) {
+            this.livingRooms = request.getLivingRooms();
+        }
+        if(request.getType() != null) {
+            this.type = request.getType();
+        }
+        if(request.getFeatures() != null) {
+            this.festivalistId = request.getFestivalistId();
+        }
+        if(request.getAddress() != null) {
+            this.address = new Address(request.getAddress());
+        }
+        if(request.getFeatures() != null) {
+            this.features = new AccommodationFeature(request.getFeatures());
+        }
+
+        if (request.getAppliedDiscounts() != null) {
+            this.appliedDiscounts = new ArrayList<>();
+            for (CreateAppliedDiscountRequest discountRequest : request.getAppliedDiscounts()) {
+                AppliedDiscount discount = new AppliedDiscount(discountRequest);
+                discount.setAccommodation(this);
+                this.appliedDiscounts.add(discount);
+            }
+        }
+
+
+        if (request.getExtras() != null) {
+            this.extras = new ArrayList<>();
+            for (CreateExtraRequest extraRequest : request.getExtras()) {
+                Extra extra = new Extra(extraRequest);
+                extra.setAccommodation(this);
+                this.extras.add(extra);
+            }
+        }
+        return this;
     }
 
     public void addExtra(Extra extra) {

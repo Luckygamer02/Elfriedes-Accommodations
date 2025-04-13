@@ -37,7 +37,7 @@ public class CreateBooking {
         @NotNull
         private List<BookedExtra> bookedExtras;
         @NotNull
-        private List<Payment> payments;
+        private Payment payments;
         @NotNull
         private List<AppliedDiscount> appliedDiscounts;
 
