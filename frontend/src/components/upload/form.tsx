@@ -12,19 +12,19 @@ import {MultipartFile, URI} from "@/models/backend";
 const validationSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
-    baseprice: z.number().positive(),
+    basePrice: z.number().positive(),
     bedrooms: z.number().nonnegative(),
     bathrooms: z.number().nonnegative(),
     people: z.number().positive(),
     livingRooms: z.number().nonnegative(),
     type: z.nativeEnum(AccommodationType),
-    festivalistid: z.number().positive(),
-    ownerid: z.number().positive(),
+    festivalistId: z.number().positive(),
+    ownerId: z.number().positive(),
     address: z.object({
         street: z.string().min(1),
         houseNumber: z.string().min(1),
         city: z.string().min(1),
-        postalCode: z.string().min(1),
+        zipCode: z.string().min(1),
         country: z.string().min(1),
     }),
     features: z.object({
@@ -70,19 +70,19 @@ export default function CreateAccommodationForm({
         initialValues: {
             title: '',
             description: '',
-            baseprice : 0,
+            basePrice : 0,
             bedrooms: 0,
             bathrooms: 0,
             people: 0,
             livingRooms: 1,
             type: AccommodationType.FLAT,
-            festivalistid: 0,
-            ownerid: userid,
+            festivalistId: 0,
+            ownerId: userid,
             address: {
                 street: '',
                 houseNumber: '',
                 city: '',
-                postalCode: '',
+                zipCode: '',
                 country: '',
             },
             features: {
@@ -108,36 +108,41 @@ export default function CreateAccommodationForm({
         try {
             const formData = new FormData();
 
+            // 1. Create clean JSON data without files
+            const { pictures, ...jsonData } = values;
 
-
-            const jsonBlob = new Blob(
-                [JSON.stringify({
-                    ...values,
-                    pictures: undefined
-                })],
-                { type: 'application/json' }
+            // Append JSON as Blob
+            formData.append(
+                "data",
+                new Blob([JSON.stringify(jsonData)], { type: "application/json" }),
+                "data.json"
             );
 
-            // 2. Append JSON data as a named part
-            formData.append('data', jsonBlob);
-
-
-            // Append files
+            // 2. Append files properly
             values.pictures.forEach((file) => {
-                const blob = new Blob([new Uint8Array(file.bytes)], { type: file.contentType });
-                formData.append('files', blob, file.originalFilename);
+                const fileObj = new File(
+                    [new Uint8Array(file.bytes)],
+                    file.originalFilename,
+                    { type: file.contentType }
+                );
+                formData.append("files", fileObj);
             });
 
-            console.log(formData);
+            // 3. Remove explicit headers - let browser set boundary
+            const response = await restClient.createAccommodation(formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
-            const response = await restClient.createAccommodation(formData);
-
-            console.log("success", response.data);
+            console.log("Success:", response.data);
         } catch (err) {
             console.error("Error submitting form:", err);
+        } finally {
+            setSubmitting(false);
         }
-        setSubmitting(false);
     };
+
     const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
         const arrayBuffer = await file.arrayBuffer();
         const objectUrl = URL.createObjectURL(file);
@@ -176,7 +181,7 @@ export default function CreateAccommodationForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <TextInput label="Title" {...form.getInputProps('title')} />
                         <Textarea label="Description" {...form.getInputProps('description')} />
-                        <NumberInput label="Base Price" {...form.getInputProps('baseprice')} />
+                        <NumberInput label="Base Price" {...form.getInputProps('basePrice')} />
                         <Select
                             label="Accommodation Type"
                             data={Object.values(AccommodationType)}
@@ -186,7 +191,7 @@ export default function CreateAccommodationForm({
                         <NumberInput label="Bathrooms" {...form.getInputProps('bathrooms')} />
                         <NumberInput label="Max People" {...form.getInputProps('people')} />
                         <NumberInput label="Living Rooms" {...form.getInputProps('livingRooms')} />
-                        <NumberInput label="Festivalist ID" {...form.getInputProps('festivalistid')} />
+                        <NumberInput label="Festivalist ID" {...form.getInputProps('festivalistId')} />
                     </div>
                 </Fieldset>
             );
@@ -199,7 +204,7 @@ export default function CreateAccommodationForm({
                     <TextInput label="Street" {...form.getInputProps('address.street')} />
                     <TextInput label="House Number" {...form.getInputProps('address.houseNumber')} />
                     <TextInput label="City" {...form.getInputProps('address.city')} />
-                    <TextInput label="Zip Code" {...form.getInputProps('address.postalCode')} />
+                    <TextInput label="Zip Code" {...form.getInputProps('address.zipCode')} />
                     <TextInput label="Country" {...form.getInputProps('address.country')} />
                 </div>
             </Fieldset>

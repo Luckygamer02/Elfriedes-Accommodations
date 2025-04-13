@@ -2,6 +2,8 @@ package com.jgmt.backend.accommodation.infrastructure.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jgmt.backend.accommodation.domain.Accommodation;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.AccommodationResponse;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
@@ -37,24 +39,26 @@ public class AccommodationController {
         this.accommodationService = accommodationService;
     }
 
-    @Operation(summary = "Create new accommodation", description = "Create a new accommodation listing")
-    @ApiResponse(responseCode = "201", description = "Accommodation created successfully")
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<AccommodationResponse> createAccommodation(
             @RequestPart("data") String dataJson,
-            @RequestPart("files") List<MultipartFile> files
-    ) throws JsonProcessingException {
+            @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
+        // Configure ObjectMapper with JavaTimeModule
+        ObjectMapper objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         CreateAccommodationRequest accommodation =
-                new ObjectMapper().readValue(dataJson, CreateAccommodationRequest.class);
-
+                objectMapper.readValue(dataJson, CreateAccommodationRequest.class);
 
         AccommodationResponse createdAccommodation =
                 accommodationService.createAccommodation(accommodation, files);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAccommodation);
     }
-
     @GetMapping("/{id}")
     @Operation(summary = "Get single accommodation", description = "Get accommodation by ID")
     @ApiResponse(responseCode = "200", description = "Accommodation found")

@@ -119,7 +119,7 @@ export default function AccommodationDetailPage() {
                             <Title order={3} mb="sm">Location</Title>
                             <Text>
                                 {accommodation.address.street} {accommodation.address.houseNumber}<br />
-                                {accommodation.address.postalCode} {accommodation.address.city}<br />
+                                {accommodation.address.zipCode} {accommodation.address.city}<br />
                                 {accommodation.address.country}
                             </Text>
                         </Paper>
@@ -130,7 +130,7 @@ export default function AccommodationDetailPage() {
                         <Title order={3} mb="sm">Location Map</Title>
                         <AccommodationMap address={
                             `${accommodation.address.street} ${accommodation.address.houseNumber}, 
-                             ${accommodation.address.postalCode} ${accommodation.address.city}, 
+                             ${accommodation.address.zipCode} ${accommodation.address.city}, 
                              ${accommodation.address.country}`
                         } />
                     </Paper>
