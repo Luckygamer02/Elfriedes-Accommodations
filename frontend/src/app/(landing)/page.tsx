@@ -2,7 +2,7 @@
 import '@mantine/carousel/styles.css';
 import '@mantine/dates/styles.css';
 import { Accommodation, AccommodationType } from "@/models/accommodation/accommodation";
-import { Card, Text, Badge, Button, Group, Paper, Stack } from '@mantine/core';
+import { Card, Text, Badge, Button, Group, Paper, Stack, useMantineTheme} from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import { IconStarFilled } from '@tabler/icons-react';
 import useSWR from "swr";
@@ -20,6 +20,9 @@ import LandingContainer from "@/components/LandingPage/LandingContainer"
 
 export default function Home() {
     // Alle Hooks werden oben aufgerufen – unabhängig von den Renderbedingungen!
+
+    const randomPicture = "http://localhost:9000/webprojekt/user:1/accommodationpicture/63bbab01-48af-4742-b46d-bcd23339c3ac.avif";
+
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { user } = useAuthGuard({ middleware: "guest" });
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
@@ -40,7 +43,7 @@ export default function Home() {
     if (isLoading || !data) return <Loading />;
 
     const accommodations = data.content;
-
+    const theme = useMantineTheme();
     const categories = [
         { title: 'Trending Flats', type: AccommodationType.FLAT },
         { title: 'Luxury Houses', type: AccommodationType.HOUSE },
@@ -67,7 +70,6 @@ export default function Home() {
                                     slidesToScroll={isMobile ? 1 : 2}
                                     dragFree
                                     withControls
-                                    withIndicators
                                 >
                                     {accommodations
                                         .filter(acc => acc.type === category.type)

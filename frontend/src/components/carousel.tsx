@@ -53,7 +53,6 @@ export default function CarouselComponent() {
                         loop={false}
                         containScroll="trimSnaps"
                         withControls
-                        withIndicators
                     >
                         {items.map((item) => (
                             <Carousel.Slide key={item.title}>

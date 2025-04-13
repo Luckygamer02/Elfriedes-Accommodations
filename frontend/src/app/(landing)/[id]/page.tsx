@@ -80,16 +80,16 @@ export default function AccommodationDetailPage() {
                     <Stack gap="lg">
                         <Title order={1}>{accommodation.title}</Title>
 
-                        <Carousel withIndicators loop>
-                            {/*{accommodation.images?.map((image, index) => (*/}
-                            {/*    <Carousel.Slide key={index}>*/}
-                            {/*        <Image*/}
-                            {/*            src={image}*/}
-                            {/*            height={500}*/}
-                            {/*            alt={`Accommodation image ${index + 1}`}*/}
-                            {/*        />*/}
-                            {/*    </Carousel.Slide>*/}
-                            {/*))}*/}
+                        <Carousel loop>
+                            {accommodation.picturesurls?.map((image, index) => (
+                                <Carousel.Slide key={index}>
+                                    <Image
+                                        src={image}
+                                        height={500}
+                                        alt={`Accommodation image ${index + 1}`}
+                                    />
+                                </Carousel.Slide>
+                            ))}
                         </Carousel>
                         <p>
                             Hier Bilder

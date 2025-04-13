@@ -10,55 +10,90 @@ import {
     Group,
     Stack,
     Box,
-    useMantineTheme
+    useMantineTheme,
+    BackgroundImage
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconSearch, IconMapPin, IconCalendar, IconUsers } from '@tabler/icons-react';
 import LandingContainer from "@/components/LandingPage/LandingContainer";
-import { useStyles } from '@/components/Searchbar/OverlappingSearch.styles'; // Assuming you move styles to separate file
 
 interface OverlappingSearchProps {
-    // Add any props if needed
+    // Add any props here if needed
 }
 
 const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
     const theme = useMantineTheme();
-    const { classes } = useStyles();
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState<string>('1');
+    const sunsetBanner = "http://localhost:9000/pictures/sunsetBanner.jpg";
 
     return (
         <Box>
-            {/* Hero Banner Section */}
-            <Box className={classes.heroSection}>
+            {/* Hero Banner Section with Background Image */}
+            <BackgroundImage
+                src={sunsetBanner}
+                style={{
+                    padding: `${theme.spacing.xl} 0`,
+                    position: 'relative',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    minHeight: '30vh', // Set minimum height
+                    display: 'flex',
+                    alignItems: 'center',
+                }}
+            >
                 <LandingContainer>
-                    <Stack spacing={theme.spacing.md}>
-                        <Title order={1} c="white" fw={700}>
+                    <Stack style={{ gap: theme.spacing.md }}>
+                        <Title order={1} style={{
+                            color: 'white',
+                            fontWeight: 700,
+                            textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                        }}>
                             Discover Your Perfect Holiday Home
                         </Title>
-                        <Text c="white" fw={500} size="lg" mb="lg">
+                        <Text style={{
+                            color: 'white',
+                            fontWeight: 500,
+                            fontSize: theme.fontSizes.lg,
+                            marginBottom: theme.spacing.lg,
+                            textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                        }}>
                             Find unique holiday houses and apartments for an unforgettable vacation
                         </Text>
                         <Button
                             variant="filled"
-                            color="white"
+                            color="violet"
                             radius="md"
-                            sx={{
+                            style={{
                                 width: 'fit-content',
-                                color: theme.colors.blue[6]
+                                color: theme.white,
+                                border: `1px solid ${theme.white}`,
+                                fontSize: theme.fontSizes.md
                             }}
                             size="md"
                         >
                             Explore Vacation Rentals
+
                         </Button>
                     </Stack>
                 </LandingContainer>
-            </Box>
+            </BackgroundImage>
 
             {/* Overlapping Search Bar */}
-            <Container className={classes.searchContainer}>
-                <Paper shadow="md" p="lg" radius="lg" className={classes.searchBar}>
-                    <Group grow spacing="md" align="flex-end">
+            <Container style={{
+                position: 'relative',
+                maxWidth: 1200,
+                margin: '0 auto',
+                marginTop: -50,
+                zIndex: 1,
+            }}>
+                <Paper shadow="md" p="lg" radius="lg" style={{
+                    padding: theme.spacing.lg,
+                    borderRadius: theme.radius.lg,
+                    boxShadow: theme.shadows.md,
+
+                }}>
+                    <Group grow style={{ gap: theme.spacing.md, alignItems: 'flex-end' }}>
                         <TextInput
                             label="Destination"
                             placeholder="City, Region or Accommodation"
@@ -93,14 +128,16 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                         />
 
                         <Button
-                            leftSection={<IconSearch size={16} />}
+                            variant="filled"
+                            color="violet"
                             radius="md"
-                            size="md"
-                            sx={{
-                                backgroundColor: theme.colors.blue[6],
-                                marginTop: 'auto',
-                                marginBottom: 0
+                            style={{
+                                width: 'fit-content',
+                                color: theme.white,
+                                border: `1px solid ${theme.white}`,
+                                fontSize: theme.fontSizes.md
                             }}
+                            size="md"
                         >
                             Search Accommodation
                         </Button>

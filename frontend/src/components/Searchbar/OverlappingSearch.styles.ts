@@ -1,13 +1,14 @@
-import { createStyles } from '@mantine/core';
+import { createStyles } from '@mantine/emotion';
+import type { MantineTheme } from '@mantine/core';
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme: MantineTheme) => ({
     heroSection: {
         backgroundColor: theme.colors.blue[6],
         padding: `${theme.spacing.xl} 0`,
-        position: 'relative',
+        position: 'relative' as const,
     },
     searchContainer: {
-        position: 'relative',
+        position: 'relative' as const,
         maxWidth: 1200,
         margin: '0 auto',
         marginTop: -50,
