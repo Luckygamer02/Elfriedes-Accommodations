@@ -32,6 +32,7 @@ import { useAuthGuard } from '@/lib/auth/use-auth';
 import { useForm, zodResolver } from '@mantine/form';
 import { z } from 'zod';
 import {toast} from "sonner";
+import LandingContainer from "@/components/LandingPage/LandingContainer";
 import dynamic from 'next/dynamic';
 
 export default function AccommodationDetailPage() {
@@ -71,29 +72,35 @@ export default function AccommodationDetailPage() {
 
     return (
         <div className="accommodation-detail-container">
-            <Carousel withIndicators loop>
-                {/*{accommodation.images?.map((image, index) => (*/}
-                {/*    <Carousel.Slide key={index}>*/}
-                {/*        <Image*/}
-                {/*            src={image}*/}
-                {/*            height={500}*/}
-                {/*            alt={`Accommodation image ${index + 1}`}*/}
-                {/*        />*/}
-                {/*    </Carousel.Slide>*/}
-                {/*))}*/}
-            </Carousel>
+
+            <LandingContainer className="py-8">
 
             <Grid gutter="xl" mt="md">
-                <Grid.Col span={{ base: 12, md: 8 }}>
+                <Grid.Col>
                     <Stack gap="lg">
                         <Title order={1}>{accommodation.title}</Title>
 
-                        <Group gap="sm">
-                            <RatingBadge accommodationId={accommodation.id} />
-                            <Badge color="teal" variant="light">
-                                ${accommodation.basePrice}/night
-                            </Badge>
-                        </Group>
+                        <Carousel withIndicators loop>
+                            {/*{accommodation.images?.map((image, index) => (*/}
+                            {/*    <Carousel.Slide key={index}>*/}
+                            {/*        <Image*/}
+                            {/*            src={image}*/}
+                            {/*            height={500}*/}
+                            {/*            alt={`Accommodation image ${index + 1}`}*/}
+                            {/*        />*/}
+                            {/*    </Carousel.Slide>*/}
+                            {/*))}*/}
+                        </Carousel>
+                        <p>
+                            Hier Bilder
+                        </p>
+
+
+                    </Stack>
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 8 }}>
+                    <Paper p="md" shadow="sm">
+                        <Title order={3} mb="sm">{accommodation.description}</Title>
 
                         <Group gap="xl">
                             <Group gap="xs">
@@ -106,28 +113,20 @@ export default function AccommodationDetailPage() {
                             </Group>
                             <Group gap="xs">
                                 <IconUsers size={18} />
-                                <Text>Sleeps {accommodation.people}</Text>
+                                <Text>{accommodation.people} guests</Text>
                             </Group>
                         </Group>
-
-                        <Paper p="md" shadow="sm">
-                            <Title order={3} mb="sm">Description</Title>
-                            <Text>{accommodation.description}</Text>
-                        </Paper>
-
-                        <Paper p="md" shadow="sm">
-                            <Title order={3} mb="sm">Location</Title>
-                            <Text>
-                                {accommodation.address.street} {accommodation.address.houseNumber}<br />
-                                {accommodation.address.zipCode} {accommodation.address.city}<br />
-                                {accommodation.address.country}
-                            </Text>
-                        </Paper>
-                    </Stack>
-                </Grid.Col>
-                <Grid.Col span={{ base: 12, md: 8 }}>
+                    </Paper>
                     <Paper p="md" shadow="sm">
-                        <Title order={3} mb="sm">Location Map</Title>
+                        <Title order={3} mb="sm">You will be here</Title>
+
+                        <Text>
+                            {accommodation.address.street} {accommodation.address.houseNumber} {", "}
+                            {accommodation.address.zipCode} {accommodation.address.city} {", "}
+                            {accommodation.address.country}<br />
+                            {"‎"}
+                        </Text>
+
                         <AccommodationMap address={
                             `${accommodation.address.street} ${accommodation.address.houseNumber}, 
                              ${accommodation.address.zipCode} ${accommodation.address.city}, 
@@ -139,7 +138,7 @@ export default function AccommodationDetailPage() {
                 <Grid.Col span={{ base: 12, md: 4 }}>
                     <Paper p="lg" shadow="md" withBorder>
                         <Stack>
-                            <Title order={3}>Book this stay</Title>
+                            <Title order={3}>$ {accommodation.basePrice} night</Title>
 
                             <DatePicker
                                 type="range"
@@ -202,6 +201,13 @@ export default function AccommodationDetailPage() {
                     </Paper>
                 </Grid.Col>
             </Grid>
+                <Group gap="sm">
+                    <RatingBadge accommodationId={accommodation.id} />
+                    <Badge color="teal" variant="light">
+                        ${accommodation.basePrice}/night
+                    </Badge>
+                </Group>
+            </LandingContainer>
         </div>
     );
 }
