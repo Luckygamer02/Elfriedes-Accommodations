@@ -1,5 +1,6 @@
 "use client";
 import '@mantine/carousel/styles.css';
+import '@mantine/dates/styles.css';
 import { Accommodation, AccommodationType } from "@/models/accommodation/accommodation";
 import { Card, Text, Badge, Button, Group, Paper, Stack } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
@@ -16,7 +17,6 @@ import { AccommodationNav } from "@/components/NavbarElements/accommodationNav";
 import React, {useState} from "react";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import LandingContainer from "@/components/LandingPage/LandingContainer"
-import {DatePicker} from "@mantine/dates";
 
 export default function Home() {
     // Alle Hooks werden oben aufgerufen – unabhängig von den Renderbedingungen!
@@ -125,22 +125,11 @@ export default function Home() {
                             </div>
                         ))}
                     </div>
-                </LandingContainer>
 
-                <Paper p="lg" shadow="md" withBorder>
-                    <Stack>
-                        <DatePicker
-                            type="range"
-                            value={dateRange}
-                            onChange={setDateRange}
-                            minDate={new Date()}
-                            numberOfColumns={1}
-                            allowSingleDateInRange
-                        />
-                    </Stack>
-                </Paper>
+
 
                 <AccommodationNav user={user} />
+                </LandingContainer>
             </main>
         </div>
     );

@@ -1,130 +1,113 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+    Container,
+    Title,
+    Text,
+    Button,
+    TextInput,
+    Select,
+    Paper,
+    Group,
+    Stack,
+    Box,
+    useMantineTheme
+} from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { IconSearch, IconMapPin, IconCalendar, IconUsers } from '@tabler/icons-react';
 import LandingContainer from "@/components/LandingPage/LandingContainer";
+import { useStyles } from '@/components/Searchbar/OverlappingSearch.styles'; // Assuming you move styles to separate file
 
-const OverlappingSearch = () => {
+interface OverlappingSearchProps {
+    // Add any props if needed
+}
+
+const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
+    const theme = useMantineTheme();
+    const { classes } = useStyles();
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+    const [guests, setGuests] = useState<string>('1');
+
     return (
-        <div style={{ position: "relative" }}>
-            <div
-                style={{
-                    width: "100%",
-                    padding: "80px 0",
-                }}
-                className="bg-vacation-500"
-            >
+        <Box>
+            {/* Hero Banner Section */}
+            <Box className={classes.heroSection}>
                 <LandingContainer>
-                    <h1 style={{ fontSize: "2.5rem", marginBottom: "1rem", color: "#fff" }}>
-                        <strong>
+                    <Stack spacing={theme.spacing.md}>
+                        <Title order={1} c="white" fw={700}>
                             Discover Your Perfect Holiday Home
-                        </strong>
-                    </h1>
-                    <p style={{ marginBottom: "2rem", color: "#fff" }}>
-                        <strong>
+                        </Title>
+                        <Text c="white" fw={500} size="lg" mb="lg">
                             Find unique holiday houses and apartments for an unforgettable vacation
-                        </strong>
-                    </p>
-                    <button
-                        style={{
-                            padding: "10px 20px",
-                            border: "none",
-                            backgroundColor: "#fff",
-                            cursor: "pointer",
-                            borderRadius: "4px",
-                        }}
-                        className="text-vacation-600"
-                    >
-                        Explore Vacation Rentals
-                    </button>
+                        </Text>
+                        <Button
+                            variant="filled"
+                            color="white"
+                            radius="md"
+                            sx={{
+                                width: 'fit-content',
+                                color: theme.colors.blue[6]
+                            }}
+                            size="md"
+                        >
+                            Explore Vacation Rentals
+                        </Button>
+                    </Stack>
                 </LandingContainer>
-            </div>
+            </Box>
 
-            {/* 3) ÜBERLAPPENDE SUCHLEISTE */}
-            <LandingContainer>
-            <div
-                style={{
-                    position: "relative",
-                    maxWidth: "1216px",
-                    margin: "-40px auto 0", // Negatives Margin für das Überlappen
-                    backgroundColor: "#fff",
-                    border: "1px solid #ccc",
-                    borderRadius: "16px",
-                    padding: "20px",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                }}
-            >
-                <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-                    <div style={{ flex: 1, minWidth: "200px" }}>
-                        <label style={{ display: "block", marginBottom: "4px" }}>Destination</label>
-                        <input
-                            type="text"
-                            placeholder="City, Region or Accomodation"
-                            style={{
-                                width: "100%",
-                                padding: "8px",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                            }}
+            {/* Overlapping Search Bar */}
+            <Container className={classes.searchContainer}>
+                <Paper shadow="md" p="lg" radius="lg" className={classes.searchBar}>
+                    <Group grow spacing="md" align="flex-end">
+                        <TextInput
+                            label="Destination"
+                            placeholder="City, Region or Accommodation"
+                            leftSection={<IconMapPin size={16} />}
+                            radius="md"
                         />
-                    </div>
-                    <div style={{ minWidth: "150px" }}>
-                        <label style={{ display: "block", marginBottom: "4px" }}>Arrival</label>
-                        <input
-                            type="date"
-                            style={{
-                                width: "100%",
-                                padding: "8px",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                            }}
+
+                        <DatePickerInput
+                            type="range"
+                            label="Vacation Period"
+                            placeholder="Pick dates"
+                            value={dateRange}
+                            onChange={setDateRange}
+                            leftSection={<IconCalendar size={16} />}
+                            radius="md"
                         />
-                    </div>
-                    <div style={{ minWidth: "150px" }}>
-                        <label style={{ display: "block", marginBottom: "4px" }}>Departure</label>
-                        <input
-                            type="date"
-                            style={{
-                                width: "100%",
-                                padding: "8px",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                            }}
+
+                        <Select
+                            label="Visitors"
+                            placeholder="Select guests"
+                            data={[
+                                { value: '1', label: '1 Guest' },
+                                { value: '2', label: '2 Guests' },
+                                { value: '3', label: '3 Guests' },
+                                { value: '4', label: '4 Guests' },
+                                { value: '5', label: '5+ Guests' },
+                            ]}
+                            value={guests}
+                            onChange={(value) => setGuests(value || '1')}
+                            leftSection={<IconUsers size={16} />}
+                            radius="md"
                         />
-                    </div>
-                    <div style={{ minWidth: "100px" }}>
-                        <label style={{ display: "block", marginBottom: "4px" }}>Visitors</label>
-                        <select
-                            style={{
-                                width: "100%",
-                                height: "60.9%",
-                                padding: "8px",
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
+
+                        <Button
+                            leftSection={<IconSearch size={16} />}
+                            radius="md"
+                            size="md"
+                            sx={{
+                                backgroundColor: theme.colors.blue[6],
+                                marginTop: 'auto',
+                                marginBottom: 0
                             }}
                         >
-                            <option>1 Gast</option>
-                            <option>2 Gäste</option>
-                            <option>3 Gäste</option>
-                            <option>4 Gäste</option>
-                        </select>
-                    </div>
-                    <div style={{ display: "flex", alignItems: "flex-end" }}>
-                        <button
-                            style={{
-                                padding: "10px 20px",
-                                border: "none",
-                                backgroundColor: "#007acc",
-                                color: "#fff",
-                                cursor: "pointer",
-                                borderRadius: "4px",
-                                whiteSpace: "nowrap",
-                            }}
-                        >
-                            Search accomodation
-                        </button>
-                    </div>
-                </div>
-            </div>
-            </LandingContainer>
-        </div>
+                            Search Accommodation
+                        </Button>
+                    </Group>
+                </Paper>
+            </Container>
+        </Box>
     );
 };
 
