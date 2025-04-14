@@ -16,7 +16,8 @@ import OverlappingSearch from "@/components/Searchbar/OverlappingSearch";
 import { AccommodationNav } from "@/components/NavbarElements/accommodationNav";
 import React, {useState} from "react";
 import { useAuthGuard } from "@/lib/auth/use-auth";
-import LandingContainer from "@/components/LandingPage/LandingContainer"
+import LandingContainer from "@/components/LandingPage/LandingContainer";
+import GuestSelectionPopover from "@/components/Searchbar/GuestSelectionPopover";
 
 export default function Home() {
     // Alle Hooks werden oben aufgerufen – unabhängig von den Renderbedingungen!
@@ -127,9 +128,6 @@ export default function Home() {
                             </div>
                         ))}
                     </div>
-
-
-
                 <AccommodationNav user={user} />
                 </LandingContainer>
             </main>

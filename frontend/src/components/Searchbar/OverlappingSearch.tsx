@@ -16,6 +16,7 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { IconSearch, IconMapPin, IconCalendar, IconUsers } from '@tabler/icons-react';
 import LandingContainer from "@/components/LandingPage/LandingContainer";
+import GuestSelectionPopover from "@/components/Searchbar/GuestSelectionPopover";
 
 interface OverlappingSearchProps {
     // Add any props here if needed
@@ -111,21 +112,7 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                             radius="md"
                         />
 
-                        <Select
-                            label="Visitors"
-                            placeholder="Select guests"
-                            data={[
-                                { value: '1', label: '1 Guest' },
-                                { value: '2', label: '2 Guests' },
-                                { value: '3', label: '3 Guests' },
-                                { value: '4', label: '4 Guests' },
-                                { value: '5', label: '5+ Guests' },
-                            ]}
-                            value={guests}
-                            onChange={(value) => setGuests(value || '1')}
-                            leftSection={<IconUsers size={16} />}
-                            radius="md"
-                        />
+                        <GuestSelectionPopover/>
 
                         <Button
                             variant="filled"

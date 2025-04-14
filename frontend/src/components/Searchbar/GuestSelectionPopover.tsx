@@ -8,11 +8,11 @@ export default function GuestSelectionPopover() {
     const [children, setChildren] = useState(0);
     const [rooms, setRooms] = useState(2);
 
-    const handleIncrement = (setter, value) => {
+    const handleIncrement = (setter: React.Dispatch<React.SetStateAction<number>>, value: number) => {
         setter(value + 1);
     };
 
-    const handleDecrement = (setter, value) => {
+    const handleDecrement = (setter: React.Dispatch<React.SetStateAction<number>>, value: number) => {
         if (value > 0) {
             setter(value - 1);
         }
@@ -22,7 +22,7 @@ export default function GuestSelectionPopover() {
     const buttonLabel = `${totalPeople} Personen, ${rooms} Schlafzimmer`;
 
     return (
-        <Box className="w-64">
+        <Box w={256}>
             <Popover
                 opened={opened}
                 onChange={setOpened}
@@ -35,18 +35,19 @@ export default function GuestSelectionPopover() {
                     <Button
                         onClick={() => setOpened((o) => !o)}
                         variant="default"
-                        className="w-full justify-between"
-                        rightIcon={opened ? "▲" : "▼"}
+                        fullWidth
+                        justify="space-between"
+                        rightSection={opened ? "▲" : "▼"}
                     >
                         {buttonLabel}
                     </Button>
                 </Popover.Target>
 
                 <Popover.Dropdown>
-                    <Stack spacing="md">
-                        <Group position="apart" className="items-center">
-                            <Text size="sm" className="font-medium w-24">Erwachsene</Text>
-                            <Group spacing="xs" className="items-center">
+                    <Stack gap="md">
+                        <Group justify="space-between" align="center">
+                            <Text size="sm" fw={500} w={96}>Erwachsene</Text>
+                            <Group gap="xs" align="center">
                                 <ActionIcon
                                     variant="default"
                                     onClick={() => handleDecrement(setAdults, adults)}
@@ -59,11 +60,11 @@ export default function GuestSelectionPopover() {
 
                                 <NumberInput
                                     value={adults}
-                                    onChange={(val) => setAdults(val)}
+                                    onChange={(val) => setAdults(Number(val))}
                                     hideControls
                                     min={0}
                                     max={20}
-                                    className="w-12 text-center"
+                                    w={48}
                                     styles={{ input: { textAlign: 'center' } }}
                                 />
 
@@ -78,9 +79,9 @@ export default function GuestSelectionPopover() {
                             </Group>
                         </Group>
 
-                        <Group position="apart" className="items-center">
-                            <Text size="sm" className="font-medium w-24">Kinder</Text>
-                            <Group spacing="xs" className="items-center">
+                        <Group justify="space-between" align="center">
+                            <Text size="sm" fw={500} w={96}>Kinder</Text>
+                            <Group gap="xs" align="center">
                                 <ActionIcon
                                     variant="default"
                                     onClick={() => handleDecrement(setChildren, children)}
@@ -93,11 +94,11 @@ export default function GuestSelectionPopover() {
 
                                 <NumberInput
                                     value={children}
-                                    onChange={(val) => setChildren(val)}
+                                    onChange={(val) => setChildren(Number(val))}
                                     hideControls
                                     min={0}
                                     max={20}
-                                    className="w-12 text-center"
+                                    w={48}
                                     styles={{ input: { textAlign: 'center' } }}
                                 />
 
@@ -112,9 +113,9 @@ export default function GuestSelectionPopover() {
                             </Group>
                         </Group>
 
-                        <Group position="apart" className="items-center">
-                            <Text size="sm" className="font-medium w-24">Schlafzimmer</Text>
-                            <Group spacing="xs" className="items-center">
+                        <Group justify="space-between" align="center">
+                            <Text size="sm" fw={500} w={96}>Schlafzimmer</Text>
+                            <Group gap="xs" align="center">
                                 <ActionIcon
                                     variant="default"
                                     onClick={() => handleDecrement(setRooms, rooms)}
@@ -127,11 +128,11 @@ export default function GuestSelectionPopover() {
 
                                 <NumberInput
                                     value={rooms}
-                                    onChange={(val) => setRooms(val)}
+                                    onChange={(val) => setRooms(Number(val))}
                                     hideControls
                                     min={0}
                                     max={20}
-                                    className="w-12 text-center"
+                                    w={48}
                                     styles={{ input: { textAlign: 'center' } }}
                                 />
 
@@ -147,10 +148,10 @@ export default function GuestSelectionPopover() {
                         </Group>
 
                         <Button
-                            color="yellow"
+                            color="violet"
                             fullWidth
                             onClick={() => setOpened(false)}
-                            className="mt-4"
+                            mt="md"
                         >
                             ANWENDEN
                         </Button>
