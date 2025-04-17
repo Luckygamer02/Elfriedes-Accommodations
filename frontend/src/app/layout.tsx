@@ -20,8 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Elfriedes Accomodations",
-  description: "By Marc and Jonas",
+  title: "Elfriedes Accommodations",
 };
 
 export default function RootLayout({
