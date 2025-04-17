@@ -24,8 +24,7 @@ export default function ManageAccommodation() {
             ? () => restClient.getAccommodationsbyownerid(user.id).then(res => res.data) :
             () => restClient.getAccommodationsbyownerid(0).then(res => res.data)
     );
-    console.log(accommodationresponse)
-    console.log(user)
+
     if (!user) {
         return;
     }
