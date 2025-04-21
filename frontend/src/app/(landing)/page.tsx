@@ -9,7 +9,7 @@ import useSWR from "swr";
 import { PaginatedResponse } from "@/models/backend";
 import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
-import { RatingBadge } from "@/components/RatingBadge";
+import { RatingBadge } from "@/components/Rating/RatingBadge";
 import { useMediaQuery } from "@mantine/hooks";
 import Link from "next/link";
 import OverlappingSearch from "@/components/Searchbar/OverlappingSearch";

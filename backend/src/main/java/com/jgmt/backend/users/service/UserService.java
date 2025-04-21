@@ -46,6 +46,14 @@ public class UserService {
         return new UserResponse(user);
     }
 
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return userRepository.findById(id).orElse(null);
+    }
+
     private void sendVerificationEmail(User user) {
         VerificationCode verificationCode = new VerificationCode(user);
         user.setVerificationCode(verificationCode);

@@ -1,7 +1,7 @@
 import {AbstractEntity, MultipartFile, User} from "@/models/backend";
 
 export enum AccommodationType {
-    FLAT= 'FLAT',
+    FLAT = 'FLAT',
     HOUSE = 'HOUSE',
     ROOM = 'ROOM',
     UNIQUE = 'UNIQUE',
@@ -30,7 +30,7 @@ interface CreateAddressRequest {
     street: string;
     houseNumber: string;
     city: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
 }
 
@@ -46,18 +46,18 @@ interface CreateAccommodationFeatureRequest {
     wifi: boolean;
 }
 
-interface CreateDiscountRequest {
+export interface CreateDiscountRequest {
     discountprocent: number;
     name: string;
-    expiringDate: string; // Use string or Date type based on your date handling
+    expiringDate: string;
 }
 
-interface CreateAppliedDiscountRequest {
+export interface CreateAppliedDiscountRequest {
     discount: CreateDiscountRequest;
-    appliedDate: string; // Use string or Date type based on your date handling
+    appliedDate: string;
 }
 
-interface CreateExtraRequest {
+export interface CreateExtraRequest {
     type: Extrastype;
     price: number;
 }
@@ -82,28 +82,28 @@ export interface CreateAccommodationRequest {
 
 
 export interface Accommodation extends AbstractEntity {
-    title: string;
-    description: string;
-    basePrice: number;
-    bedrooms: number;
-    bathrooms: number;
-    people: number;
-    livingRooms: number;
-    type: AccommodationType;
-    festivalistId: number;
-    ownerId: number;
-    address: CreateAddressRequest;
-    features: CreateAccommodationFeatureRequest;
-    appliedDiscounts: CreateAppliedDiscountRequest[];
-    extras: CreateExtraRequest[];
-    picturesurls: string[];
+    title: string,
+    description: string,
+    basePrice: number,
+    bedrooms: number,
+    bathrooms: number,
+    people: number,
+    livingRooms: number,
+    type: AccommodationType,
+    festivalistId: number,
+    ownerId: number,
+    address: CreateAddressRequest,
+    features: CreateAccommodationFeatureRequest,
+    appliedDiscounts: CreateAppliedDiscountRequest[],
+    extras: CreateExtraRequest[],
+    picturesurls: string[]
 }
 
 export interface Address {
     street: string;
     houseNumber: string;
     city: string;
-    zipCode: string;
+    postalCode: string;
     country: string;
 }
 
@@ -118,10 +118,11 @@ interface AccommodationFeatures {
     washingMachine: boolean;
     wifi: boolean;
 }
+
 export interface Rating {
     id: string;
-    content: string;
+    comment: string;
     rating: number;
     User: User;
-    createdAt: string;
+    createdOn: string;
 }

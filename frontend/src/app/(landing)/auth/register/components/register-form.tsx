@@ -26,7 +26,7 @@ const registerSchema = z
             street: z.string().min(2, "Street must be at least 2 characters"),
             houseNumber: z.string().min(1, "House number is required"),
             city: z.string().min(2, "City must be at least 2 characters"),
-            zipCode: z.string().min(3, "Postal code must be at least 3 characters"),
+            postalCode: z.string().min(3, "Postal code must be at least 3 characters"),
             country: z.string().min(2, "Country must be at least 2 characters")
         }).optional()
     })
@@ -73,7 +73,7 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                 street: "",
                 houseNumber: "",
                 city: "",
-                zipCode: "",
+                postalCode: "",
                 country: ""
             }
         },
@@ -186,12 +186,12 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                                     {...form.getInputProps("address.city")}
                                 />
                                 <TextInput
-                                    id="zipCode"
+                                    id="postalCode"
                                     placeholder="10001"
                                     disabled={isLoading}
                                     label="Postal Code"
                                     className="w-1/3"
-                                    {...form.getInputProps("address.zipCode")}
+                                    {...form.getInputProps("address.postalCode")}
                                 />
                             </div>
 

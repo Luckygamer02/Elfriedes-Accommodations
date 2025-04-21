@@ -2,9 +2,15 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
-import {Accommodation, CreateAccommodationRequest} from "@/models/accommodation/accommodation";
+import {Accommodation, CreateAccommodationRequest, Rating} from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
 import {AxiosRequestConfig} from "axios";
+import httpClient from "@/lib/httpClient";
+import useSWR from "swr";
+import {DateRange} from "@/models/booking";
+
+
+
 
 export interface Notification {
     id: number;
@@ -662,8 +668,24 @@ export class RestApplicationClient {
     }
 
 
+    getReviewsForAccommodation(AccId: Number) : Rating[] {
+          const { data  } = useSWR<Rating[]>(
+            `api/rating/${AccId}`,
+            () => httpClient.get<PaginatedResponse<Rating>>(`api/ratings/${AccId}`).then(res => res.data.content));
+          if(data == undefined) {
+              return [];
+          }
+          return data;
+    }
 
-
+    getBookedDatesforAcc(id: number) {
+       return httpClient.get(`api/bookings/bookeddates/${id}`).then(res =>
+           res.data.map((range: any) => ({
+               from: new Date(range.from),
+               to: new Date(range.to),
+           }))
+    );
+    }
 }
 
 export type RestResponse<R> = Promise<{

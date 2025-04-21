@@ -9,7 +9,7 @@ import {restClient} from "@/lib/httpClient";
 import React, {useState} from "react";
 import {MultipartFile, URI} from "@/models/backend";
 
-const validationSchema = z.object({
+export const validationSchema = z.object({
     title: z.string().min(1),
     description: z.string().min(1),
     basePrice: z.number().positive(),
@@ -24,7 +24,7 @@ const validationSchema = z.object({
         street: z.string().min(1),
         houseNumber: z.string().min(1),
         city: z.string().min(1),
-        zipCode: z.string().min(1),
+        postalCode: z.string().min(1),
         country: z.string().min(1),
     }),
     features: z.object({
@@ -82,7 +82,7 @@ export default function CreateAccommodationForm({
                 street: '',
                 houseNumber: '',
                 city: '',
-                zipCode: '',
+                postalCode: '',
                 country: '',
             },
             features: {
@@ -204,7 +204,7 @@ export default function CreateAccommodationForm({
                     <TextInput label="Street" {...form.getInputProps('address.street')} />
                     <TextInput label="House Number" {...form.getInputProps('address.houseNumber')} />
                     <TextInput label="City" {...form.getInputProps('address.city')} />
-                    <TextInput label="Zip Code" {...form.getInputProps('address.zipCode')} />
+                    <TextInput label="Postal Code" {...form.getInputProps('address.postalCode')} />
                     <TextInput label="Country" {...form.getInputProps('address.country')} />
                 </div>
             </Fieldset>

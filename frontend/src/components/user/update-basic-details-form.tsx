@@ -12,7 +12,7 @@ import { z } from "zod";
 
 
 
-const schema = z.object({
+export const schema = z.object({
     firstName: z.string().min(2, "First name must be at least 2 characters"),
     lastName: z.string().min(2, "Last name must be at least 2 characters"),
     phone: z.string().min(6, "Phone number must be at least 6 digits"),
@@ -20,7 +20,7 @@ const schema = z.object({
         street: z.string().min(2, "Street must be at least 2 characters"),
         houseNumber: z.string().min(1, "House number is required"),
         city: z.string().min(2, "City must be at least 2 characters"),
-        zipCode: z.string().min(3, "Postal code must be at least 3 characters"),
+        postalCode: z.string().min(3, "Postal code must be at least 3 characters"),
         country: z.string().min(2, "Country must be at least 2 characters")
     })
 });
@@ -50,13 +50,13 @@ export default function UpdateBasicDetailsForm() {
                 street: user.address.street || '',
                 houseNumber: user.address.houseNumber || '',
                 city: user.address.city || '',
-                zipCode: user.address.zipCode || '',
+                postalCode: user.address.postalCode || '',
                 country: user.address.country || ''
             } : {
                 street: '',
                 houseNumber: '',
                 city: '',
-                zipCode: '',
+                postalCode: '',
                 country: ''
             }
             );
@@ -73,7 +73,7 @@ export default function UpdateBasicDetailsForm() {
                 street: "",
                 houseNumber: "",
                 city: "",
-                zipCode: "",
+                postalCode: "",
                 country: ""
             }
         },
@@ -112,7 +112,7 @@ export default function UpdateBasicDetailsForm() {
                         <TextInput
                             label="Postal Code"
                             className="w-1/3"
-                            {...form.getInputProps('address.zipCode')}
+                            {...form.getInputProps('address.postalCode')}
                         />
                     </div>
 

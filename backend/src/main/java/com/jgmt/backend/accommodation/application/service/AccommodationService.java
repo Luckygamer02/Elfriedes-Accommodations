@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -112,11 +113,7 @@ public class AccommodationService {
         return accommodationRepository.findByOwnerId(id,pageable)
                 .map(AccommodationResponse::new);
     }
-    @Transactional
-    public Integer getRating(Long accommodationid) {
-        return  ratingRepository.getRatingforAccommodation(accommodationid);
 
-    }
 
     @Transactional
     public AccommodationResponse updateAccommodationPicture(MultipartFile file, Long accommodationId) {
@@ -154,4 +151,5 @@ public class AccommodationService {
 
         return new AccommodationResponse(a);
     }
+
 }

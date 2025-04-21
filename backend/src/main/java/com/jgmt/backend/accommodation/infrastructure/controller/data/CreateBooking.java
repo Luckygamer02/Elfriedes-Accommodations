@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,9 +28,9 @@ public class CreateBooking {
         @NotNull
         private Long AccommodationId;
         @NotNull
-        private LocalDate checkInDate;
+        private Date checkInDate;
         @NotNull
-        private LocalDateTime checkOutDate;
+        private Date checkOutDate;
         @NotNull
         private BookingStatus status;
         @NotNull

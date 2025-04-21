@@ -14,6 +14,6 @@ public class CreateAddressRequest implements Serializable {
     String street;
     String houseNumber;
     String city;
-    String zipCode;
+    String postalCode;
     String country;
 }

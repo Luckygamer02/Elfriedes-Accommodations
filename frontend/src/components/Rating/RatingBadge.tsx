@@ -10,8 +10,8 @@ interface RatingBadgeProps {
 
 export function RatingBadge({ accommodationId }: RatingBadgeProps) {
     const { data: rating } = useSWR<number>(
-        `api/accommodations/rating/${accommodationId}`,
-        () => httpClient.get<number>(`api/accommodations/rating/${accommodationId}`)
+        `api/ratings/rating/${accommodationId}`,
+        () => httpClient.get<number>(`api/ratings/rating/${accommodationId}`)
             .then((res) => res.data)
     );
     return (

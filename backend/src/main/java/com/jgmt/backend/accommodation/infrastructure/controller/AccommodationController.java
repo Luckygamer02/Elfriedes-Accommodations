@@ -115,10 +115,6 @@ public class AccommodationController {
     {
         return ResponseEntity.ok(accommodationService.getAccommodationByOwnerId(ownerId, pageable));
     }
-    @GetMapping("rating/{accommodationid}")
-    public ResponseEntity<Integer> getRating(@PathVariable Long accommodationid) {
-        return ResponseEntity.ok(accommodationService.getRating(accommodationid));
-    }
 
     @PatchMapping("/{id}/profile-picture")
     public ResponseEntity<AccommodationResponse> updateProfilePicture(

@@ -1,13 +1,12 @@
 package com.jgmt.backend.accommodation.infrastructure.controller.data;
 
-import com.jgmt.backend.accommodation.domain.Accommodation;
-import com.jgmt.backend.accommodation.domain.Address;
-import com.jgmt.backend.accommodation.domain.Rating;
+import com.jgmt.backend.accommodation.domain.*;
 import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
 import jakarta.persistence.Column;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 @Data
@@ -29,7 +28,9 @@ public class AccommodationResponse implements Serializable {
     AccommodationType type;
     Address address;
     Long festivalistId;
-    int Rating;
+    AccommodationFeature features;
+    List<Extra> extras;
+
 
 
     public AccommodationResponse(Accommodation accommodation) {
@@ -44,6 +45,8 @@ public class AccommodationResponse implements Serializable {
         this.type = accommodation.getType();
         this.address = accommodation.getAddress();
         this.festivalistId = accommodation.getFestivalistId();
+        this.features = accommodation.getFeatures();
+        this.extras = accommodation.getExtras();
 
     }
 }

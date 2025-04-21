@@ -63,11 +63,18 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.GET, "/api/notifications/subscribe")).permitAll()
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/notifications/delivery/**")).permitAll()
                     .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
+
                     .requestMatchers("/api/accommodations/**").permitAll()
+                    .requestMatchers("/api/bookings/**").permitAll()
+                    .requestMatchers("api/ratings/**").permitAll()
+
                     .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
+                    .requestMatchers(antMatcher("/swagger-ui.html")).permitAll()
+                    .requestMatchers(antMatcher("/v3/api-docs")).permitAll()
                     .requestMatchers(antMatcher("/v3/api-docs/**")).permitAll()
                     .requestMatchers(antMatcher("/swagger-resources/**")).permitAll()
                     .requestMatchers(antMatcher("/webjars/**")).permitAll()
+                    .requestMatchers(antMatcher("/error")).permitAll()
                     .anyRequest().authenticated();
         });
 

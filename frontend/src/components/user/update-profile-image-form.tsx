@@ -1,6 +1,6 @@
 "use client";
 
-import FileUpload from "@/components/FileUpload";
+import FileUpload from "@/components/upload/FileUpload";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import httpClient from "@/lib/httpClient";
 import { Avatar, InputLabel } from "@mantine/core";

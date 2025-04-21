@@ -2,13 +2,13 @@
 
 import React from "react";
 import Container from '@/components/container';
-import UpdateBasicDetailsForm from "./components/update-basic-details-form";
-import UpdatePasswordForm from "./components/update-password-form";
+import UpdateBasicDetailsForm from "../../../components/user/update-basic-details-form";
+import UpdatePasswordForm from "../../../components/user/update-password-form";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import { format } from "date-fns";
 import Loading from "@/components/loading";
-import UpdateProfileImageForm from "./components/update-profile-image-form";
+import UpdateProfileImageForm from "../../../components/user/update-profile-image-form";
 import { Divider } from "@mantine/core";
 
 export default function ProfilePage() {

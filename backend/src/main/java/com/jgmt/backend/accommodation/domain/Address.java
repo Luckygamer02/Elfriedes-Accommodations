@@ -40,7 +40,7 @@ public record Address(
                 request.getStreet(),
                 request.getCity(),
                 request.getCountry(),
-                request.getZipCode(),
+                request.getPostalCode(),
                 request.getHouseNumber()
         );
     }
