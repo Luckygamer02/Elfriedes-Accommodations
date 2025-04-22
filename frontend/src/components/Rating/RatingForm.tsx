@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useForm, zodResolver} from "@mantine/form";
 import httpClient from "@/lib/httpClient";
 import {toast} from "sonner";
-import {Button, Paper, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Button, NumberInput, Paper, Text, Textarea, TextInput, Title} from "@mantine/core";
 import {IconMessage} from "@tabler/icons-react";
 import {z} from "zod";
 
@@ -47,10 +47,9 @@ export default function RatingForm({accommodationId}: RatingFormProps) {
         <Paper p="md" shadow="sm" mt="lg">
             <Title order={4} mb="md">Write a Review</Title>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <TextInput
+                <NumberInput
                     label="Rating"
                     {...form.getInputProps('rating')}
-                    type="number"
                     min={1}
                     max={5}
                 />

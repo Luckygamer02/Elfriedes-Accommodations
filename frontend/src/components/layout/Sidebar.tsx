@@ -6,7 +6,7 @@ import {Accommodation} from "@/models/accommodation/accommodation";
 import useSWR from "swr";
 import {DateRange} from "@/models/booking";
 import {restClient} from "@/lib/httpClient";
-import {router} from "next/client";
+import {useRouter} from "next/navigation";
 
 interface SidebarProps {
     accommodation: Accommodation;
@@ -15,6 +15,7 @@ interface SidebarProps {
 export default function sidebar({ accommodation }: SidebarProps) {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState(1);
+    const router = useRouter();
 
     const totalPrice = () => {
         const [start, end] = dateRange;
@@ -37,20 +38,20 @@ export default function sidebar({ accommodation }: SidebarProps) {
         const [start, end] = dateRange;
         if (!start || !end) return false;
 
-        // Check if any selected date overlaps with booked ranges
-        for (
-            let d = new Date(start);
-            d <= end;
-            d.setDate(d.getDate() + 1)
-        ) {
-            const day = normalize(new Date(d)); // copy the date
-            if (
-                bookedDates.some(
-                    (range) =>
-                        day >= normalize(new Date(range.from)) &&
-                        day <= normalize(new Date(range.to))
-                )
-            ) {
+        const normStart = normalize(start);
+        const normEnd   = normalize(end);
+
+        // For each existing booking...
+        for (const range of bookedDates) {
+            const from = normalize(new Date(range.from));
+            const to   = normalize(new Date(range.to));
+
+            // Overlap occurs iff:
+            //   your start is before their checkout (normStart < to) AND
+            //   your end is after their check‑in  (normEnd   > from)
+            //
+            // Notice that if normEnd === from, then normEnd > from is false → NO overlap.
+            if (normStart < to && normEnd > from) {
                 return false;
             }
         }
@@ -65,15 +66,16 @@ export default function sidebar({ accommodation }: SidebarProps) {
             return;
         }
 
-        router.push({
-            pathname: `/${accommodation.id}/details`,
-            query: {
-                checkIn: dateRange[0].toISOString(),
-                checkOut: dateRange[1].toISOString(),
-                guests: guests,
-                total: totalPrice()
-            }
+        // Build a query string
+        const params = new URLSearchParams({
+            checkIn: dateRange[0].toISOString(),
+            checkOut: dateRange[1].toISOString(),
+            guests: String(guests),
+            total: String(totalPrice()),
         });
+
+        // Push the full URL
+        router.push(`/${accommodation.id}/details?${params.toString()}`);
     }
 
 
@@ -89,14 +91,24 @@ export default function sidebar({ accommodation }: SidebarProps) {
                 minDate={new Date()}
                 numberOfColumns={1}
                 allowSingleDateInRange
-                excludeDate={(date) =>
-                    normalize(date) < normalize(new Date()) ||
-                    bookedDates.some(
-                        (range) =>
-                            normalize(date) >= normalize(new Date(range.from)) &&
-                            normalize(date) <= normalize(new Date(range.to))
-                    )
-                }
+                excludeDate={(date) => {
+                    const normalized = normalize(date);
+                    const today = normalize(new Date());
+
+
+                    // disable if it’s before today
+                    if (normalized < today) {
+                        return true;
+                    }
+
+
+                    // or if it falls into any booked range
+                    return bookedDates.some((range) => {
+                        const from = normalize(new Date(range.from));
+                        const to   = normalize(new Date(range.to));
+                        return normalized > from && normalized <= to;
+                    });
+                }}
             />
 
             <NumberInput

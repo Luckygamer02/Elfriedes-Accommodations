@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
 import useSWR from "swr";
-import httpClient, {restClient} from "@/lib/httpClient";
+import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
 import {RatingBadge} from "@/components/Rating/RatingBadge";
 import {useParams} from "next/navigation";
@@ -32,7 +32,7 @@ export default function AccommodationDetailPage() {
     const AccommodationMap = dynamic(
         () => import('@/components/Map/AccommodationMap').then((mod) => mod.default),
         {
-            ssr: false,
+            ssr: true,
             loading: () => <p>Loading map...</p>
         }
     );
@@ -56,7 +56,12 @@ export default function AccommodationDetailPage() {
                 <Grid.Col>
                     <Stack gap="lg">
                         <Title order={1}>{accommodation.title}</Title>
-
+                        <Group gap="sm">
+                            <RatingBadge accommodationId={accommodation.id} />
+                            <Badge color="teal" variant="light">
+                                ${accommodation.basePrice}/night
+                            </Badge>
+                        </Group>
                         <Carousel loop>
                             {accommodation.picturesurls?.map((image, index) => (
                                 <Carousel.Slide key={index}>
@@ -136,12 +141,7 @@ export default function AccommodationDetailPage() {
                 </Grid.Col>
 
             </Grid>
-                <Group gap="sm">
-                    <RatingBadge accommodationId={accommodation.id} />
-                    <Badge color="teal" variant="light">
-                        ${accommodation.basePrice}/night
-                    </Badge>
-                </Group>
+
             </LandingContainer>
         </div>
     );

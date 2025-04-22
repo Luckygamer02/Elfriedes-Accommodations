@@ -15,8 +15,7 @@ export function RatingBadge({ accommodationId }: RatingBadgeProps) {
             .then((res) => res.data)
     );
     return (
-        <Badge className="rating-badge" variant="gradient">
-            <IconStarFilled size={14} />
+        <Badge leftSection={ <IconStarFilled size={10} />}>
             {rating || '--'}
         </Badge>
     );

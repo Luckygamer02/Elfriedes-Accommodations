@@ -25,6 +25,7 @@ public class AccommodationResponse implements Serializable {
     int bathrooms;
     int people;
     int livingRooms;
+    Long ownerId;
     AccommodationType type;
     Address address;
     Long festivalistId;
@@ -47,6 +48,6 @@ public class AccommodationResponse implements Serializable {
         this.festivalistId = accommodation.getFestivalistId();
         this.features = accommodation.getFeatures();
         this.extras = accommodation.getExtras();
-
+        this.ownerId = accommodation.getOwner().getId();
     }
 }

@@ -1,21 +1,79 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "@mantine/form";
-import { Accommodation, AccommodationType, CreateAccommodationRequest } from "@/models/accommodation/accommodation";
+import {
+    Accommodation,
+    AccommodationType,
+    CreateAccommodationRequest,
+    Extrastype
+} from "@/models/accommodation/accommodation";
 import useSWR from "swr";
-import {Button, Loader, Select, TextInput, Textarea, Checkbox} from "@mantine/core";
+import {Button, Loader, Select, TextInput, Textarea,Notification, Checkbox, NumberInput} from "@mantine/core";
 import httpClient from "@/lib/httpClient";
 import { zodResolver } from "@mantine/form";
-import { validationSchema } from "@/components/upload/form";
-import {useEffect} from "react"; // Your existing schema
+import {useEffect, useState} from "react";
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {z} from "zod";
+import {showNotification} from "@mantine/notifications"; // Your existing schema
 
 export default function UpdateAccommodationPage() {
     const router = useRouter();
+    const { user } = useAuthGuard({ middleware: "auth" });
     const { id } = useParams<{ id: string }>();
     const { data, error, isLoading } = useSWR<Accommodation>(
         `api/accommodations/${id}`,
         url => httpClient.get<Accommodation>(url).then(res => res.data)
     );
+    const [submitError, setSubmitError] = useState<string | null>(null);
+
+    const toNumber = (field: string) =>
+        z.union([z.string(), z.number()])
+            .transform(val => Number(val))
+            .refine(n => !isNaN(n), { message: `${field} must be a number` });
+
+    const validationSchema = z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        basePrice: z.number().positive(),
+        bedrooms: z.number().nonnegative(),
+        bathrooms: z.number().nonnegative(),
+        people: z.number().positive(),
+        livingRooms: z.number().nonnegative(),
+        type: z.nativeEnum(AccommodationType),
+        festivalistId: z.number().positive(),
+        ownerId: z.number().positive(),
+        address: z.object({
+            street: z.string().min(1),
+            houseNumber: z.string().min(1),
+            city: z.string().min(1),
+            postalCode: z.string().min(1),
+            country: z.string().min(1),
+        }),
+        features: z.object({
+            ac: z.boolean(),
+            garden: z.boolean(),
+            kitchen: z.boolean(),
+            microwave: z.boolean(),
+            meetingTable: z.boolean(),
+            pool: z.boolean(),
+            tv: z.boolean(),
+            washingMachine: z.boolean(),
+            wifi: z.boolean(),
+        }),
+        appliedDiscounts: z.array(z.object({
+            discount: z.object({
+                discountprocent: z.number().min(0).max(100),
+                name: z.string().min(1),
+                expioringdate: z.date(),
+            }),
+            appliedDate: z.date(),
+        })).optional(),
+        extras: z.array(z.object({
+            type: z.nativeEnum(Extrastype),
+            price: z.number().positive(),
+        }))
+    });
+
 
     const form = useForm<CreateAccommodationRequest>({
         validate: zodResolver(validationSchema),
@@ -43,23 +101,67 @@ export default function UpdateAccommodationPage() {
         }
     }, [data]);
 
+
+
     const handleSubmit = async (values: CreateAccommodationRequest) => {
+        setSubmitError(null);
+
         try {
-            await httpClient.patch(`api/accommodations/${id}`, values);
-            router.push("/manage-accommodations");
-        } catch (error) {
-            console.error("Update failed:", error);
+            const response = await httpClient.patch(
+                `api/accommodations/${id}`,
+                values
+            );
+
+            if (response.status === 200) {
+                // 1. Erfolgsmeldung anzeigen
+                showNotification({
+                    title: 'Success',
+                    message: 'Accommodation updated successfully!',
+                    color: 'green',
+                    autoClose: 2000, // automatically closes after 2 seconds
+                });
+
+
+                router.push('http://localhost:3000/accommodation/manage/');
+
+            } else {
+                setSubmitError('Failed to update accommodation');
+            }
+        } catch (error: any) {
+            console.error('Update failed:', error);
+            setSubmitError(
+                error.response?.data?.message || 'An error occurred'
+            );
         }
     };
 
     if (isLoading) return <Loader />;
     if (error) return <div>Error loading accommodation</div>;
+    if( data?.ownerId !==  user?.id ){
+        return <div>You are not authorized to edit this accommodation</div>;
+    }
 
     return (
         <div className="max-w-2xl mx-auto p-4">
             <h1 className="text-2xl font-bold mb-6">Update Accommodation</h1>
 
-            <form onSubmit={form.onSubmit(handleSubmit)}>
+            {submitError && (
+                <Notification color="red" onClose={() => setSubmitError(null)} mb="md">
+                    {submitError}
+                </Notification>
+            )}
+
+            <form
+                onSubmit={form.onSubmit(
+                (values) => {
+                    console.log("Form is valid. Submitting…");
+                    handleSubmit(values);
+                },
+                    (validationErrors) => {
+                    console.warn("Validation failed:", validationErrors);
+                }
+                )}
+            >
                 <TextInput
                     label="Title"
                     {...form.getInputProps('title')}
@@ -73,27 +175,23 @@ export default function UpdateAccommodationPage() {
                     minRows={4}
                 />
 
-                <TextInput
+                <NumberInput
                     label="Base Price"
-                    type="number"
                     {...form.getInputProps('basePrice')}
                     mb="md"
                 />
 
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                    <TextInput
+                    <NumberInput
                         label="Bedrooms"
-                        type="number"
                         {...form.getInputProps('bedrooms')}
                     />
-                    <TextInput
+                    <NumberInput
                         label="Bathrooms"
-                        type="number"
                         {...form.getInputProps('bathrooms')}
                     />
-                    <TextInput
+                    <NumberInput
                         label="Max Guests"
-                        type="number"
                         {...form.getInputProps('people')}
                     />
                     <Select
@@ -129,7 +227,7 @@ export default function UpdateAccommodationPage() {
 
                 {/* Features Checklist */}
                 <div className="grid grid-cols-2 gap-4 mb-6">
-                    {Object.entries(form.values.features).map(([feature, value]) => (
+                    {Object.entries(form.values.features || {}).map(([feature, value]) => (
                         <Checkbox
                             key={feature}
                             label={feature.charAt(0).toUpperCase() + feature.slice(1)}
@@ -139,7 +237,11 @@ export default function UpdateAccommodationPage() {
                     ))}
                 </div>
 
-                <Button type="submit" fullWidth size="lg">
+                <Button
+                    type="submit"
+                    fullWidth
+                    size="lg"
+                >
                     Update Accommodation
                 </Button>
             </form>

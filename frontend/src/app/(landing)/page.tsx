@@ -44,7 +44,6 @@ export default function Home() {
     if (isLoading || !data) return <Loading />;
 
     const accommodations = data.content;
-    const theme = useMantineTheme();
     const categories = [
         { title: 'Trending Flats', type: AccommodationType.FLAT },
         { title: 'Luxury Houses', type: AccommodationType.HOUSE },
@@ -94,10 +93,9 @@ export default function Home() {
                                                                 style={{ backgroundImage: "url(/default-accommodation.jpg)" }}
                                                             />
                                                         )}
-                                                        <Badge className="rating-badge" variant="gradient">
-                                                            <IconStarFilled size={14} />
-                                                            <RatingBadge accommodationId={acc.id} />
-                                                        </Badge>
+
+                                                        <RatingBadge accommodationId={acc.id} />
+
                                                     </Card.Section>
 
                                                     <Group mt="md">
