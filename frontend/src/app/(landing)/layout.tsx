@@ -2,15 +2,15 @@
 
 import Navbar from '@/components/layout/navbar';
 import Footer from '@/components/layout/Footer';
-import { useSubscribeToPushNotifications } from '@/lib/hooks/useSubscribeToPushNotifications';
-import { AppShell, Burger, Group } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import React, { useEffect } from 'react';
+import {useSubscribeToPushNotifications} from '@/lib/hooks/useSubscribeToPushNotifications';
+import {AppShell, Burger, Group} from '@mantine/core';
+import {useDisclosure} from '@mantine/hooks';
+import React, {useEffect} from 'react';
 
-export default function layout({children}: {children: React.ReactNode}) {
-    const [opened, { toggle}] = useDisclosure(false);
+export default function layout({children}: { children: React.ReactNode }) {
+    const [opened, {toggle}] = useDisclosure(false);
 
-    const { subscribe, subscription } = useSubscribeToPushNotifications();
+    const {subscribe, subscription} = useSubscribeToPushNotifications();
 
     useEffect(() => {
         if (!subscription) {
@@ -20,13 +20,13 @@ export default function layout({children}: {children: React.ReactNode}) {
 
     return (
         <AppShell
-            header={{ height: 60 }}
-            navbar={{ width: 300, breakpoint: 'sm', collapsed: { desktop: true, mobile: !opened } }}
+            header={{height: 60}}
+            navbar={{width: 300, breakpoint: 'sm', collapsed: {desktop: true, mobile: !opened}}}
             //padding="md"
         >
             <AppShell.Header>
                 <Group h="100%" px="md" className='w-full max-w-screen-xl mx-auto'>
-                    <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="md" />
+                    <Burger opened={opened} onClick={toggle} hiddenFrom="md" size="md"/>
                     <Navbar className='hidden md:flex justify-center align-center w-full max-w-screen-xl mx-auto'/>
                 </Group>
             </AppShell.Header>

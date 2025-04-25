@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useForm, zodResolver} from "@mantine/form";
 import httpClient from "@/lib/httpClient";
 import {toast} from "sonner";
-import {Button, NumberInput, Paper, Text, Textarea, TextInput, Title} from "@mantine/core";
+import {Button, NumberInput, Paper, Text, Textarea, Title} from "@mantine/core";
 import {IconMessage} from "@tabler/icons-react";
 import {z} from "zod";
 
@@ -64,7 +64,7 @@ export default function RatingForm({accommodationId}: RatingFormProps) {
                     type="submit"
                     mt="md"
                     loading={isSubmitting}
-                    leftSection={<IconMessage size={18} />}
+                    leftSection={<IconMessage size={18}/>}
                 >
                     Submit Review
                 </Button>

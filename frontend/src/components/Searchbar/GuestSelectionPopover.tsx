@@ -1,17 +1,8 @@
 // components/Searchbar/GuestSelectionPopover.tsx
 'use client';
 import React from 'react';
-import {
-    Popover,
-    Button,
-    Group,
-    Text,
-    ActionIcon,
-    NumberInput,
-    Stack,
-    Box,
-} from '@mantine/core';
-import { IconMinus, IconPlus } from '@tabler/icons-react';
+import {ActionIcon, Box, Button, Group, NumberInput, Popover, Stack, Text,} from '@mantine/core';
+import {IconMinus, IconPlus} from '@tabler/icons-react';
 
 interface GuestSelectionPopoverProps {
     adults: number;
@@ -29,10 +20,10 @@ export default function GuestSelectionPopover({
     const [opened, setOpened] = React.useState(false);
 
     const inc = (field: 'adults' | 'children' | 'rooms') =>
-        onChange({ ...{ adults, children, rooms }, [field]: eval(field) + 1 });
+        onChange({...{adults, children, rooms}, [field]: eval(field) + 1});
     const dec = (field: 'adults' | 'children' | 'rooms') =>
         eval(field) > 0 &&
-        onChange({ ...{ adults, children, rooms }, [field]: eval(field) - 1 });
+        onChange({...{adults, children, rooms}, [field]: eval(field) - 1});
 
     const totalPeople = adults + children;
     const label = `${totalPeople} people, ${rooms} rooms`;
@@ -74,7 +65,7 @@ export default function GuestSelectionPopover({
                                         size="md"
                                         radius="xl"
                                     >
-                                        <IconMinus size={16} />
+                                        <IconMinus size={16}/>
                                     </ActionIcon>
 
                                     <NumberInput
@@ -91,7 +82,7 @@ export default function GuestSelectionPopover({
                                         min={0}
                                         max={20}
                                         w={48}
-                                        styles={{ input: { textAlign: 'center' } }}
+                                        styles={{input: {textAlign: 'center'}}}
                                     />
 
                                     <ActionIcon
@@ -100,7 +91,7 @@ export default function GuestSelectionPopover({
                                         size="md"
                                         radius="xl"
                                     >
-                                        <IconPlus size={16} />
+                                        <IconPlus size={16}/>
                                     </ActionIcon>
                                 </Group>
                             </Group>

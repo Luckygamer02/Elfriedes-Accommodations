@@ -1,4 +1,4 @@
-import { Icons } from "./user/icons";
+import {Icons} from "./user/icons";
 
 
 export default function Loading() {

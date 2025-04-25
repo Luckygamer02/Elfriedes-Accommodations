@@ -1,8 +1,8 @@
 // components/PaymentDetails.tsx
 "use client";
-import { Paper, TextInput, Group, Title, Stack, Radio } from '@mantine/core';
-import { IconCreditCard, IconTransfer } from '@tabler/icons-react';
-import { ReactNode } from 'react';
+import {Group, Paper, Stack, TextInput, Title} from '@mantine/core';
+import {IconCreditCard, IconTransfer} from '@tabler/icons-react';
+import {ReactNode} from 'react';
 
 interface PaymentDetailsProps {
     paymentMethod: string;
@@ -33,7 +33,7 @@ export function PaymentDetails({
                 return (
                     <>
                         <Title order={4} mb="sm" className="flex items-center gap-2">
-                            <IconCreditCard size={20} />
+                            <IconCreditCard size={20}/>
                             Credit Card Details
                         </Title>
                         <Stack gap="sm">
@@ -75,7 +75,7 @@ export function PaymentDetails({
                 return (
                     <>
                         <Title order={4} mb="sm" className="flex items-center gap-2">
-                            <IconTransfer size={20} />
+                            <IconTransfer size={20}/>
                             Bank Transfer Details
                         </Title>
                         <Stack gap="sm">

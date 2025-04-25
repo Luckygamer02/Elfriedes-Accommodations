@@ -1,15 +1,14 @@
 "use client"
 
 import ErrorFeedback from "@/components/error-feedback";
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import httpClient, { restClient } from "@/lib/httpClient";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
-import React, { useEffect } from "react";
-import { toast } from "sonner";
-import { z } from "zod";
-
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {restClient} from "@/lib/httpClient";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
+import {useForm, zodResolver} from "@mantine/form";
+import React, {useEffect} from "react";
+import {toast} from "sonner";
+import {z} from "zod";
 
 
 export const schema = z.object({
@@ -26,7 +25,7 @@ export const schema = z.object({
 });
 type Schema = z.infer<typeof schema>;
 export default function UpdateBasicDetailsForm() {
-    const { user, mutate } = useAuthGuard({ middleware: "auth" });
+    const {user, mutate} = useAuthGuard({middleware: "auth"});
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
 
     const onSubmit = (data: Schema) => {
@@ -47,18 +46,18 @@ export default function UpdateBasicDetailsForm() {
             form.setFieldValue("firstName", user.firstName || '');
             form.setFieldValue("lastName", user.lastName || '');
             form.setFieldValue("address", user.address ? {
-                street: user.address.street || '',
-                houseNumber: user.address.houseNumber || '',
-                city: user.address.city || '',
-                postalCode: user.address.postalCode || '',
-                country: user.address.country || ''
-            } : {
-                street: '',
-                houseNumber: '',
-                city: '',
-                postalCode: '',
-                country: ''
-            }
+                    street: user.address.street || '',
+                    houseNumber: user.address.houseNumber || '',
+                    city: user.address.city || '',
+                    postalCode: user.address.postalCode || '',
+                    country: user.address.country || ''
+                } : {
+                    street: '',
+                    houseNumber: '',
+                    city: '',
+                    postalCode: '',
+                    country: ''
+                }
             );
 
         }
@@ -86,9 +85,9 @@ export default function UpdateBasicDetailsForm() {
                 onSubmit={form.onSubmit(onSubmit)}
                 className="flex flex-col gap-y-2"
             >
-                <TextInput {...form.getInputProps('firstName')} label="First name" />
-                <TextInput {...form.getInputProps('lastName')} label="Last name" />
-                <TextInput {...form.getInputProps('phone')} label="Phone number" />
+                <TextInput {...form.getInputProps('firstName')} label="First name"/>
+                <TextInput {...form.getInputProps('lastName')} label="Last name"/>
+                <TextInput {...form.getInputProps('phone')} label="Phone number"/>
                 <div className="space-y-4">
                     <div className="flex gap-4">
                         <TextInput
@@ -124,7 +123,7 @@ export default function UpdateBasicDetailsForm() {
                 <Button type="submit">Update profile</Button>
             </form>
 
-            <ErrorFeedback data={errors} />
+            <ErrorFeedback data={errors}/>
         </div>
     );
 }

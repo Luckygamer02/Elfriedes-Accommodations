@@ -1,14 +1,14 @@
 "use client";
 
 import FileUpload from "@/components/upload/FileUpload";
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import {useAuthGuard} from "@/lib/auth/use-auth";
 import httpClient from "@/lib/httpClient";
-import { Avatar, InputLabel } from "@mantine/core";
+import {Avatar, InputLabel} from "@mantine/core";
 import React from "react";
-import { toast } from "sonner";
+import {toast} from "sonner";
 
 export default function UpdateProfileImageForm() {
-    const { user, mutate } = useAuthGuard({middleware: "auth"});
+    const {user, mutate} = useAuthGuard({middleware: "auth"});
 
     const handleLogoChange = (file: File) => {
         const formData = new FormData();

@@ -4,7 +4,8 @@ import {Button} from "@mantine/core";
 import React from "react";
 
 export function AccommodationNav(props: { // @ts-ignore
-    user: BlockingData<T, any> extends true ? T : (T | undefined) }) {
+    user: BlockingData<T, any> extends true ? T : (T | undefined)
+}) {
     return <>
         <div className="flex items-center gap-x-2 justify-between"/>
         {props.user && (

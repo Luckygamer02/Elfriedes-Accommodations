@@ -1,14 +1,14 @@
 "use client";
 
 import ErrorFeedback from "@/components/error-feedback";
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import {useAuthGuard} from "@/lib/auth/use-auth";
 import httpClient from "@/lib/httpClient";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
+import {useForm, zodResolver} from "@mantine/form";
 import React from "react";
-import { toast } from "sonner";
-import { z } from "zod";
+import {toast} from "sonner";
+import {z} from "zod";
 
 const schema = z
     .object({
@@ -23,7 +23,7 @@ const schema = z
 
 type Schema = z.infer<typeof schema>;
 export default function UpdatePasswordForm() {
-    const { user, mutate } = useAuthGuard({ middleware: "auth" });
+    const {user, mutate} = useAuthGuard({middleware: "auth"});
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
         undefined
     );
@@ -59,7 +59,8 @@ export default function UpdatePasswordForm() {
             >
                 <TextInput type="password" {...form.getInputProps('oldPassword')} label="Old password"></TextInput>
                 <TextInput type="password" {...form.getInputProps('password')} label="New password"></TextInput>
-                <TextInput type="password" {...form.getInputProps('confirmPassword')} label="Confirm password"></TextInput>
+                <TextInput type="password" {...form.getInputProps('confirmPassword')}
+                           label="Confirm password"></TextInput>
 
                 <Button type="submit">Update password</Button>
             </form>

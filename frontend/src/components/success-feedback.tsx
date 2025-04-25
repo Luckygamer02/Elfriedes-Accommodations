@@ -1,10 +1,10 @@
-
 interface SuccessFeedbackProps {
     message: string;
     description?: string;
     action?: React.ReactNode;
     show: boolean;
 }
+
 export default function SuccessFeedback({message, description, action, show}: SuccessFeedbackProps) {
     if (!show) return <></>;
     return (

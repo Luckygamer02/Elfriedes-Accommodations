@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import { Button } from "@mantine/core";
-import httpClient, { restClient } from "@/lib/httpClient";
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import {Button} from "@mantine/core";
+import httpClient from "@/lib/httpClient";
+import {useAuthGuard} from "@/lib/auth/use-auth";
 import Loading from "@/components/loading";
-import { Accommodation } from "@/models/accommodation/accommodation";
+import {Accommodation} from "@/models/accommodation/accommodation";
 import useSWR from "swr";
-import { PaginatedResponse } from "@/models/backend";
+import {PaginatedResponse} from "@/models/backend";
 
 export default function ManageAccommodation() {
-    const { user } = useAuthGuard({ middleware: "auth" });
+    const {user} = useAuthGuard({middleware: "auth"});
 
     // Fixed SWR implementation
     const {
@@ -26,7 +26,7 @@ export default function ManageAccommodation() {
     );
 
     // Optimized loading state handling
-    if (!user || !user.id || isLoading) return <Loading />;
+    if (!user || !user.id || isLoading) return <Loading/>;
     if (error) return <div>Error: {error.message}</div>;
 
     const accommodations = data?.content || [];
@@ -67,9 +67,9 @@ export default function ManageAccommodation() {
                                         </p>
                                         <div className="border-t pt-2 mt-2">
                                             <p className="text-gray-600">
-                                                <strong>Address:</strong><br />
-                                                {acc.address.street} {acc.address.houseNumber}<br />
-                                                {acc.address.postalCode} {acc.address.city}<br />
+                                                <strong>Address:</strong><br/>
+                                                {acc.address.street} {acc.address.houseNumber}<br/>
+                                                {acc.address.postalCode} {acc.address.city}<br/>
                                                 {acc.address.country}
                                             </p>
                                         </div>

@@ -1,6 +1,6 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
-import { useForm } from "@mantine/form";
+import {useParams, useRouter} from "next/navigation";
+import {useForm, zodResolver} from "@mantine/form";
 import {
     Accommodation,
     AccommodationType,
@@ -8,28 +8,28 @@ import {
     Extrastype
 } from "@/models/accommodation/accommodation";
 import useSWR from "swr";
-import {Button, Loader, Select, TextInput, Textarea,Notification, Checkbox, NumberInput} from "@mantine/core";
+import {Button, Checkbox, Loader, Notification, NumberInput, Select, Textarea, TextInput} from "@mantine/core";
 import httpClient from "@/lib/httpClient";
-import { zodResolver } from "@mantine/form";
 import {useEffect, useState} from "react";
 import {useAuthGuard} from "@/lib/auth/use-auth";
 import {z} from "zod";
 import {showNotification} from "@mantine/notifications"; // Your existing schema
+import UplaodandDeleteImages from "@/components/upload/UplaodandDeleteImages";
 
 export default function UpdateAccommodationPage() {
     const router = useRouter();
-    const { user } = useAuthGuard({ middleware: "auth" });
-    const { id } = useParams<{ id: string }>();
-    const { data, error, isLoading } = useSWR<Accommodation>(
+    const {user} = useAuthGuard({middleware: "auth"});
+    const {id} = useParams<{ id: string }>();
+    const {data, error, isLoading} = useSWR<Accommodation>(
         `api/accommodations/${id}`,
-        url => httpClient.get<Accommodation>(url).then(res => res.data)
+        (url: string) => httpClient.get<Accommodation>(url).then(res => res.data)
     );
     const [submitError, setSubmitError] = useState<string | null>(null);
 
     const toNumber = (field: string) =>
         z.union([z.string(), z.number()])
             .transform(val => Number(val))
-            .refine(n => !isNaN(n), { message: `${field} must be a number` });
+            .refine(n => !isNaN(n), {message: `${field} must be a number`});
 
     const validationSchema = z.object({
         title: z.string().min(1),
@@ -102,7 +102,6 @@ export default function UpdateAccommodationPage() {
     }, [data]);
 
 
-
     const handleSubmit = async (values: CreateAccommodationRequest) => {
         setSubmitError(null);
 
@@ -135,9 +134,9 @@ export default function UpdateAccommodationPage() {
         }
     };
 
-    if (isLoading) return <Loader />;
+    if (isLoading) return <Loader/>;
     if (error) return <div>Error loading accommodation</div>;
-    if( data?.ownerId !==  user?.id ){
+    if (data?.ownerId !== user?.id) {
         return <div>You are not authorized to edit this accommodation</div>;
     }
 
@@ -153,13 +152,13 @@ export default function UpdateAccommodationPage() {
 
             <form
                 onSubmit={form.onSubmit(
-                (values) => {
-                    console.log("Form is valid. Submitting…");
-                    handleSubmit(values);
-                },
+                    (values) => {
+                        console.log("Form is valid. Submitting…");
+                        handleSubmit(values);
+                    },
                     (validationErrors) => {
-                    console.warn("Validation failed:", validationErrors);
-                }
+                        console.warn("Validation failed:", validationErrors);
+                    }
                 )}
             >
                 <TextInput
@@ -244,6 +243,9 @@ export default function UpdateAccommodationPage() {
                 >
                     Update Accommodation
                 </Button>
+            </form>
+            <form>
+                <UplaodandDeleteImages id={id}/>
             </form>
         </div>
     );

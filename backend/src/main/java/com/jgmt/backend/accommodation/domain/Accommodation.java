@@ -88,13 +88,15 @@ public class Accommodation extends AbstractEntity {
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(
 
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
     @Builder.Default
-    private List<UploadedFile> pictures = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "accommodation_pictures",
+            joinColumns = @JoinColumn(name = "accommodation_id")
+    )
+    @Column(name = "url", length = 512)
+    private List<String> pictures = new ArrayList<>();
 
 
 

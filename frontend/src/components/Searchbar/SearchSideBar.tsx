@@ -1,25 +1,16 @@
 // components/Searchbar/SearchSideBar.tsx
 "use client";
-import { useState, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import {
-    Box,
-    TextInput,
-    NumberInput,
-    Select,
-    MultiSelect,
-    Button,
-    Group,
-    Stack,
-} from '@mantine/core';
-import { Extrastype } from '@/models/accommodation/accommodation';
+import {useState} from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {Box, Button, Group, MultiSelect, NumberInput, Select, Stack, TextInput,} from '@mantine/core';
+import {Extrastype} from '@/models/accommodation/accommodation';
 
 const extrasOptions = Object.values(Extrastype).map((ext) => ({
     value: ext,
     label: ext.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\w/g, (c) => c.toUpperCase()),
 }));
 
-const bedroomOptions = Array.from({ length: 5 }, (_, i) => ({
+const bedroomOptions = Array.from({length: 5}, (_, i) => ({
     value: String(i + 1),
     label: String(i + 1),
 }));
@@ -58,7 +49,7 @@ export default function SearchSideBar() {
     return (
         <Box p="md" className="h-full overflow-y-auto">
             <form onSubmit={onSubmit}>
-                <Stack >
+                <Stack>
                     <TextInput
                         label="City"
                         placeholder="Enter city"
@@ -93,7 +84,7 @@ export default function SearchSideBar() {
                     <Select
                         label="Bedrooms"
                         placeholder="Select"
-                        data={[{ value: '', label: 'Any' }, ...bedroomOptions]}
+                        data={[{value: '', label: 'Any'}, ...bedroomOptions]}
                         value={bedrooms ?? ''}
                         onChange={(v) => setBedrooms(v || null)}
                     />

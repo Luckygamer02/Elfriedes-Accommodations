@@ -1,10 +1,10 @@
-import {Button, TextInput,Text, NumberInput, Checkbox, Select, Textarea, Fieldset, Group} from "@mantine/core";
+import {Button, Checkbox, Fieldset, Group, NumberInput, Select, Text, Textarea, TextInput} from "@mantine/core";
 import {useForm, zodResolver} from "@mantine/form";
 import {z} from "zod";
 import {AccommodationType, CreateAccommodationRequest, Extrastype} from "@/models/accommodation/accommodation";
 import {DateInput} from "@mantine/dates";
-import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
-import {Dropzone, DropzoneProps, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
+import {IconPhoto, IconUpload, IconX} from '@tabler/icons-react';
+import {Dropzone, FileWithPath, IMAGE_MIME_TYPE} from "@mantine/dropzone";
 import {restClient} from "@/lib/httpClient";
 import React, {useState} from "react";
 import {MultipartFile, URI} from "@/models/backend";
@@ -59,6 +59,36 @@ interface UploadFormProps {
     setActiveStep: React.Dispatch<React.SetStateAction<number>>;
 }
 
+export const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
+    const arrayBuffer = await file.arrayBuffer();
+    const objectUrl = URL.createObjectURL(file);
+    const byteArray = new Uint8Array(arrayBuffer);
+
+    return {
+        contentType: file.type,
+        name: file.name,
+        bytes: Array.from(new Uint8Array(arrayBuffer)),
+        empty: file.size === 0,
+        inputStream: () => new Blob([byteArray]).stream(),
+        resource: {
+            open: false,
+            file: file,
+            readable: true,
+            url: new URL(objectUrl),
+            description: file.name,
+            uri: {
+                scheme: 'file',
+                path: file.name,
+                toString: () => `file://${file.name}`
+            } as unknown as URI,
+            filename: file.name,
+            inputStream: () => new Blob([arrayBuffer]).stream()
+        },
+        size: file.size,
+        originalFilename: file.name
+    };
+};
+
 export default function CreateAccommodationForm({
                                                     userid,
                                                     step,
@@ -70,7 +100,7 @@ export default function CreateAccommodationForm({
         initialValues: {
             title: '',
             description: '',
-            basePrice : 0,
+            basePrice: 0,
             bedrooms: 0,
             bathrooms: 0,
             people: 0,
@@ -109,12 +139,12 @@ export default function CreateAccommodationForm({
             const formData = new FormData();
 
             // 1. Create clean JSON data without files
-            const { pictures, ...jsonData } = values;
+            const {pictures, ...jsonData} = values;
 
             // Append JSON as Blob
             formData.append(
                 "data",
-                new Blob([JSON.stringify(jsonData)], { type: "application/json" }),
+                new Blob([JSON.stringify(jsonData)], {type: "application/json"}),
                 "data.json"
             );
 
@@ -123,7 +153,7 @@ export default function CreateAccommodationForm({
                 const fileObj = new File(
                     [new Uint8Array(file.bytes)],
                     file.originalFilename,
-                    { type: file.contentType }
+                    {type: file.contentType}
                 );
                 formData.append("files", fileObj);
             });
@@ -143,39 +173,9 @@ export default function CreateAccommodationForm({
         }
     };
 
-    const convertFileToMultipart = async (file: File): Promise<MultipartFile> => {
-        const arrayBuffer = await file.arrayBuffer();
-        const objectUrl = URL.createObjectURL(file);
-        const byteArray = new Uint8Array(arrayBuffer);
-
-        return {
-            contentType: file.type,
-            name: file.name,
-            bytes: Array.from(new Uint8Array(arrayBuffer)),
-            empty: file.size === 0,
-            inputStream: () => new Blob([byteArray]).stream(),
-            resource: {
-                open: false,
-                file: file,
-                readable: true,
-                url: new URL(objectUrl),
-                description: file.name,
-                uri: {
-                    scheme: 'file',
-                    path: file.name,
-                    toString: () => `file://${file.name}`
-                } as unknown as URI,
-                filename: file.name,
-                inputStream: () => new Blob([arrayBuffer]).stream()
-            },
-            size: file.size,
-            originalFilename: file.name
-        };
-    };
 
     const stepcontent = () => {
-        if (step === 1)
-        {
+        if (step === 1) {
             return (
                 <Fieldset legend="Basic Information">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -195,45 +195,41 @@ export default function CreateAccommodationForm({
                     </div>
                 </Fieldset>
             );
-        }
-        else if(step === 2)
-        {
+        } else if (step === 2) {
             return (
-            <Fieldset legend="Address">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <TextInput label="Street" {...form.getInputProps('address.street')} />
-                    <TextInput label="House Number" {...form.getInputProps('address.houseNumber')} />
-                    <TextInput label="City" {...form.getInputProps('address.city')} />
-                    <TextInput label="Postal Code" {...form.getInputProps('address.postalCode')} />
-                    <TextInput label="Country" {...form.getInputProps('address.country')} />
-                </div>
-            </Fieldset>
+                <Fieldset legend="Address">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <TextInput label="Street" {...form.getInputProps('address.street')} />
+                        <TextInput label="House Number" {...form.getInputProps('address.houseNumber')} />
+                        <TextInput label="City" {...form.getInputProps('address.city')} />
+                        <TextInput label="Postal Code" {...form.getInputProps('address.postalCode')} />
+                        <TextInput label="Country" {...form.getInputProps('address.country')} />
+                    </div>
+                </Fieldset>
             );
-        }
-        else if(step === 3)
-        {
+        } else if (step === 3) {
             return (
                 <Fieldset legend="Features">
                     <Dropzone
                         onDrop={async (files: FileWithPath[]) => {
-                        const convertedFiles = await Promise.all(
-                            files.map(async (file) => convertFileToMultipart(file))
-                        );
-                        form.setFieldValue('pictures', convertedFiles);
+                            const convertedFiles = await Promise.all(
+                                files.map(async (file) => convertFileToMultipart(file))
+                            );
+                            form.setFieldValue('pictures', convertedFiles);
                         }}
                         onReject={(files) => console.log('rejected files', files)}
                         maxSize={5 * 1024 ** 2}
                         accept={IMAGE_MIME_TYPE}
                     >
-                        <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+                        <Group justify="center" gap="xl" mih={220} style={{pointerEvents: 'none'}}>
                             <Dropzone.Accept>
-                                <IconUpload size={52} color="var(--mantine-color-blue-6)" stroke={1.5} />
+                                <IconUpload size={52} color="var(--mantine-color-blue-6)" stroke={1.5}/>
                             </Dropzone.Accept>
                             <Dropzone.Reject>
-                                <IconX size={52} color="var(--mantine-color-red-6)" stroke={1.5} />
+                                <IconX size={52} color="var(--mantine-color-red-6)" stroke={1.5}/>
                             </Dropzone.Reject>
                             <Dropzone.Idle>
-                                <IconPhoto size={52} color="var(--mantine-color-dimmed)" stroke={1.5} />
+                                <IconPhoto size={52} color="var(--mantine-color-dimmed)" stroke={1.5}/>
                             </Dropzone.Idle>
 
                             <div>
@@ -261,16 +257,14 @@ export default function CreateAccommodationForm({
                                     className="absolute top-1 right-1"
                                     onClick={() => form.removeListItem('pictures', index)}
                                 >
-                                    <IconX size={16} />
+                                    <IconX size={16}/>
                                 </Button>
                             </div>
                         ))}
                     </div>
                 </Fieldset>
             );
-        }
-        else if (step === 4)
-        {
+        } else if (step === 4) {
             return (
                 <Fieldset legend="Features">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -285,86 +279,84 @@ export default function CreateAccommodationForm({
                     </div>
                 </Fieldset>
             );
-        }
-        else if (step === 5)
-        {
+        } else if (step === 5) {
             return (
                 <>
-                <Fieldset legend="Applied Discounts">
-                {form.values.appliedDiscounts.map((_, index) => (
-                    <div key={index} className="border p-4 mb-4 rounded">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <NumberInput
-                                label="Discount Percentage"
-                                {...form.getInputProps(`appliedDiscounts.${index}.discount.discountprocent`)}
-                            />
-                            <TextInput
-                                label="Discount Name"
-                                {...form.getInputProps(`appliedDiscounts.${index}.discount.name`)}
-                            />
-                            <DateInput
-                                label="Expiring Date"
-                                {...form.getInputProps(`appliedDiscounts.${index}.discount.expioringdate`)}
-                            />
-                            <DateInput
-                                label="Applied Date"
-                                {...form.getInputProps(`appliedDiscounts.${index}.appliedDate`)}
-                            />
-                        </div>
+                    <Fieldset legend="Applied Discounts">
+                        {form.values.appliedDiscounts.map((_, index) => (
+                            <div key={index} className="border p-4 mb-4 rounded">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <NumberInput
+                                        label="Discount Percentage"
+                                        {...form.getInputProps(`appliedDiscounts.${index}.discount.discountprocent`)}
+                                    />
+                                    <TextInput
+                                        label="Discount Name"
+                                        {...form.getInputProps(`appliedDiscounts.${index}.discount.name`)}
+                                    />
+                                    <DateInput
+                                        label="Expiring Date"
+                                        {...form.getInputProps(`appliedDiscounts.${index}.discount.expioringdate`)}
+                                    />
+                                    <DateInput
+                                        label="Applied Date"
+                                        {...form.getInputProps(`appliedDiscounts.${index}.appliedDate`)}
+                                    />
+                                </div>
+                                <Button
+                                    type="button"
+                                    color="red"
+                                    className="mt-2"
+                                    onClick={() => form.removeListItem('appliedDiscounts', index)}
+                                >
+                                    Remove Discount
+                                </Button>
+                            </div>
+                        ))}
                         <Button
                             type="button"
-                            color="red"
-                            className="mt-2"
-                            onClick={() => form.removeListItem('appliedDiscounts', index)}
+                            className="mt-4"
+                            onClick={() => form.insertListItem('appliedDiscounts', {
+                                discount: {discountprocent: 0, name: '', expioringdate: new Date()},
+                                appliedDate: new Date()
+                            })}
                         >
-                            Remove Discount
+                            Add Discount
                         </Button>
-                    </div>
-                ))}
-                <Button
-                    type="button"
-                    className="mt-4"
-                    onClick={() => form.insertListItem('appliedDiscounts', {
-                        discount: {discountprocent: 0, name: '', expioringdate: new Date()},
-                        appliedDate: new Date()
-                    })}
-                >
-                    Add Discount
-                </Button>
-            </Fieldset>
+                    </Fieldset>
 
-            <Fieldset legend="Extras">
-                    {form.values.extras.map((_, index) => (
-                        <div key={index} className="border p-4 mb-4 rounded">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <Select
-                                    label="Extra Type"
-                                    data={Object.values(Extrastype)}
-                                    {...form.getInputProps(`extras.${index}.type`)}
-                                />
-                                <NumberInput
-                                    label="Price"
-                                    {...form.getInputProps(`extras.${index}.price`)}
-                                />
+                    <Fieldset legend="Extras">
+                        {form.values.extras.map((_, index) => (
+                            <div key={index} className="border p-4 mb-4 rounded">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Select
+                                        label="Extra Type"
+                                        data={Object.values(Extrastype)}
+                                        {...form.getInputProps(`extras.${index}.type`)}
+                                    />
+                                    <NumberInput
+                                        label="Price"
+                                        {...form.getInputProps(`extras.${index}.price`)}
+                                    />
+                                </div>
+                                <Button
+                                    type="button"
+                                    color="red"
+                                    className="mt-2"
+                                    onClick={() => form.removeListItem('extras', index)}
+                                >
+                                    Remove Extra
+                                </Button>
                             </div>
-                            <Button
-                                type="button"
-                                color="red"
-                                className="mt-2"
-                                onClick={() => form.removeListItem('extras', index)}
-                            >
-                                Remove Extra
-                            </Button>
-                        </div>
-                    ))}
-                    <Button
-                        type="button"
-                        className="mt-4"
-                        onClick={() => form.insertListItem('extras', {type: Extrastype.CLEANING, price: 0})}
-                    >
-                        Add Extra
-                    </Button>
-                </Fieldset>
+                        ))}
+                        <Button
+                            type="button"
+                            className="mt-4"
+                            onClick={() => form.insertListItem('extras', {type: Extrastype.CLEANING, price: 0})}
+                        >
+                            Add Extra
+                        </Button>
+                    </Fieldset>
                 </>
             );
         }
@@ -386,35 +378,35 @@ export default function CreateAccommodationForm({
                 {stepcontent()}
 
                 <Group justify="center">
-                {step > 1 && (
+                    {step > 1 && (
 
-                    <Button
-                    type="button"
-
-                    onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))} // Prevents step from going below 1
-                >
-                    Previous
-                </Button>
-                )}
-
-                {step === 5 ? (
                         <Button
-                            type="submit"
-                            loading={submitting}
-                            disabled={submitting}
+                            type="button"
+
+                            onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))} // Prevents step from going below 1
                         >
-                            Create Accommodation
+                            Previous
                         </Button>
-                ):
-                (
-                <Button
-                    type="button"
-                    className=""
-                    onClick={() => setActiveStep((prev) => Math.min(6, prev + 1))} // Prevents step from going above 6
-                >
-                    Next
-                </Button>
-                    ) }
+                    )}
+
+                    {step === 5 ? (
+                            <Button
+                                type="submit"
+                                loading={submitting}
+                                disabled={submitting}
+                            >
+                                Create Accommodation
+                            </Button>
+                        ) :
+                        (
+                            <Button
+                                type="button"
+                                className=""
+                                onClick={() => setActiveStep((prev) => Math.min(6, prev + 1))} // Prevents step from going above 6
+                            >
+                                Next
+                            </Button>
+                        )}
                 </Group>
             </form>
         </Group>

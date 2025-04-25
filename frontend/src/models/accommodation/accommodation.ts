@@ -102,9 +102,6 @@ export interface Accommodation extends AbstractEntity {
 }
 
 
-
-
-
 export interface Rating {
     id: string;
     comment: string;

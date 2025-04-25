@@ -2,17 +2,18 @@
 
 import ErrorFeedback from "@/components/error-feedback";
 import SuccessFeedback from "@/components/success-feedback";
-import httpClient, { restClient } from "@/lib/httpClient";
-import { cn } from "@/lib/utils";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
+import {restClient} from "@/lib/httpClient";
+import {cn} from "@/lib/utils";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
+import {useForm, zodResolver} from "@mantine/form";
 import Link from "next/link";
 import React from "react";
-import { toast } from "sonner";
-import { z } from "zod";
+import {toast} from "sonner";
+import {z} from "zod";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 const registerSchema = z
     .object({
@@ -36,7 +37,8 @@ const registerSchema = z
     });
 
 type Schema = z.infer<typeof registerSchema>;
-export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
+
+export function UserRegisterForm({className, ...props}: UserAuthFormProps) {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [success, setSuccess] = React.useState<boolean>(false);
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
@@ -206,10 +208,10 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                         </div>
                     </div>
 
-                    <ErrorFeedback data={errors} />
+                    <ErrorFeedback data={errors}/>
 
                     <Button disabled={isLoading} type="submit">
-                        {isLoading ? 'Creating account...': 'Create account'}
+                        {isLoading ? 'Creating account...' : 'Create account'}
                     </Button>
                 </div>
             </form>

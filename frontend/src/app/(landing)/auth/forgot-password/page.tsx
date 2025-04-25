@@ -2,12 +2,12 @@
 
 import ErrorFeedback from "@/components/error-feedback";
 import SuccessFeedback from "@/components/success-feedback";
-import httpClient, { restClient } from "@/lib/httpClient";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
+import {restClient} from "@/lib/httpClient";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
 import React from "react";
-import { z } from "zod";
-import { useForm, zodResolver } from '@mantine/form';
+import {z} from "zod";
+import {useForm, zodResolver} from '@mantine/form';
 
 const forgotPasswordSchema = z.object({
     email: z.string().email(),
@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
     }
 
     const form = useForm({
-        initialValues: { email: "" },
+        initialValues: {email: ""},
         validate: zodResolver(forgotPasswordSchema),
     })
 
@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             <div className={"grid gap-6"}>
-                <SuccessFeedback show={success} message="Password reset email sent" />
+                <SuccessFeedback show={success} message="Password reset email sent"/>
 
                 <form onSubmit={form.onSubmit(onSubmit)}>
                     <div className="grid gap-2">
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
                     </Button>
                 </form>
 
-                <ErrorFeedback data={errors} />
+                <ErrorFeedback data={errors}/>
             </div>
         </div>
     );

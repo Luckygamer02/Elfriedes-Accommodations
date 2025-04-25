@@ -1,22 +1,22 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import {
-    Container,
-    Title,
-    Text,
-    Button,
-    TextInput,
-    Select,
-    Paper,
-    Group,
-    Stack,
+    BackgroundImage,
     Box,
-    useMantineTheme,
-    BackgroundImage
+    Button,
+    Container,
+    Group,
+    Paper,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+    useMantineTheme
 } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
-import { IconSearch, IconMapPin, IconCalendar, IconUsers } from '@tabler/icons-react';
+import {DatePickerInput} from '@mantine/dates';
+import {IconCalendar, IconMapPin} from '@tabler/icons-react';
 import LandingContainer from "@/components/LandingPage/LandingContainer";
 import GuestSelectionPopover from "@/components/Searchbar/GuestSelectionPopover";
+import {useRouter} from 'next/navigation';
 
 interface OverlappingSearchProps {
     // Add any props here if needed
@@ -27,7 +27,7 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState<string>('1');
     const sunsetBanner = "http://localhost:9000/pictures/sunsetBanner.jpg";
-
+    const router = useRouter();
     return (
         <Box>
             {/* Hero Banner Section with Background Image */}
@@ -44,7 +44,7 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                 }}
             >
                 <LandingContainer>
-                    <Stack style={{ gap: theme.spacing.md }}>
+                    <Stack style={{gap: theme.spacing.md}}>
                         <Title order={1} style={{
                             color: 'white',
                             fontWeight: 700,
@@ -94,11 +94,11 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                     boxShadow: theme.shadows.md,
 
                 }}>
-                    <Group grow style={{ gap: theme.spacing.md, alignItems: 'flex-end' }}>
+                    <Group grow style={{gap: theme.spacing.md, alignItems: 'flex-end'}}>
                         <TextInput
                             label="Destination"
                             placeholder="City, Region or Accommodation"
-                            leftSection={<IconMapPin size={16} />}
+                            leftSection={<IconMapPin size={16}/>}
                             radius="md"
                         />
 
@@ -108,11 +108,11 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                             placeholder="Pick dates"
                             value={dateRange}
                             onChange={setDateRange}
-                            leftSection={<IconCalendar size={16} />}
+                            leftSection={<IconCalendar size={16}/>}
                             radius="md"
                         />
 
-                        <GuestSelectionPopover/>
+                        <GuestSelectionPopover />
 
                         <Button
                             variant="filled"
@@ -125,6 +125,21 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                                 fontSize: theme.fontSizes.md
                             }}
                             size="md"
+                            onClick={() => {
+                                // build params manually, only adding defined values
+                                const params = new URLSearchParams();
+                                if (dateRange[0]) {
+                                    params.set('checkIn', dateRange[0].toISOString());
+                                }
+                                if (dateRange[1]) {
+                                    params.set('checkOut', dateRange[1].toISOString());
+                                }
+                                params.set('guests', guests);
+
+
+                                // Push the full URL
+                                router.push(`/search?${params.toString()}`);
+                            }}
                         >
                             Search Accommodation
                         </Button>

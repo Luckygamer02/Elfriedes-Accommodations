@@ -12,7 +12,7 @@ interface SidebarProps {
     accommodation: Accommodation;
 }
 
-export default function sidebar({ accommodation }: SidebarProps) {
+export default function sidebar({accommodation}: SidebarProps) {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [guests, setGuests] = useState(1);
     const router = useRouter();
@@ -25,7 +25,7 @@ export default function sidebar({ accommodation }: SidebarProps) {
         return diffDays * accommodation.basePrice * guests;
     };
 
-    const { data: bookedDates = [] } = useSWR<DateRange[]>(
+    const {data: bookedDates = []} = useSWR<DateRange[]>(
         `api/bookings/bookeddates/${accommodation.id}`,
         () => restClient.getBookedDatesforAcc(accommodation.id)
     );
@@ -39,12 +39,12 @@ export default function sidebar({ accommodation }: SidebarProps) {
         if (!start || !end) return false;
 
         const normStart = normalize(start);
-        const normEnd   = normalize(end);
+        const normEnd = normalize(end);
 
         // For each existing booking...
         for (const range of bookedDates) {
             const from = normalize(new Date(range.from));
-            const to   = normalize(new Date(range.to));
+            const to = normalize(new Date(range.to));
 
             // Overlap occurs iff:
             //   your start is before their checkout (normStart < to) AND
@@ -79,7 +79,6 @@ export default function sidebar({ accommodation }: SidebarProps) {
     }
 
 
-
     return (
         <Stack>
             <Title order={3}>$ {accommodation.basePrice} night</Title>
@@ -105,7 +104,7 @@ export default function sidebar({ accommodation }: SidebarProps) {
                     // or if it falls into any booked range
                     return bookedDates.some((range) => {
                         const from = normalize(new Date(range.from));
-                        const to   = normalize(new Date(range.to));
+                        const to = normalize(new Date(range.to));
                         return normalized > from && normalized <= to;
                     });
                 }}

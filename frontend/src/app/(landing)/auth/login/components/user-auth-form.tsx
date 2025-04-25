@@ -3,17 +3,18 @@
 import * as React from "react";
 
 import * as z from "zod";
-import { toast } from "sonner";
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
+import {toast} from "sonner";
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
 import ErrorFeedback from "@/components/error-feedback";
 import Link from "next/link";
-import { FaGithub, FaGoogle} from "react-icons/fa";
+import {FaGithub, FaGoogle} from "react-icons/fa";
 import {useForm, zodResolver} from "@mantine/form";
 import {Button, TextInput} from "@mantine/core";
 
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 const loginFormSchema = z.object({
     email: z.string().email(),
@@ -21,7 +22,8 @@ const loginFormSchema = z.object({
 });
 
 type Schema = z.infer<typeof loginFormSchema>;
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+
+export function UserAuthForm({className, ...props}: UserAuthFormProps) {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const {login} = useAuthGuard({middleware: 'guest', redirectIfAuthenticated: '/profile'});
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
@@ -39,12 +41,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }
 
     const form = useForm({
-        initialValues: { email: "", password: "" },
+        initialValues: {email: "", password: ""},
         validate: zodResolver(loginFormSchema),
     })
 
     function getProviderLoginUrl(provider: 'google' | 'facebook' | 'github' | 'okta') {
-        return process.env.NEXT_PUBLIC_BASE_URL + `/oauth2/authorization/${provider}`
+        return 'http://localhost:8080' + `/oauth2/authorization/${provider}`
     }
 
     return (
@@ -76,7 +78,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
                     </div>
 
-                    <ErrorFeedback data={errors} />
+                    <ErrorFeedback data={errors}/>
 
                     <Button disabled={isLoading} type="submit">
                         {isLoading && 'Logging in...'}
@@ -95,14 +97,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <div className="flex flex-col gap-y-2">
                 <Link href={getProviderLoginUrl('github')}>
                     <Button variant="default" type="button" disabled={isLoading} className="w-full" fullWidth>
-                        <FaGithub className="mr-2 h-4 w-4" />
+                        <FaGithub className="mr-2 h-4 w-4"/>
                         GitHub
                     </Button>
                 </Link>
 
                 <Link href={getProviderLoginUrl('google')}>
                     <Button variant="default" type="button" disabled={isLoading} className="w-full" fullWidth>
-                        <FaGoogle className="mr-2 h-4 w-4" />
+                        <FaGoogle className="mr-2 h-4 w-4"/>
                         Google
                     </Button>
                 </Link>

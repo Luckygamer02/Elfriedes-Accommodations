@@ -1,35 +1,22 @@
 // app/accommodations/[id]/book/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
+import {useState} from "react";
+import {useParams, useSearchParams} from "next/navigation";
 import useSWR from "swr";
-import { format } from "date-fns";
-import {
-    Text,
-    Group,
-    Stack,
-    Title,
-    Paper,
-    Button,
-    Radio
-} from "@mantine/core";
-import { IconCalendar, IconUsers } from "@tabler/icons-react";
+import {format} from "date-fns";
+import {Button, Group, Paper, Radio, Stack, Text, Title} from "@mantine/core";
+import {IconCalendar, IconUsers} from "@tabler/icons-react";
 
 import Loading from "@/components/loading";
 import httpClient from "@/lib/httpClient";
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import { PaymentDetails } from "@/components/upload/PaymentDetails";
-import {
-    BankTransferSchema,
-    CreditCardSchema,
-    BookingSchema,
-    BookingParamsSchema
-} from "@/components/booking/validation";
-import { Accommodation } from "@/models/accommodation/accommodation";
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {PaymentDetails} from "@/components/upload/PaymentDetails";
+import {BankTransferSchema, BookingParamsSchema, CreditCardSchema} from "@/components/booking/validation";
+import {Accommodation} from "@/models/accommodation/accommodation";
 
 export default function BookingPage() {
-    const { user } = useAuthGuard({ middleware: "guest" });
+    const {user} = useAuthGuard({middleware: "guest"});
     const params = useParams();
     const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
@@ -72,19 +59,19 @@ export default function BookingPage() {
     });
 
     const handleCardChange = (field: string, value: string) => {
-        setCardDetails((prev) => ({ ...prev, [field]: value }));
+        setCardDetails((prev) => ({...prev, [field]: value}));
     };
 
     const handleBankChange = (field: string, value: string) => {
-        setBankDetails((prev) => ({ ...prev, [field]: value }));
+        setBankDetails((prev) => ({...prev, [field]: value}));
     };
 
-    const { data: accommodation, error, isLoading } = useSWR<Accommodation>(
+    const {data: accommodation, error, isLoading} = useSWR<Accommodation>(
         `api/accommodations/${id}`,
         () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then((res) => res.data)
     );
 
-    if (isLoading) return <Loading />;
+    if (isLoading) return <Loading/>;
     if (error) return <Text>Error loading booking details</Text>;
     if (!accommodation) return null;
 
@@ -102,7 +89,7 @@ export default function BookingPage() {
             transactionDate: new Date().toISOString(),
         };
 
-        let payment: any = { ...basePayment };
+        let payment: any = {...basePayment};
 
         if (paymentMethod === "creditCard") {
             const creditValidation = CreditCardSchema.safeParse(cardDetails);
@@ -129,7 +116,7 @@ export default function BookingPage() {
         }
 
         const bookingPayload = {
-            user: user ? { id: user.id, email: user.email } : null,
+            user: user ? {id: user.id, email: user.email} : null,
             firstName,
             lastName,
             email: user?.email || email,
@@ -167,9 +154,9 @@ export default function BookingPage() {
                     label="Select payment method"
                 >
                     <Stack mt="xs">
-                        <Radio value="creditCard" label="Credit Card" />
-                        <Radio value="paypal" label="PayPal" />
-                        <Radio value="bankTransfer" label="Bank Transfer" />
+                        <Radio value="creditCard" label="Credit Card"/>
+                        <Radio value="paypal" label="PayPal"/>
+                        <Radio value="bankTransfer" label="Bank Transfer"/>
                     </Stack>
                 </Radio.Group>
 
@@ -187,7 +174,7 @@ export default function BookingPage() {
 
                         <Group gap="xl">
                             <Group gap="sm">
-                                <IconCalendar size={20} />
+                                <IconCalendar size={20}/>
                                 <Text>
                                     {format(parsedDates.checkIn, "MMM dd, yyyy")} -{" "}
                                     {format(parsedDates.checkOut, "MMM dd, yyyy")}
@@ -195,7 +182,7 @@ export default function BookingPage() {
                             </Group>
 
                             <Group gap="sm">
-                                <IconUsers size={20} />
+                                <IconUsers size={20}/>
                                 <Text>{guests} guests</Text>
                             </Group>
                         </Group>

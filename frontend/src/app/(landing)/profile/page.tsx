@@ -4,24 +4,24 @@ import React from "react";
 import Container from '@/components/container';
 import UpdateBasicDetailsForm from "../../../components/user/update-basic-details-form";
 import UpdatePasswordForm from "../../../components/user/update-password-form";
-import { useAuthGuard } from "@/lib/auth/use-auth";
-import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { format } from "date-fns";
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {FaFacebook, FaGithub, FaGoogle} from "react-icons/fa";
+import {format} from "date-fns";
 import Loading from "@/components/loading";
 import UpdateProfileImageForm from "../../../components/user/update-profile-image-form";
-import { Divider } from "@mantine/core";
+import {Divider} from "@mantine/core";
 
 export default function ProfilePage() {
-    const { user } = useAuthGuard({ middleware: "auth" });
+    const {user} = useAuthGuard({middleware: "auth"});
 
     const getProviderIcon = (provider: string) => {
         switch (provider) {
             case "google":
-                return <FaGoogle />;
+                return <FaGoogle/>;
             case "github":
-                return <FaGithub />;
+                return <FaGithub/>;
             case "facebook":
-                return <FaFacebook />;
+                return <FaFacebook/>;
             case "okta":
                 return <span>Okta</span>;
             default:
@@ -29,21 +29,21 @@ export default function ProfilePage() {
         }
     };
 
-    if (!user) return <Loading />;
+    if (!user) return <Loading/>;
 
     return (
         <Container size="sm">
             <div className="flex flex-col gap-y-4">
                 <h1 className="text-2xl font-semibold">Welcome back, {user.firstName}</h1>
 
-                <UpdateProfileImageForm />
-                <Divider />
+                <UpdateProfileImageForm/>
+                <Divider/>
 
-                <UpdateBasicDetailsForm />
-                <Divider />
+                <UpdateBasicDetailsForm/>
+                <Divider/>
 
-                <UpdatePasswordForm />
-                <Divider />
+                <UpdatePasswordForm/>
+                <Divider/>
 
                 <h2 className="text-lg font-semibold mb-2">Connected Accounts</h2>
                 <div className="flex flex-col gap-y-2">

@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
                         </ul>
                     </div>
                 </div>
-                <hr className="border-t border-gray-400 my-8" />
+                <hr className="border-t border-gray-400 my-8"/>
                 <div className="justify-items-center">
                     <p>&copy; {new Date().getFullYear()} Elfriedes Accommodations. All rights reserved.</p>
                 </div>

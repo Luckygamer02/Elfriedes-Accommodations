@@ -1,4 +1,3 @@
-
-export interface Rating{
+export interface Rating {
 
 }

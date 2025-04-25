@@ -1,21 +1,20 @@
-
-import { CreateDiscountRequest, CreateExtraRequest,} from "@/models/accommodation/accommodation";
-import {Badge, Card, Group,Highlight, Stack,Text,  Title} from "@mantine/core";
+import {CreateDiscountRequest, Extra,} from "@/models/accommodation/accommodation";
+import {Badge, Card, Group, Highlight, Stack, Text, Title} from "@mantine/core";
 
 type HighlightsProps = {
     festivals?: number;
-    extras?: CreateExtraRequest[];
+    extras?: Extra[];
     discounts?: CreateDiscountRequest[];
 };
 
 
-export default function Highlights({ festivals, extras, discounts }: HighlightsProps){
-    return(
+export default function Highlights({festivals, extras, discounts}: HighlightsProps) {
+    return (
         <Stack>
             {/* Festivals Section */}
             <Card shadow="sm" padding="lg">
                 <Title order={3}>Festivals</Title>
-                <Group  mt="sm">
+                <Group mt="sm">
                     {festivals ? (
                         <Badge key={festivals}>...</Badge>
                     ) : (

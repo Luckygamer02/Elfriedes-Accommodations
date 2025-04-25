@@ -1,7 +1,7 @@
 // components/AccommodationMap.tsx
 "use client";
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import dynamic from 'next/dynamic';
 
 interface AccommodationMapProps {
@@ -10,22 +10,22 @@ interface AccommodationMapProps {
 
 const MapContainer = dynamic(
     () => import('react-leaflet').then((mod) => mod.MapContainer),
-    { ssr: false }
+    {ssr: false}
 );
 const Marker = dynamic(
     () => import('react-leaflet').then((mod) => mod.Marker),
-    { ssr: false }
+    {ssr: false}
 );
 const Popup = dynamic(
     () => import('react-leaflet').then((mod) => mod.Popup),
-    { ssr: false }
+    {ssr: false}
 );
 const TileLayer = dynamic(
     () => import('react-leaflet').then((mod) => mod.TileLayer),
-    { ssr: false }
+    {ssr: false}
 );
 
-export default function AccommodationMap({ addressList }: AccommodationMapProps) {
+export default function AccommodationMap({addressList}: AccommodationMapProps) {
     const [locations, setLocations] = useState<
         { position: [number, number]; address: string }[]
     >([]);
@@ -85,7 +85,7 @@ export default function AccommodationMap({ addressList }: AccommodationMapProps)
         <MapContainer
             center={center}
             zoom={15}
-            style={{ height: '400px', width: '100%' }}
+            style={{height: '400px', width: '100%',zIndex: 1}}
             className="rounded-lg"
         >
             <TileLayer

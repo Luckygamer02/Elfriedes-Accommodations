@@ -1,5 +1,5 @@
-import { createStyles } from '@mantine/emotion';
-import type { MantineTheme } from '@mantine/core';
+import {createStyles} from '@mantine/emotion';
+import type {MantineTheme} from '@mantine/core';
 
 export const useStyles = createStyles((theme: MantineTheme) => ({
     heroSection: {

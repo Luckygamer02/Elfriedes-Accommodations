@@ -1,6 +1,6 @@
 "use client";
 
-import { Title, Text, Stack, Divider } from '@mantine/core';
+import {Divider, Stack, Text, Title} from '@mantine/core';
 import LandingContainer from "@/components/LandingPage/LandingContainer"
 
 export default function ContactPage() {
@@ -8,17 +8,17 @@ export default function ContactPage() {
         <LandingContainer>
             <Stack>
                 <Title order={2}>Imprint</Title>
-                <Divider />
+                <Divider/>
 
                 <Text>
                     <strong>Company Name:</strong> Elfriede's Accommodation
                 </Text>
 
                 <Text>
-                    <strong>Address:</strong><br />
-                    Elfriede Mustermann<br />
-                    Mountainview Street 42<br />
-                    12345 Alpine Village<br />
+                    <strong>Address:</strong><br/>
+                    Elfriede Mustermann<br/>
+                    Mountainview Street 42<br/>
+                    12345 Alpine Village<br/>
                     Austria
                 </Text>
 
@@ -42,14 +42,16 @@ export default function ContactPage() {
                     Responsible for content according to § 55 Abs. 2 RStV: Elfriede Mustermann
                 </Text>
 
-                <Divider />
+                <Divider/>
 
                 <Title order={4}>Disclaimer</Title>
 
                 <Text size="sm">
                     The content of this website has been created with the utmost care. However, we cannot guarantee the
-                    accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for our
-                    own content on these pages under general laws. We are not obliged to monitor transmitted or stored third-party
+                    accuracy, completeness, or timeliness of the content. As a service provider, we are responsible for
+                    our
+                    own content on these pages under general laws. We are not obliged to monitor transmitted or stored
+                    third-party
                     information or to investigate circumstances that indicate illegal activity.
                 </Text>
             </Stack>

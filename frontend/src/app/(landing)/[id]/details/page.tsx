@@ -1,14 +1,13 @@
 // app/accommodations/[id]/contactdetails/page.tsx
 "use client";
-import {TextInput, Button, Stack, Paper, Title, Text, Group} from '@mantine/core';
-import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { useAuthGuard } from "@/lib/auth/use-auth";
+import {Button, Group, Paper, Stack, Text, TextInput, Title} from '@mantine/core';
+import {useParams, useRouter, useSearchParams} from "next/navigation";
+import {useAuthGuard} from "@/lib/auth/use-auth";
 import Link from "next/link";
-import { useState } from "react";
-import Loading from '@/components/loading';
+import {useState} from "react";
 
-export default  function ContactDetailsPage() {
-    const {user} =  useAuthGuard({middleware: "guest"});
+export default function ContactDetailsPage() {
+    const {user} = useAuthGuard({middleware: "guest"});
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
@@ -81,7 +80,6 @@ export default  function ContactDetailsPage() {
                             readOnly={!!user}
                             placeholder="your@email.com"
                         />
-
 
 
                         <TextInput

@@ -2,9 +2,9 @@
 
 import Container from '@/components/container';
 import httpClient from "@/lib/httpClient";
-import { PagedResponse } from "@/models/http/PagedResponse";
-import { UserResponse } from "@/models/user/UserResponse";
-import { Button, Pagination, Table } from "@mantine/core";
+import {PagedResponse} from "@/models/http/PagedResponse";
+import {UserResponse} from "@/models/user/UserResponse";
+import {Button, Pagination, Table} from "@mantine/core";
 
 import React from "react";
 import useSWR from "swr";
@@ -12,10 +12,10 @@ import useSWR from "swr";
 export default function page() {
     const [page, setPage] = React.useState(1);
 
-    const { data } = useSWR(`/api/admin/users?page=${page}`, () => {
+    const {data} = useSWR(`/api/admin/users?page=${page}`, () => {
         return httpClient
             .get<PagedResponse<UserResponse>>("/api/admin/users", {
-                params: { page: page - 1 },
+                params: {page: page - 1},
             })
             .then((res) => res.data);
     });

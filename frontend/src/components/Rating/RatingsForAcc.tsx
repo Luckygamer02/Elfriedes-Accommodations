@@ -5,7 +5,7 @@ import {restClient} from "@/lib/httpClient";
 type RatingsForAccProps = {
     accommodationId: number;
 };
-export default function RatingsForAcc({ accommodationId }: RatingsForAccProps  ) {
+export default function RatingsForAcc({accommodationId}: RatingsForAccProps) {
     const ratings = restClient.getReviewsForAccommodation(accommodationId);
 
     return (

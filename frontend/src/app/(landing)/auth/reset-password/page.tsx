@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import { ResetPasswordForm } from "@/components/user/ResetPasswordForm";
+import {ResetPasswordForm} from "@/components/user/ResetPasswordForm";
 
 export default function ResetPasswordPage() {
     return (
@@ -11,7 +11,7 @@ export default function ResetPasswordPage() {
                     Enter your new password
                 </h1>
             </div>
-            <ResetPasswordForm />
+            <ResetPasswordForm/>
         </div>
     );
 }

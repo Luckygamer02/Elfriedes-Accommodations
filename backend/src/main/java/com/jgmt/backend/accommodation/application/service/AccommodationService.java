@@ -143,7 +143,7 @@ public class AccommodationService {
             }
 
             // 3. Add ONLY ONCE
-            a.getPictures().add(uploadedFile);
+            a.getPictures().add(url);
 
             // 4. Save both entities
             accommodationRepository.save(a);
@@ -171,4 +171,31 @@ public class AccommodationService {
                         .collect(Collectors.toList());
     }
 
+    /**
+     * Remove the image at the given index from the accommodation's picture list.
+     */
+    @Transactional
+    public AccommodationResponse deleteAccommodationImage(Long accommodationId, int index) {
+        // 1) Load or throw
+        Accommodation acc = accommodationRepository.findById(accommodationId)
+                .orElseThrow(() -> new EntityNotFoundException("Accommodation not found: " + accommodationId));
+
+        List<String> pics = acc.getPictures();
+        if (pics == null || index < 0 || index >= pics.size()) {
+            throw new EntityNotFoundException("No image at index " + index);
+        }
+
+        // 2) Remove from the list
+        String removedUrl = pics.remove(index);
+
+        // 3) Persist the updated accommodation
+        accommodationRepository.save(acc);
+
+        // 4) (Optional) delete file from S3 and UploadedFile record if you track those
+        // fileUploadService.deleteFile(removedUrl);
+        // uploadedFileRepository.deleteByUrl(removedUrl);
+
+        // 5) Return the updated DTO
+        return new AccommodationResponse(acc);
+    }
 }

@@ -1,5 +1,5 @@
-import { useAuthGuard } from '@/lib/auth/use-auth'
-import { Role } from '@/models/user/UserResponse'
+import {useAuthGuard} from '@/lib/auth/use-auth'
+import {Role} from '@/models/user/UserResponse'
 import React from 'react'
 
 /**
@@ -11,6 +11,7 @@ import React from 'react'
 interface PermissionDeniedProps {
     rolesAllowed: Role[]
 }
+
 export default function PermissionGuard({rolesAllowed}: PermissionDeniedProps) {
     const {user} = useAuthGuard({middleware: 'auth'})
     const isAllowed = rolesAllowed.includes(user?.role as Role)

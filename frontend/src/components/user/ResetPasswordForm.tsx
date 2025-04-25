@@ -1,15 +1,13 @@
-
-
 import ErrorFeedback from "@/components/error-feedback";
 import SuccessFeedback from "@/components/success-feedback";
 import httpClient from "@/lib/httpClient";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
+import {useForm, zodResolver} from "@mantine/form";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import React from "react";
-import { z } from "zod";
+import {z} from "zod";
 
 const resetPasswordSchema = z
     .object({
@@ -23,6 +21,7 @@ const resetPasswordSchema = z
     });
 
 type Schema = z.infer<typeof resetPasswordSchema>;
+
 export function ResetPasswordForm() {
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
         undefined
@@ -84,7 +83,7 @@ export function ResetPasswordForm() {
                         />
                     </div>
 
-                    <ErrorFeedback data={errors} />
+                    <ErrorFeedback data={errors}/>
 
                     <Button type="submit">
                         Update Password

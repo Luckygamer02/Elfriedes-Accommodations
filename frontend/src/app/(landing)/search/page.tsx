@@ -1,13 +1,11 @@
 "use client"
 import AccommodationMap from "@/components/Map/AccommodationMap";
 import {restClient} from "@/lib/httpClient";
-import { useSearchParams} from "next/navigation";
+import {useSearchParams} from "next/navigation";
 import {Accommodation, AccommodationType, Extrastype} from "@/models/accommodation/accommodation";
-import {useMemo} from "react";
 import SearchSideBar from "@/components/Searchbar/SearchSideBar";
 import AccommodationRaster from "@/components/layout/AccommodationRaster";
 import useSWR from "swr";
-import dynamic from "next/dynamic";
 
 export default function SearchPage() {
 
@@ -18,41 +16,38 @@ export default function SearchPage() {
     const minPriceParam = searchParams.get("minPrice");
     const maxPriceParam = searchParams.get("maxPrice");
     const extrasParam = searchParams.getAll("extras") as Extrastype[];
+    const roomsParam = searchParams.get("rooms");
+    const bedroomsParam = searchParams.get("bedrooms");
+    const bathroomsParam = searchParams.get("bathrooms");
+    const peopleParam = searchParams.get("people");
+    const postalCodeParam = searchParams.get("postalCode");
+    const festivalistParam = searchParams.get("festivalist");
     const featuresParam = searchParams.getAll(
         "features"
     ) as (keyof Accommodation["features"])[];
 
     // 2. Baue daraus nur die tatsächlich gesetzten Filter
-    const filters = useMemo(() => {
-        const f: {
-            city?: string;
-            type?: AccommodationType;
-            minPrice?: number;
-            maxPrice?: number;
-            extras?: Extrastype[];
-            features?: (keyof Accommodation["features"])[];
-        } = {};
-        if (cityParam) f.city = cityParam;
-        if (typeParam) f.type = typeParam;
-        if (minPriceParam) f.minPrice = Number(minPriceParam);
-        if (maxPriceParam) f.maxPrice = Number(maxPriceParam);
-        if (extrasParam.length) f.extras = extrasParam;
-        if (featuresParam.length) f.features = featuresParam;
-        return f;
-    }, [
-        cityParam,
-        typeParam,
-        minPriceParam,
-        maxPriceParam,
-        extrasParam.join("|"),
-        featuresParam.join("|"),
-    ]);
+    const filters = {
+        city: cityParam || undefined,
+        postalCode: postalCodeParam || undefined,
+        minPrice: minPriceParam ? Number(minPriceParam) : undefined,
+        maxPrice: maxPriceParam ? Number(maxPriceParam) : undefined,
+        bedrooms: bedroomsParam ? Number(bedroomsParam) : undefined,
+        bathrooms: bathroomsParam ? Number(bathroomsParam) : undefined,
+        people: peopleParam ? Number(peopleParam) : undefined,
+        livingRooms: roomsParam ? Number(roomsParam) : undefined,
+        type: typeParam || undefined,
+        festivalistId: festivalistParam ? Number(festivalistParam) : undefined,
+        extras: extrasParam,
+        features: featuresParam,
+    };
+
     const queryKey = ['accommodations', filters];
-    const { data, error, isLoading } = useSWR(
+    const {data, error, isLoading} = useSWR(
         queryKey,
         () => restClient.getAccommodationbySearchParams(filters).then(res => res),
     );
-    if(!data) return (
+    if (!data) return (
         <div>Loading...</div>
     )
     const accommodationAddresses: string[] = data
@@ -63,7 +58,7 @@ export default function SearchPage() {
 
     return (
         <>
-            <SearchSideBar />
+            <SearchSideBar/>
             <AccommodationMap addressList={accommodationAddresses}/>
             <AccommodationRaster accommodations={data}/>
         </>

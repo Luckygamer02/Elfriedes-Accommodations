@@ -109,11 +109,9 @@ public class AccommodationController {
     @GetMapping("/search")
     @Operation(summary = "Search accommodations", description = "Search with filters")
     public ResponseEntity<List<AccommodationResponse>> searchAccommodations(
-            @ModelAttribute FilterAccommodationDTO accommodationRequest
-    )
-    {
-
-        List<AccommodationResponse> result = accommodationService.searchWithFilters(accommodationRequest);
+            @ModelAttribute FilterAccommodationDTO filter
+    ) {
+        List<AccommodationResponse> result = accommodationService.searchWithFilters(filter);
         return ResponseEntity.ok(result);
     }
     @GetMapping("/getbyUserid/{ownerId}")
@@ -127,6 +125,37 @@ public class AccommodationController {
             @PathVariable Long id, @RequestParam("file") MultipartFile file) {
         AccommodationResponse accommodation = accommodationService.updateAccommodationPicture( file, id);
         return ResponseEntity.ok(accommodation);
+    }
+
+    /**
+     * Upload a new image file for the given accommodation.
+     * Matches front-end PATCH /api/accommodations/{id}/image
+     */
+    @PatchMapping(
+            path = "/{id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Upload accommodation image", description = "Add one image to an accommodation")
+    public ResponseEntity<AccommodationResponse> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        AccommodationResponse updated = accommodationService.updateAccommodationPicture(file, id);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * Delete a single image by its position in the list.
+     * Matches front-end DELETE /api/accommodations/{id}/images/{index}
+     */
+    @DeleteMapping("/{id}/images/{index}")
+    @Operation(summary = "Delete accommodation image", description = "Remove one image from an accommodation by index")
+    @ApiResponse(responseCode = "200", description = "Image removed and accommodation returned")
+    public ResponseEntity<AccommodationResponse> deleteImage(
+            @PathVariable Long id,
+            @PathVariable int index) {
+        AccommodationResponse updated = accommodationService.deleteAccommodationImage(id, index);
+        return ResponseEntity.ok(updated);
     }
 
 }

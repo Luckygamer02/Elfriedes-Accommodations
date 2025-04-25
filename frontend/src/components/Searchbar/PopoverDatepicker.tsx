@@ -1,4 +1,4 @@
-import { Popover, Button, TextInput } from '@mantine/core';
+import {Button, Popover} from '@mantine/core';
 import {DatePicker} from "@mantine/dates";
 import '@mantine/dates/styles.css';
 import {useState} from "react";
@@ -25,22 +25,22 @@ const PopoverDatepicker = () => {
 
 
     return (
-    <Popover width={300} trapFocus position="bottom" withArrow shadow="md">
-      <Popover.Target>
-        <Button>{formatDateRange()}</Button>
-      </Popover.Target>
-      <Popover.Dropdown>
-        <DatePicker
-                                    type="range"
-                                    value={dateRange}
-                                    onChange={setDateRange}
-                                    minDate={new Date()}
-                                    numberOfColumns={1}
-                                    allowSingleDateInRange
-                                />
-      </Popover.Dropdown>
-    </Popover>
-  );
+        <Popover width={300} trapFocus position="bottom" withArrow shadow="md">
+            <Popover.Target>
+                <Button>{formatDateRange()}</Button>
+            </Popover.Target>
+            <Popover.Dropdown>
+                <DatePicker
+                    type="range"
+                    value={dateRange}
+                    onChange={setDateRange}
+                    minDate={new Date()}
+                    numberOfColumns={1}
+                    allowSingleDateInRange
+                />
+            </Popover.Dropdown>
+        </Popover>
+    );
 }
 
 export default PopoverDatepicker;
