@@ -5,6 +5,8 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+/resources
+.properties
 ### STS ###
 .apt_generated
 .classpath
@@ -33,7 +35,7 @@ out/
 /nbdist/
 /.nb-gradle/
 
-.properties
+
 
 ### VS Code ###
 .vscode/
