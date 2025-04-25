@@ -109,10 +109,10 @@ export default function AccommodationDetailPage() {
                             {"‎"}
                         </Text>
 
-                        <AccommodationMap address={
+                        <AccommodationMap address={[
                             `${accommodation.address.street} ${accommodation.address.houseNumber}, 
                              ${accommodation.address.postalCode} ${accommodation.address.city}, 
-                             ${accommodation.address.country}`
+                             ${accommodation.address.country}`]
                         } />
                     </Paper>
                 </Grid.Col>

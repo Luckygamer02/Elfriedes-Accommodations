@@ -1,25 +1,41 @@
-import React, { useState } from 'react';
-import { Popover, Button, Group, Text, ActionIcon, NumberInput, Stack, Box } from '@mantine/core';
+// components/Searchbar/GuestSelectionPopover.tsx
+'use client';
+import React from 'react';
+import {
+    Popover,
+    Button,
+    Group,
+    Text,
+    ActionIcon,
+    NumberInput,
+    Stack,
+    Box,
+} from '@mantine/core';
 import { IconMinus, IconPlus } from '@tabler/icons-react';
 
-export default function GuestSelectionPopover() {
-    const [opened, setOpened] = useState(false);
-    const [adults, setAdults] = useState(4);
-    const [children, setChildren] = useState(0);
-    const [rooms, setRooms] = useState(2);
+interface GuestSelectionPopoverProps {
+    adults: number;
+    children: number;
+    rooms: number;
+    onChange: (values: { adults: number; children: number; rooms: number }) => void;
+}
 
-    const handleIncrement = (setter: React.Dispatch<React.SetStateAction<number>>, value: number) => {
-        setter(value + 1);
-    };
+export default function GuestSelectionPopover({
+                                                  adults,
+                                                  children,
+                                                  rooms,
+                                                  onChange,
+                                              }: GuestSelectionPopoverProps) {
+    const [opened, setOpened] = React.useState(false);
 
-    const handleDecrement = (setter: React.Dispatch<React.SetStateAction<number>>, value: number) => {
-        if (value > 0) {
-            setter(value - 1);
-        }
-    };
+    const inc = (field: 'adults' | 'children' | 'rooms') =>
+        onChange({ ...{ adults, children, rooms }, [field]: eval(field) + 1 });
+    const dec = (field: 'adults' | 'children' | 'rooms') =>
+        eval(field) > 0 &&
+        onChange({ ...{ adults, children, rooms }, [field]: eval(field) - 1 });
 
     const totalPeople = adults + children;
-    const buttonLabel = `${totalPeople} Personen, ${rooms} Schlafzimmer`;
+    const label = `${totalPeople} people, ${rooms} rooms`;
 
     return (
         <Box w={256}>
@@ -37,115 +53,58 @@ export default function GuestSelectionPopover() {
                         variant="default"
                         fullWidth
                         justify="space-between"
-                        rightSection={opened ? "▲" : "▼"}
+                        rightSection={opened ? '▲' : '▼'}
                     >
-                        {buttonLabel}
+                        {label}
                     </Button>
                 </Popover.Target>
 
                 <Popover.Dropdown>
                     <Stack gap="md">
-                        <Group justify="space-between" align="center">
-                            <Text size="sm" fw={500} w={96}>Erwachsene</Text>
-                            <Group gap="xs" align="center">
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleDecrement(setAdults, adults)}
-                                    disabled={adults === 0}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconMinus size={16} />
-                                </ActionIcon>
+                        {(['adults', 'children', 'rooms'] as const).map((field) => (
+                            <Group justify="space-between" align="center" key={field}>
+                                <Text size="sm" fw={500} w={96}>
+                                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                                </Text>
+                                <Group gap="xs" align="center">
+                                    <ActionIcon
+                                        variant="default"
+                                        onClick={() => dec(field)}
+                                        disabled={eval(field) === 0}
+                                        size="md"
+                                        radius="xl"
+                                    >
+                                        <IconMinus size={16} />
+                                    </ActionIcon>
 
-                                <NumberInput
-                                    value={adults}
-                                    onChange={(val) => setAdults(Number(val))}
-                                    hideControls
-                                    min={0}
-                                    max={20}
-                                    w={48}
-                                    styles={{ input: { textAlign: 'center' } }}
-                                />
+                                    <NumberInput
+                                        value={eval(field)}
+                                        onChange={(val) =>
+                                            onChange({
+                                                adults,
+                                                children,
+                                                rooms,
+                                                [field]: Number(val),
+                                            } as any)
+                                        }
+                                        hideControls
+                                        min={0}
+                                        max={20}
+                                        w={48}
+                                        styles={{ input: { textAlign: 'center' } }}
+                                    />
 
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleIncrement(setAdults, adults)}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconPlus size={16} />
-                                </ActionIcon>
+                                    <ActionIcon
+                                        variant="default"
+                                        onClick={() => inc(field)}
+                                        size="md"
+                                        radius="xl"
+                                    >
+                                        <IconPlus size={16} />
+                                    </ActionIcon>
+                                </Group>
                             </Group>
-                        </Group>
-
-                        <Group justify="space-between" align="center">
-                            <Text size="sm" fw={500} w={96}>Kinder</Text>
-                            <Group gap="xs" align="center">
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleDecrement(setChildren, children)}
-                                    disabled={children === 0}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconMinus size={16} />
-                                </ActionIcon>
-
-                                <NumberInput
-                                    value={children}
-                                    onChange={(val) => setChildren(Number(val))}
-                                    hideControls
-                                    min={0}
-                                    max={20}
-                                    w={48}
-                                    styles={{ input: { textAlign: 'center' } }}
-                                />
-
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleIncrement(setChildren, children)}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconPlus size={16} />
-                                </ActionIcon>
-                            </Group>
-                        </Group>
-
-                        <Group justify="space-between" align="center">
-                            <Text size="sm" fw={500} w={96}>Schlafzimmer</Text>
-                            <Group gap="xs" align="center">
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleDecrement(setRooms, rooms)}
-                                    disabled={rooms === 0}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconMinus size={16} />
-                                </ActionIcon>
-
-                                <NumberInput
-                                    value={rooms}
-                                    onChange={(val) => setRooms(Number(val))}
-                                    hideControls
-                                    min={0}
-                                    max={20}
-                                    w={48}
-                                    styles={{ input: { textAlign: 'center' } }}
-                                />
-
-                                <ActionIcon
-                                    variant="default"
-                                    onClick={() => handleIncrement(setRooms, rooms)}
-                                    size="md"
-                                    radius="xl"
-                                >
-                                    <IconPlus size={16} />
-                                </ActionIcon>
-                            </Group>
-                        </Group>
+                        ))}
 
                         <Button
                             color="violet"
@@ -153,7 +112,7 @@ export default function GuestSelectionPopover() {
                             onClick={() => setOpened(false)}
                             mt="md"
                         >
-                            ANWENDEN
+                            Apply
                         </Button>
                     </Stack>
                 </Popover.Dropdown>

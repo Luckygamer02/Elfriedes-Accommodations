@@ -6,6 +6,7 @@ import com.jgmt.backend.accommodation.infrastructure.controller.data.Accommodati
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.domain.repository.AccommodationRepository;
+import com.jgmt.backend.accommodation.infrastructure.controller.data.FilterAccommodationDTO;
 import com.jgmt.backend.auth.SecurityUtil;
 import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.s3.repository.UploadedFileRepository;
@@ -24,8 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Locale.filter;
 
 @Service
 @RequiredArgsConstructor
@@ -150,6 +153,22 @@ public class AccommodationService {
         }
 
         return new AccommodationResponse(a);
+    }
+
+
+    public List<AccommodationResponse> searchWithFilters(FilterAccommodationDTO req) {
+        // 1. alle Unterkünfte laden
+        List<Accommodation> all = accommodationRepository.findAll();
+        //2. Stream-Filter nach allen non-null-Feldern im Request
+                return all.stream()
+                        .filter(acc -> req.getMinBasePrice() == null || acc.getBasePrice() >= req.getMinBasePrice())
+                        .filter(acc -> req.getMaxBasePrice() == null || acc.getBasePrice() <= req.getMaxBasePrice())
+                        .filter(acc -> req.getBedrooms() == null    || acc.getBedrooms() == req.getBedrooms())
+                        .filter(acc -> req.getBathrooms() == null   || acc.getBathrooms() == req.getBathrooms())
+                        .filter(acc -> req.getPeople() == null      || acc.getPeople() == req.getPeople())
+                        .filter(acc -> req.getType() == null        || acc.getType() == req.getType())
+                        .map(AccommodationResponse::new)
+                        .collect(Collectors.toList());
     }
 
 }

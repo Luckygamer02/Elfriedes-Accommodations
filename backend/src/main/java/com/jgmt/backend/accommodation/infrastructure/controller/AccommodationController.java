@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jgmt.backend.accommodation.domain.Accommodation;
+import com.jgmt.backend.accommodation.domain.Extra;
+import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.AccommodationResponse;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
+import com.jgmt.backend.accommodation.infrastructure.controller.data.FilterAccommodationDTO;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.application.service.AccommodationService;
 import com.jgmt.backend.users.data.UserResponse;
@@ -104,11 +107,14 @@ public class AccommodationController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Search accommodations", description = "Full-text search with multiple criteria")
-    public ResponseEntity<Page<AccommodationResponse>> searchAccommodations(
-            @RequestParam String query,
-            Pageable pageable) {
-        return ResponseEntity.ok(accommodationService.searchAccommodations(query, pageable));
+    @Operation(summary = "Search accommodations", description = "Search with filters")
+    public ResponseEntity<List<AccommodationResponse>> searchAccommodations(
+            @ModelAttribute FilterAccommodationDTO accommodationRequest
+    )
+    {
+
+        List<AccommodationResponse> result = accommodationService.searchWithFilters(accommodationRequest);
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/getbyUserid/{ownerId}")
     public ResponseEntity<Page<AccommodationResponse>> getAccommodationByUserid(@PathVariable Long ownerId,  @PageableDefault(size = 100) Pageable pageable)

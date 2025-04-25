@@ -26,7 +26,8 @@ export enum Extrastype {
 
 }
 
-interface CreateAddressRequest {
+
+export interface Address {
     street: string;
     houseNumber: string;
     city: string;
@@ -34,7 +35,8 @@ interface CreateAddressRequest {
     country: string;
 }
 
-interface CreateAccommodationFeatureRequest {
+
+interface AccommodationFeatures {
     ac: boolean;
     garden: boolean;
     kitchen: boolean;
@@ -57,7 +59,7 @@ export interface CreateAppliedDiscountRequest {
     appliedDate: string;
 }
 
-export interface CreateExtraRequest {
+export interface Extra {
     type: Extrastype;
     price: number;
 }
@@ -73,10 +75,10 @@ export interface CreateAccommodationRequest {
     type: AccommodationType;
     festivalistId: number;
     ownerId: number;
-    address: CreateAddressRequest;
-    features: CreateAccommodationFeatureRequest;
+    address: Address;
+    features: AccommodationFeatures;
     appliedDiscounts: CreateAppliedDiscountRequest[];
-    extras: CreateExtraRequest[];
+    extras: Extra[];
     pictures: MultipartFile[];
 }
 
@@ -92,32 +94,16 @@ export interface Accommodation extends AbstractEntity {
     type: AccommodationType,
     festivalistId: number,
     ownerId: number,
-    address: CreateAddressRequest,
-    features: CreateAccommodationFeatureRequest,
+    address: Address,
+    features: AccommodationFeatures,
     appliedDiscounts: CreateAppliedDiscountRequest[],
-    extras: CreateExtraRequest[],
+    extras: Extra[],
     picturesurls: string[]
 }
 
-export interface Address {
-    street: string;
-    houseNumber: string;
-    city: string;
-    postalCode: string;
-    country: string;
-}
 
-interface AccommodationFeatures {
-    ac: boolean;
-    garden: boolean;
-    kitchen: boolean;
-    microwave: boolean;
-    meetingTable: boolean;
-    pool: boolean;
-    tv: boolean;
-    washingMachine: boolean;
-    wifi: boolean;
-}
+
+
 
 export interface Rating {
     id: string;

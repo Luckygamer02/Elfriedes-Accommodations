@@ -2,7 +2,12 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
-import {Accommodation, CreateAccommodationRequest, Rating} from "@/models/accommodation/accommodation";
+import {
+    Accommodation,
+    AccommodationType,
+    CreateAccommodationRequest, Extrastype,
+    Rating
+} from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
 import {AxiosRequestConfig} from "axios";
 import httpClient from "@/lib/httpClient";
@@ -685,6 +690,31 @@ export class RestApplicationClient {
                to: new Date(range.to),
            }))
     );
+    }
+
+
+    getAccommodationbySearchParams(filters: {
+        city?: string;
+        type?: AccommodationType;
+        minPrice?: number;
+        maxPrice?: number;
+        extras?: Extrastype[];
+        features?: (keyof Accommodation["features"])[];
+    }): Promise<Accommodation[]> {
+        const params = new URLSearchParams();
+
+        if (filters.city) params.append("city", filters.city);
+        if (filters.type) params.append("type", filters.type);
+        if (filters.minPrice != null) params.append("minPrice", String(filters.minPrice));
+        if (filters.maxPrice != null) params.append("maxPrice", String(filters.maxPrice));
+        filters.extras?.forEach((e) => params.append("extras", e));
+        filters.features?.forEach((f) => params.append("features", f));
+
+        const queryString = params.toString() ? `?${params.toString()}` : "";
+
+        return httpClient
+            .get<Accommodation[]>(`api/accommodations/search${queryString}`)
+            .then((res) => res.data);
     }
 }
 
