@@ -35,6 +35,9 @@ public class AccommodationResponse implements Serializable {
     Long festivalistId;
     AccommodationFeature features;
     List<Extra> extras;
+    /**
+     * Image URLS
+     */
     List<String> picturesurls;
 
 
