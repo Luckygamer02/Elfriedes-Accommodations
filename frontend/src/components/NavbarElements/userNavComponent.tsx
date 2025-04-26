@@ -22,14 +22,15 @@ export function UserNavComponent(props: { // @ts-ignore
         )}
 
         {!props.user && (
-            <Link href={"/auth/login"}>
-                <Button variant={"outline"}>Login</Button>
-            </Link>
-        )}
-        {!props.user && (
-            <Link href={"/auth/login"}>
-                <Button>Register</Button>
-            </Link>
+            <>
+                <Link href={"/auth/login"}>
+                    <Button variant={"outline"}>Login</Button>
+                </Link>
+
+                <Link href={"/auth/login"}>
+                    <Button>Register</Button>
+                </Link>
+            </>
         )}
     </div>;
 }
