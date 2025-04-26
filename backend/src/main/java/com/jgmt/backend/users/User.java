@@ -90,7 +90,10 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        String roleName = (this.role != null)
+                ? this.role.name()
+                : "ROLE_USER";
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()));
     }
 
     @Override

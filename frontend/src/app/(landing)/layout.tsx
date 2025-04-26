@@ -1,11 +1,12 @@
 "use client"
 
-import Navbar from '@/components/layout/navbar';
+import Navbar from '@/components/NavbarElements/navbar';
 import Footer from '@/components/layout/Footer';
 import {useSubscribeToPushNotifications} from '@/lib/hooks/useSubscribeToPushNotifications';
 import {AppShell, Burger, Group} from '@mantine/core';
 import {useDisclosure} from '@mantine/hooks';
 import React, {useEffect} from 'react';
+import LandingContainer from "@/components/LandingPage/LandingContainer";
 
 export default function layout({children}: { children: React.ReactNode }) {
     const [opened, {toggle}] = useDisclosure(false);
@@ -38,9 +39,12 @@ export default function layout({children}: { children: React.ReactNode }) {
             <AppShell.Main>
                 <div className="flex flex-col min-h-[calc(100vh-60px)]">
                     <div className="flex-1">
+                        <LandingContainer className="py-8">
                         {children}
+                        </LandingContainer>
                     </div>
                 </div>
+
                 <Footer/>
             </AppShell.Main>
 

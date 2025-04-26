@@ -1,14 +1,13 @@
 import {Accommodation} from "@/models/accommodation/accommodation";
 import Link from "next/link";
-import {Badge, Card, Group, Text} from "@mantine/core";
+import {Badge, Image, Card, Group, Text} from "@mantine/core";
 import {RatingBadge} from "@/components/Rating/RatingBadge";
 import React from "react";
+import {Carousel} from "@mantine/carousel";
 
 export default function AccommodationContainer({acc}: { acc: Accommodation }) {
     return (
         <Card
-            component={Link}
-            href={`/${acc.id}`}
             p="lg"
             shadow="md"
             radius="md"
@@ -16,32 +15,29 @@ export default function AccommodationContainer({acc}: { acc: Accommodation }) {
             style={{textDecoration: "none", cursor: "pointer"}}
         >
             <Card.Section className="card-image-section">
-                {acc.picturesurls?.length ? (
-                    <div
-                        className="card-image"
-                        style={{backgroundImage: `url(${acc.picturesurls[0]})`}}
+                <Carousel>
+                {acc.picturesurls?.length && ( acc.picturesurls.map( (url) =>
+                    <Carousel.Slide>
+                    <Image
+                        src={url}
                     />
-                ) : (
-                    <div
-                        className="card-image"
-                        style={{backgroundImage: "url(/default-accommodation.jpg)"}}
-                    />
+                    </Carousel.Slide>
+                )
                 )}
-
-                <RatingBadge accommodationId={acc.id}/>
-
+                </Carousel>
+            <RatingBadge accommodationId={acc.id}/>
             </Card.Section>
-
-            <Group mt="md">
-                <Text>{acc.title}</Text>
-                <Badge color="teal" variant="light">
-                    ${acc.basePrice}/night
-                </Badge>
-            </Group>
-
-            <Text size="sm" mt="xs">
-                {acc.address.city}
-            </Text>
+            <Link href={`/${acc.id}`} style={{ textDecoration: "none" }}>
+                <Group mt="md" style={{ cursor: "pointer" }}>
+                    <Text>{acc.title}</Text>
+                    <Badge color="teal" variant="light">
+                        €{acc.basePrice}/night
+                    </Badge>
+                </Group>
+                <Text size="sm" mt="xs" style={{ cursor: "pointer" }}>
+                    {acc.address.city}
+                </Text>
+            </Link>
         </Card>
     );
 }

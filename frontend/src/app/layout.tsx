@@ -7,6 +7,7 @@ import '@mantine/notifications/styles.css';
 import {MantineProvider,} from "@mantine/core";
 import {ThemeProvider} from "@/components/theme-provider";
 import {Notifications} from '@mantine/notifications';
+import {ModalsProvider} from "@mantine/modals";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -38,7 +39,9 @@ export default function RootLayout({
         <ThemeProvider>
             <MantineProvider>
                 <Notifications/>
+                <ModalsProvider>
                 {children}
+                </ModalsProvider>
             </MantineProvider>
         </ThemeProvider>
         </body>

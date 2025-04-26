@@ -86,7 +86,7 @@ export default function BookingPage() {
         const basePayment = {
             method: paymentMethod.toUpperCase(),
             amount: total,
-            transactionDate: new Date().toISOString(),
+            paymentDate: new Date().toISOString().split('.')[0],
         };
 
         let payment: any = {...basePayment};
@@ -116,7 +116,7 @@ export default function BookingPage() {
         }
 
         const bookingPayload = {
-            user: user ? {id: user.id, email: user.email} : null,
+            userid: user?.id,
             firstName,
             lastName,
             email: user?.email || email,
@@ -127,7 +127,7 @@ export default function BookingPage() {
             people: guests,
             totalPrice: total,
             bookedExtras: [],
-            payments: payment,
+            payment: payment,
             appliedDiscounts: [],
         };
 

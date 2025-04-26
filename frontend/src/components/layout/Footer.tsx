@@ -19,9 +19,6 @@ const Footer: React.FC = () => {
                                 <Link href="/about">About us</Link>
                             </li>
                             <li>
-                                <Link href="/how-it-works">How it works</Link>
-                            </li>
-                            <li>
                                 <Link href="/contact">Contact</Link>
                             </li>
                         </ul>
@@ -34,9 +31,6 @@ const Footer: React.FC = () => {
                             </li>
                             <li>
                                 <Link href="/privacy">Privacy</Link>
-                            </li>
-                            <li>
-                                <Link href="/imprint">Imprint</Link>
                             </li>
                         </ul>
                     </div>

@@ -10,7 +10,6 @@ import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
 import {useMediaQuery} from "@mantine/hooks";
 import OverlappingSearch from "@/components/Searchbar/OverlappingSearch";
-import {AccommodationNav} from "@/components/NavbarElements/accommodationNav";
 import React, {useState} from "react";
 import {useAuthGuard} from "@/lib/auth/use-auth";
 import LandingContainer from "@/components/LandingPage/LandingContainer";
@@ -52,7 +51,7 @@ export default function Home() {
         <div className="min-h-screen flex flex-col">
             <OverlappingSearch/>
             <main className="flex-grow">
-                <LandingContainer className="py-8">
+
                     <div className="category-rows">
                         {categories.map((category) => (
                             <div key={category.type} className="category-row">
@@ -79,8 +78,8 @@ export default function Home() {
                             </div>
                         ))}
                     </div>
-                    <AccommodationNav user={user}/>
-                </LandingContainer>
+
+
             </main>
         </div>
     );

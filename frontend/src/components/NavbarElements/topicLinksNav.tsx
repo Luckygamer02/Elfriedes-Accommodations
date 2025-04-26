@@ -1,30 +1,14 @@
-"use client"
+"use client";
 
-import Link from "next/link"
+import React from 'react';
+import NextLink from 'next/link';
+import { Group, Text } from '@mantine/core';
 
-export default function topicLinksNav() {
+
+export default function NavLinks() {
+
     return (
-        <div className="flex items-center gap-x-2 justify-between mb-2 md:mb-0">
-            <Link href={"/"}>
-                <h1 className="text-xl font-bold">
-                    Home
-                </h1>
-            </Link>
-            <Link href={"/"}>
-                <h1 className="text-xl font-bold">
-                    Accommodations
-                </h1>
-            </Link>
-            <Link href={"/about"}>
-                <h1 className="text-xl font-bold">
-                    About us
-                </h1>
-            </Link>
-            <Link href={"/contact"}>
-                <h1 className="text-xl font-bold">
-                    Contact
-                </h1>
-            </Link>
-        </div>
-    )
+
+    <div></div>
+    );
 }

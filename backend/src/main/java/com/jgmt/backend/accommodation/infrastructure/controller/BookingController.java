@@ -35,6 +35,19 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getBookedDates(accommodationId));
     }
 
+    @GetMapping("/user/{userid}")
+    public ResponseEntity<List<BookingResponse>> getAllBookings(@PathVariable Long userid) {
+        return ResponseEntity.ok(bookingService.getBookingByUserId(userid));
+    }
+    @GetMapping("accomodation/{accid}")
+    public ResponseEntity<List<BookingResponse>> getAllBookingsforAccommodation(@PathVariable Long accid) {
+        return ResponseEntity.ok(bookingService.getBookingByAccId(accid));
+    }
+
+    @GetMapping("/{bookingid}")
+    public ResponseEntity<BookingResponse> getBooking(@PathVariable Long bookingid){
+        return ResponseEntity.of(bookingService.getBookingbyId(bookingid));
+    }
     @PostMapping
     public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO booking) {
         return ResponseEntity.ok(bookingService.createBooking(booking));

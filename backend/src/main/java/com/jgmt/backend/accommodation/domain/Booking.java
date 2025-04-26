@@ -1,9 +1,7 @@
 package com.jgmt.backend.accommodation.domain;
 
-import com.jgmt.backend.accommodation.application.service.AccommodationService;
 import com.jgmt.backend.accommodation.domain.enums.BookingStatus;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.BookingDTO;
-import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateBooking;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.users.User;
 import com.jgmt.backend.util.Client;
@@ -16,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,7 +68,7 @@ public class Booking extends AbstractEntity{
     @Builder.Default
     private List<BookedExtra> bookedExtras = new ArrayList<>();
 
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+   @Embedded
     private Payment payment;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)

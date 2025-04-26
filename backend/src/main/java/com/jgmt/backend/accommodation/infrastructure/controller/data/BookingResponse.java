@@ -19,8 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingResponse implements Serializable {
-    User user;
-    private Accommodation accommodation;
+    private long id;
+    private AccommodationResponse accommodation;
     private Date checkInDate;
     private Date checkOutDate;
     private BookingStatus status;
@@ -30,9 +30,10 @@ public class BookingResponse implements Serializable {
     private List<AppliedDiscount> appliedDiscounts;
 
     public BookingResponse(Booking booking) {
-        this.user = booking.getUser();
-        this.accommodation = booking.getAccommodation();
+        this.id = booking.getId();
+        this.accommodation = new AccommodationResponse( booking.getAccommodation());
         this.checkInDate = booking.getCheckInDate();
+        this.checkOutDate = booking.getCheckOutDate();
         this.status = booking.getStatus();
         this.totalPrice = booking.getTotalPrice();
         this.bookedExtras = booking.getBookedExtras();

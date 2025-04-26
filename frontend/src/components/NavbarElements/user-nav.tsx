@@ -29,6 +29,9 @@ export function UserNav() {
                 <MenuItem>
                     <Link href="/profile">Profile</Link>
                 </MenuItem>
+                <MenuItem>
+                    <Link href="bookings"> Bookings</Link>
+                </MenuItem>
                 <MenuDivider/>
                 <MenuItem onClick={() => logout()}>Log out</MenuItem>
             </Menu.Dropdown>
