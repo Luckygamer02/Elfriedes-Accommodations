@@ -1,3 +1,4 @@
+// components/Searchbar/OverlappingSearch.tsx
 import React, {useState} from "react";
 import {
     BackgroundImage,
@@ -25,9 +26,18 @@ interface OverlappingSearchProps {
 const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
     const theme = useMantineTheme();
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
-    const [guests, setGuests] = useState<string>('1');
+    const [guests, setGuests] = useState({
+        adults: 1,
+        children: 0,
+        rooms: 1
+    });
     const sunsetBanner = "http://localhost:9000/pictures/sunsetBanner.jpg";
     const router = useRouter();
+
+    const handleGuestChange = (newValues: { adults: number; children: number; rooms: number }) => {
+        setGuests(prev => ({...prev, ...newValues}));
+    };
+
     return (
         <Box>
             {/* Hero Banner Section with Background Image */}
@@ -38,7 +48,7 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                     position: 'relative',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    minHeight: '30vh', // Set minimum height
+                    minHeight: '30vh',
                     display: 'flex',
                     alignItems: 'center',
                 }}
@@ -61,21 +71,6 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                         }}>
                             Find unique holiday houses and apartments for an unforgettable vacation
                         </Text>
-                        <Button
-                            variant="filled"
-                            color="violet"
-                            radius="md"
-                            style={{
-                                width: 'fit-content',
-                                color: theme.white,
-                                border: `1px solid ${theme.white}`,
-                                fontSize: theme.fontSizes.md
-                            }}
-                            size="md"
-                        >
-                            Explore Vacation Rentals
-
-                        </Button>
                     </Stack>
                 </LandingContainer>
             </BackgroundImage>
@@ -92,7 +87,6 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                     padding: theme.spacing.lg,
                     borderRadius: theme.radius.lg,
                     boxShadow: theme.shadows.md,
-
                 }}>
                     <Group grow style={{gap: theme.spacing.md, alignItems: 'flex-end'}}>
                         <TextInput
@@ -112,32 +106,32 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
                             radius="md"
                         />
 
-                        <GuestSelectionPopover />
+                        <GuestSelectionPopover
+                            adults={guests.adults}
+                            children={guests.children}
+                            rooms={guests.rooms}
+                            onChange={handleGuestChange}
+                        />
 
                         <Button
                             variant="filled"
                             color="violet"
                             radius="md"
-                            style={{
-                                width: 'fit-content',
-                                color: theme.white,
-                                border: `1px solid ${theme.white}`,
-                                fontSize: theme.fontSizes.md
-                            }}
                             size="md"
                             onClick={() => {
-                                // build params manually, only adding defined values
                                 const params = new URLSearchParams();
+
                                 if (dateRange[0]) {
                                     params.set('checkIn', dateRange[0].toISOString());
                                 }
                                 if (dateRange[1]) {
                                     params.set('checkOut', dateRange[1].toISOString());
                                 }
-                                params.set('guests', guests);
 
+                                params.set('adults', guests.adults.toString());
+                                params.set('children', guests.children.toString());
+                                params.set('rooms', guests.rooms.toString());
 
-                                // Push the full URL
                                 router.push(`/search?${params.toString()}`);
                             }}
                         >
@@ -149,5 +143,4 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
         </Box>
     );
 };
-
 export default OverlappingSearch;

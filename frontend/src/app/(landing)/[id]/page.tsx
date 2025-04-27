@@ -1,7 +1,6 @@
-// app/accommodations/[id]/page.tsx
 "use client";
 import '@mantine/dates/styles.css';
-import {Accommodation, Extra} from "@/models/accommodation/accommodation";
+import {Accommodation, Extra, FestivalType} from "@/models/accommodation/accommodation";
 import {Badge, Grid, Group, Image, Paper, Stack, Text, Title,} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
 import useSWR from "swr";
@@ -19,41 +18,35 @@ import {modals} from "@mantine/modals";
 import {ClickablePreviewImage} from "@/components/image/ClickablePreviewImage";
 import {useState} from "react";
 
-
 export default function AccommodationDetailPage() {
     const id = Number(useParams<{ id: string }>().id);
     const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
 
     const AccommodationMap = dynamic(
         () => import('@/components/Map/AccommodationMap').then((mod) => mod.default),
-        {
-            ssr: true,
-            loading: () => <p>Loading map...</p>
-        }
+        { ssr: true, loading: () => <p>Loading map...</p> }
     );
-    const {data: accommodation, error, isLoading} = useSWR<Accommodation>(
+
+    const { data: accommodation, error, isLoading } = useSWR<{ content: Accommodation }>(
         `api/accommodations/${id}`,
-        () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then(res => res.data)
+        () => httpClient.get<{ content: Accommodation }>(`api/accommodations/${id}`).then(res => res.data)
     );
+
 
 
     if (isLoading) return <Loading/>;
     if (error) return <Text>Error loading accommodation details</Text>;
     if (!accommodation) return null;
 
-
-
     return (
         <div className="accommodation-detail-container">
-
             <LandingContainer className="py-8">
-
                 <Grid gutter="xl" mt="md">
                     <Grid.Col>
                         <Stack gap="lg">
                             <Title order={1}>{accommodation.title}</Title>
                             <Group gap="sm">
-                                <RatingBadge accommodationId={accommodation.id}/>
+                                <RatingBadge accommodationId={accommodation.id} />
                                 <Badge color="teal" variant="light">
                                     ${accommodation.basePrice}/night
                                 </Badge>
@@ -67,44 +60,42 @@ export default function AccommodationDetailPage() {
                             </Carousel>
                         </Stack>
                     </Grid.Col>
-                    <Grid.Col span={{base: 12, md: 8}}>
+
+                    <Grid.Col span={{ base: 12, md: 8 }}>
                         <Paper p="md" shadow="sm">
                             <Title order={3} mb="sm">{accommodation.description}</Title>
-
                             <Group gap="xl">
                                 <Group gap="xs">
-                                    <IconBed size={18}/>
+                                    <IconBed size={18} />
                                     <Text>{accommodation.bedrooms} bedrooms</Text>
                                 </Group>
                                 <Group gap="xs">
-                                    <IconBath size={18}/>
+                                    <IconBath size={18} />
                                     <Text>{accommodation.bathrooms} bathrooms</Text>
                                 </Group>
                                 <Group gap="xs">
-                                    <IconUsers size={18}/>
+                                    <IconUsers size={18} />
                                     <Text>{accommodation.people} Maximum Guests</Text>
                                 </Group>
                             </Group>
                         </Paper>
-                        <Paper p="md" shadow="sm">
-                            <Title order={3} mb="sm">You will be here</Title>
 
+                        <Paper p="md" shadow="sm" mt="md">
+                            <Title order={3} mb="sm">Location</Title>
                             <Text>
-                                {accommodation.address.street} {accommodation.address.houseNumber} {", "}
-                                {accommodation.address.postalCode} {accommodation.address.city} {", "}
-                                {accommodation.address.country}<br/>
-                                {"‎"}
+                                {accommodation.address.street} {accommodation.address.houseNumber}, {" "}
+                                {accommodation.address.postalCode} {accommodation.address.city}, {" "}
+                                {accommodation.address.country}
                             </Text>
-
                             <AccommodationMap addressList={[
                                 `${accommodation.address.street} ${accommodation.address.houseNumber}, 
-                             ${accommodation.address.postalCode} ${accommodation.address.city}, 
-                             ${accommodation.address.country}`]
-                            }/>
+                                ${accommodation.address.postalCode} ${accommodation.address.city}, 
+                                ${accommodation.address.country}`
+                            ]} />
                         </Paper>
                     </Grid.Col>
 
-                    <Grid.Col span={{base: 12, md: 4}}>
+                    <Grid.Col span={{ base: 12, md: 4 }}>
                         <Paper p="lg" shadow="md" withBorder>
                             <Sidebar
                                 accommodation={accommodation}
@@ -113,34 +104,29 @@ export default function AccommodationDetailPage() {
                             />
                         </Paper>
                     </Grid.Col>
+
                     <Grid.Col>
-                        <Paper>
+                        <Paper p="md" shadow="sm">
                             <Highlights
-                                festivals={accommodation.festivalistId}
+                                festivalId={accommodation.festivalistId}
                                 extras={accommodation.extras}
-                                discounts={accommodation.discount}
+                                discounts={accommodation.discounts}
                                 selectedExtras={selectedExtras}
                                 setSelectedExtras={setSelectedExtras}
-
                             />
                         </Paper>
                     </Grid.Col>
+
                     <Grid.Col>
                         <Paper p="md" shadow="sm">
                             <Stack>
                                 <Title order={3} mb="sm">Reviews</Title>
-                                <ReviewContainer accommodationId={id}/>
+                                <ReviewContainer accommodationId={id} />
                             </Stack>
                         </Paper>
                     </Grid.Col>
-
                 </Grid>
-
             </LandingContainer>
         </div>
     );
 }
-
-
-
-

@@ -30,7 +30,7 @@ export default function sidebar({accommodation, selectedExtras, setSelectedExtra
         const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         const today = new Date();
-        const multiplier = accommodation.discount
+        const multiplier = accommodation.discounts
             ?.filter(({ expiringDate }) => new Date(expiringDate) > today)
             .reduce(
                 (acc, { discountprocent }) => acc * (1 - discountprocent / 100),

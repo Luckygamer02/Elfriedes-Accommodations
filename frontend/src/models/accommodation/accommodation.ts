@@ -7,7 +7,7 @@ export enum AccommodationType {
     UNIQUE = 'UNIQUE',
 }
 
-export enum Extrastype {
+export enum Extratype {
     CLEANING = 'CLEANING',
     BREAKFAST = 'BREAKFAST',
     PARKING = 'PARKING',
@@ -116,7 +116,7 @@ export interface CreateDiscountRequest {
 
 
 export interface Extra {
-    type: Extrastype;
+    type: Extratype;
     price: number;
 }
 
@@ -154,7 +154,7 @@ export interface Accommodation extends AbstractEntity {
     ownerId: number,
     address: Address,
     features: AccommodationFeatures,
-    discount: CreateDiscountRequest[],
+    discounts: CreateDiscountRequest[],
     extras: Extra[],
     picturesurls: string[]
 }
@@ -167,3 +167,4 @@ export interface Rating {
     User: User;
     createdOn: string;
 }
+

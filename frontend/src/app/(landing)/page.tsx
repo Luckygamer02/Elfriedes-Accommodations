@@ -123,7 +123,7 @@ export default function Home() {
                     <div className="category-rows mb-12">
                         {categories.map((category) => (
                             <div key={category.type} className="category-row mb-8">
-                                <Text size="xl" mb="md" weight={600}>
+                                <Text size="xl" mb="md" w={600}>
                                     {category.title}
                                 </Text>
 
@@ -135,7 +135,7 @@ export default function Home() {
                                     dragFree
                                     withControls
                                 >
-                                    {accommodations
+                                    { accommodations?.length > 0 && accommodations
                                         .filter(acc => acc.type === category.type)
                                         .map((acc) => (
                                             <Carousel.Slide key={acc.id}>
@@ -174,7 +174,7 @@ export default function Home() {
                             <div className="grid grid-cols-1 gap-6">
                                 {festivalTypes.map(type => (
                                     <div key={type} className="mb-8">
-                                        <Group position="apart" mb="md">
+                                        <Group p="apart" mb="md">
                                             <Title order={2} style={{ color: getFestivalTypeColor(type) }}>
                                                 {type.replace('_', ' ')} Festivals
                                             </Title>
@@ -189,8 +189,8 @@ export default function Home() {
 
                                                 return (
                                                     <Card key={festival.id} shadow="sm" padding="lg" radius="md" withBorder>
-                                                        <Group position="apart" mb="xs">
-                                                            <Text weight={500} size="lg">{festival.name}</Text>
+                                                        <Group p="apart" mb="xs">
+                                                            <Text w={500} size="lg">{festival.name}</Text>
                                                             <Badge color={getFestivalTypeColor(festival.festivalType)}>
                                                                 {festival.festivalType.replace('_', ' ')}
                                                             </Badge>
@@ -200,7 +200,7 @@ export default function Home() {
                                                             {formatDate(festival.startDate)} - {formatDate(festival.endDate)}
                                                         </Text>
 
-                                                        <Group position="apart" mt="md">
+                                                        <Group p="apart" mt="md">
                                                             <Badge
                                                                 size="lg"
                                                                 color={accommodationCount > 0 ? "green" : "red"}

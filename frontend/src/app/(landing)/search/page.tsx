@@ -5,7 +5,7 @@ import { Grid, Loader, Container, Title, Text, Alert, Pagination, Group } from "
 import AccommodationMap from "@/components/Map/AccommodationMap";
 import httpClient, { restClient } from "@/lib/httpClient";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Accommodation, AccommodationType, Extrastype, FestivalType } from "@/models/accommodation/accommodation";
+import { Accommodation, AccommodationType, Extratype, FestivalType } from "@/models/accommodation/accommodation";
 import SearchSideBar from "@/components/Searchbar/SearchSideBar";
 import AccommodationRaster from "@/components/layout/AccommodationRaster";
 import useSWR from "swr";

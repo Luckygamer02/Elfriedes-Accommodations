@@ -7,7 +7,7 @@ import {
     AccommodationType,
     CreateAccommodationRequest,
     CreateDiscountRequest,
-    Extrastype,
+    Extratype,
     Festival
 } from "@/models/accommodation/accommodation";
 import {DateInput} from "@mantine/dates";
@@ -78,7 +78,7 @@ const stepValidationSchemas = {
             expiringDate: z.string(),
         })),
         extras: z.array(z.object({
-            type: z.nativeEnum(Extrastype),
+            type: z.nativeEnum(Extratype),
             price: z.number().positive("Price must be positive"),
         })),
     }),
@@ -121,7 +121,7 @@ export const validationSchema = z.object({
         expiringDate: z.string(),
     })),
     extras: z.array(z.object({
-        type: z.nativeEnum(Extrastype),
+        type: z.nativeEnum(Extratype),
         price: z.number().positive("Price must be positive"),
     })),
     pictures: z.array(z.object({
@@ -690,7 +690,7 @@ export default function CreateAccommodationForm({
                                         <Select
                                             label="Extra Type"
                                             required
-                                            data={Object.values(Extrastype).map(type => ({
+                                            data={Object.values(Extratype).map(type => ({
                                                 value: type,
                                                 label: type.replace(/_/g, ' ').toLowerCase()
                                                     .replace(/\b\w/g, c => c.toUpperCase())
@@ -717,7 +717,7 @@ export default function CreateAccommodationForm({
                             <Button
                                 type="button"
                                 className="mt-4"
-                                onClick={() => form.insertListItem('extras', {type: Extrastype.CLEANING, price: 0})}
+                                onClick={() => form.insertListItem('extras', {type: Extratype.CLEANING, price: 0})}
                             >
                                 Add Extra
                             </Button>

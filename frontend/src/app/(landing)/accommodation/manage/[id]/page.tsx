@@ -5,7 +5,7 @@ import {
     Accommodation,
     AccommodationType,
     CreateAccommodationRequest,
-    Extrastype
+    Extratype
 } from "@/models/accommodation/accommodation";
 import useSWR from "swr";
 import {Button, Checkbox, Loader, Notification, NumberInput, Select, Textarea, TextInput} from "@mantine/core";
@@ -68,7 +68,7 @@ export default function UpdateAccommodationPage() {
 
 
         extras: z.array(z.object({
-            type: z.nativeEnum(Extrastype),
+            type: z.nativeEnum(Extratype),
             price: z.number().positive(),
         }))
     });

@@ -18,7 +18,7 @@ import {
     RangeSlider,
 } from '@mantine/core';
 import {
-    Extrastype,
+    Extratype,
     AccommodationType,
     FestivalType,
     AccommodationFeatures
@@ -116,7 +116,7 @@ const featureOptions: SelectOption[] = [
 ];
 
 // Create options for extras
-const extrasOptions: SelectOption[] = Object.values(Extrastype).map((ext) => ({
+const extrasOptions: SelectOption[] = Object.values(Extratype).map((ext) => ({
     value: ext,
     label: ext.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\w/g, (c) => c.toUpperCase()),
 }));

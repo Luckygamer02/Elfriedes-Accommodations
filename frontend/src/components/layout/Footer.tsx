@@ -45,6 +45,11 @@ export default function Footer() {
                                 Contact
                             </Anchor>
                         </Text>
+                        <Text mt="xs">
+                            <Anchor component={Link} href="/support">
+                                Support
+                            </Anchor>
+                        </Text>
                     </Grid.Col>
 
                     <Grid.Col span={{base:12, md:3}}>

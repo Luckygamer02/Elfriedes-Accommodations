@@ -72,8 +72,8 @@ export default function Highlights({
                 <Title order={3}>Festival Information</Title>
                 {festival ? (
                     <div className="mt-3">
-                        <Group position="apart" mb="xs">
-                            <Text weight={700} size="lg">{festival.name}</Text>
+                        <Group p="apart" mb="xs">
+                            <Text w={700} size="lg">{festival.name}</Text>
                             <Badge color={getFestivalTypeColor(festival.festivalType)}>
                                 {festival.festivalType?.replace(/_/g, ' ')}
                             </Badge>
@@ -128,11 +128,11 @@ export default function Highlights({
                                         {discount.name}
                                     </Highlight>
                                 </Text>
-                                <Tooltip label={`Valid until ${formatDate(discount.expiringDate)}`}>
+                                <Text> Valid until {formatDate(discount.expiringDate)} </Text>
                                     <Badge color="green" size="lg">
                                         {discount.discountprocent}% OFF
                                     </Badge>
-                                </Tooltip>
+
                             </Group>
                         ))
                     ) : (

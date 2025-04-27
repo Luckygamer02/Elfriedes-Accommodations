@@ -6,7 +6,7 @@ import {
     Accommodation,
     AccommodationType,
     CreateAccommodationRequest,
-    Extrastype,
+    Extratype,
     Rating
 } from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
@@ -726,7 +726,7 @@ export class RestApplicationClient {
         people?: number;
         livingRooms?: number;
         festivalistId?: number;
-        extras?: Extrastype[];
+        extras?: Extratype[];
         features?: (keyof Accommodation["features"])[];
     }): Promise<Accommodation[]> {
         const params = new URLSearchParams();
