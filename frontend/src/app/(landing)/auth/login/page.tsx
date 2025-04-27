@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { UserAuthForm } from "./components/user-auth-form";
+import {UserAuthForm} from "./components/user-auth-form";
 
 export default function LoginPage() {
     return (
@@ -14,7 +14,7 @@ export default function LoginPage() {
                     Enter your email and password below to login to your account
                 </p>
             </div>
-            <UserAuthForm />
+            <UserAuthForm/>
 
             <p className="flex justify-center gap-x-2">
                 Don't have an account?

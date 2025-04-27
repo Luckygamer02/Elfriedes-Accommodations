@@ -1,13 +1,13 @@
 "use client"
 
 import Container from '@/components/container';
-import { useAuthGuard } from '@/lib/auth/use-auth'
-import { Button } from '@mantine/core'
+import {useAuthGuard} from '@/lib/auth/use-auth'
+import {Button} from '@mantine/core'
 import Link from 'next/link'
-import React, { useEffect } from 'react'
+import React, {useEffect} from 'react'
 
 export default function page() {
-    const { user, mutate } = useAuthGuard({middleware: 'auth'})
+    const {user, mutate} = useAuthGuard({middleware: 'auth'})
 
     useEffect(() => {
         console.log('Page init', user)

@@ -5,7 +5,7 @@ interface ContainerProps {
     className?: string;
 }
 
-const LandingContainer: React.FC<ContainerProps> = ({ children, className = "" }) => {
+const LandingContainer: React.FC<ContainerProps> = ({children, className = ""}) => {
     return (
         <div className={`max-w-screen-xl mx-auto px-8 ${className}`}>
             {children}

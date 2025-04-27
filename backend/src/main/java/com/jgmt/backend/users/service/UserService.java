@@ -3,8 +3,10 @@ package com.jgmt.backend.users.service;
 import com.jgmt.backend.auth.SecurityUtil;
 import com.jgmt.backend.s3.repository.UploadedFileRepository;
 import com.jgmt.backend.s3.services.FileUploadService;
+import com.jgmt.backend.supportchat.MessageRepository;
 import com.jgmt.backend.users.PasswordResetToken;
 import com.jgmt.backend.s3.UploadedFile;
+import com.jgmt.backend.users.Role;
 import com.jgmt.backend.users.User;
 import com.jgmt.backend.users.VerificationCode;
 import com.jgmt.backend.users.data.CreateUserRequest;
@@ -19,6 +21,10 @@ import com.jgmt.backend.users.repository.VerificationCodeRepository;
 import com.jgmt.backend.util.exception.ApiException;
 import jakarta.validation.Valid;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import org.jobrunr.scheduling.BackgroundJobRequest;
@@ -37,6 +43,7 @@ public class UserService {
     private final UploadedFileRepository uploadedFileRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileUploadService fileUploadService;
+    private final MessageRepository messageRepository;
 
     @Transactional
     public UserResponse create(@Valid CreateUserRequest request) {
@@ -44,6 +51,14 @@ public class UserService {
         user = userRepository.save(user);
         sendVerificationEmail(user);
         return new UserResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getUserById(Long id) {
+        if(id == null) {
+            return null;
+        }
+        return userRepository.findById(id).orElse(null);
     }
 
     private void sendVerificationEmail(User user) {
@@ -127,4 +142,31 @@ public class UserService {
 
         return new UserResponse(user);
     }
+
+    public List<UserResponse> getUsersWithSupportRequests() {
+        // Get admin user
+        User admin = userRepository.findAll().stream()
+                .filter(user -> user.getRole() == Role.ADMIN)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No admin user found"));
+
+        // Get unread message counts by user
+        Map<Long, Integer> unreadCounts = new HashMap<>();
+        messageRepository.countUnreadMessagesByUser(admin).forEach(row -> {
+            User sender = (User) row[0];
+            Long count = (Long) row[1];
+            unreadCounts.put(sender.getId(), count.intValue());
+        });
+
+        // Return all regular users with unread counts
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRole() == Role.USER)
+                .map(user -> {
+                    UserResponse dto = new UserResponse(user);
+                    dto.setUnreadCount(unreadCounts.getOrDefault(user.getId(), 0));
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
 }

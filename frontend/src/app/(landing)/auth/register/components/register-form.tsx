@@ -2,17 +2,18 @@
 
 import ErrorFeedback from "@/components/error-feedback";
 import SuccessFeedback from "@/components/success-feedback";
-import httpClient, { restClient } from "@/lib/httpClient";
-import { cn } from "@/lib/utils";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { Button, TextInput } from "@mantine/core";
-import { useForm, zodResolver } from "@mantine/form";
+import {restClient} from "@/lib/httpClient";
+import {cn} from "@/lib/utils";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {Button, TextInput} from "@mantine/core";
+import {useForm, zodResolver} from "@mantine/form";
 import Link from "next/link";
 import React from "react";
-import { toast } from "sonner";
-import { z } from "zod";
+import {toast} from "sonner";
+import {z} from "zod";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
+}
 
 const registerSchema = z
     .object({
@@ -26,7 +27,7 @@ const registerSchema = z
             street: z.string().min(2, "Street must be at least 2 characters"),
             houseNumber: z.string().min(1, "House number is required"),
             city: z.string().min(2, "City must be at least 2 characters"),
-            zipCode: z.string().min(3, "Postal code must be at least 3 characters"),
+            postalCode: z.string().min(3, "Postal code must be at least 3 characters"),
             country: z.string().min(2, "Country must be at least 2 characters")
         }).optional()
     })
@@ -36,7 +37,8 @@ const registerSchema = z
     });
 
 type Schema = z.infer<typeof registerSchema>;
-export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
+
+export function UserRegisterForm({className, ...props}: UserAuthFormProps) {
     const [isLoading, setIsLoading] = React.useState<boolean>(false);
     const [success, setSuccess] = React.useState<boolean>(false);
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
@@ -73,7 +75,7 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                 street: "",
                 houseNumber: "",
                 city: "",
-                zipCode: "",
+                postalCode: "",
                 country: ""
             }
         },
@@ -186,12 +188,12 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                                     {...form.getInputProps("address.city")}
                                 />
                                 <TextInput
-                                    id="zipCode"
+                                    id="postalCode"
                                     placeholder="10001"
                                     disabled={isLoading}
                                     label="Postal Code"
                                     className="w-1/3"
-                                    {...form.getInputProps("address.zipCode")}
+                                    {...form.getInputProps("address.postalCode")}
                                 />
                             </div>
 
@@ -206,10 +208,10 @@ export function UserRegisterForm({ className, ...props }: UserAuthFormProps) {
                         </div>
                     </div>
 
-                    <ErrorFeedback data={errors} />
+                    <ErrorFeedback data={errors}/>
 
                     <Button disabled={isLoading} type="submit">
-                        {isLoading ? 'Creating account...': 'Create account'}
+                        {isLoading ? 'Creating account...' : 'Create account'}
                     </Button>
                 </div>
             </form>

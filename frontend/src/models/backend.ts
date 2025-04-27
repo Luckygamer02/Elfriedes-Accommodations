@@ -2,9 +2,18 @@
 /* eslint-disable */
 // Generated using typescript-generator version 3.2.1263 on 2024-12-30 16:38:59.
 
-import {Accommodation, CreateAccommodationRequest} from "@/models/accommodation/accommodation";
+import {
+    Accommodation,
+    AccommodationType,
+    CreateAccommodationRequest,
+    Extratype,
+    Rating
+} from "@/models/accommodation/accommodation";
 import {Address} from "node:cluster";
 import {AxiosRequestConfig} from "axios";
+import httpClient from "@/lib/httpClient";
+import useSWR from "swr";
+
 
 export interface Notification {
     id: number;
@@ -100,7 +109,7 @@ export interface CreateUserRequest {
     passwordConfirmation: string;
     firstName?: string;
     lastName?: string;
-    Adress? : Address;
+    Adress?: Address;
 }
 
 export interface ForgotPasswordRequest {
@@ -118,7 +127,7 @@ export interface UpdateUserRequest {
     firstName: string;
     lastName: string;
     PhoneNumber: string;
-    adress : Address;
+    adress: Address;
 }
 
 export interface UserResponse {
@@ -454,7 +463,13 @@ export interface ApplicationContextAware extends Aware {
 
 export interface HttpClient {
 
-    request<R>(requestConfig: { method: string; url: string; queryParams?: any; data?: any; copyFn?: (data: R) => R; }): RestResponse<R>;
+    request<R>(requestConfig: {
+        method: string;
+        url: string;
+        queryParams?: any;
+        data?: any;
+        copyFn?: (data: R) => R;
+    }): RestResponse<R>;
 }
 
 
@@ -469,7 +484,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.admin.controller.AdminUsersController.admin_getUsers
      */
     admin_getUsers(queryParams?: { page?: number; }): RestResponse<PagedResponse<UserResponse>> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/admin/users`, queryParams: queryParams });
+        return this.httpClient.request({method: "GET", url: uriEncoding`api/admin/users`, queryParams: queryParams});
     }
 
     /**
@@ -477,7 +492,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.auth.controller.AuthController.csrf
      */
     csrf(): RestResponse<any> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/auth/csrf` });
+        return this.httpClient.request({method: "GET", url: uriEncoding`api/auth/csrf`});
     }
 
     /**
@@ -485,7 +500,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.auth.controller.AuthController.login
      */
     login(body: LoginRequest): RestResponse<any> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/auth/login`, data: body });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/auth/login`, data: body});
     }
 
     /**
@@ -493,7 +508,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.auth.controller.AuthController.logout
      */
     logout(): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/auth/logout` });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/auth/logout`});
     }
 
     /**
@@ -501,7 +516,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.auth.controller.AuthController.getSession
      */
     getSession(): RestResponse<UserResponse> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/auth/me` });
+        return this.httpClient.request({method: "GET", url: uriEncoding`api/auth/me`});
     }
 
     /**
@@ -509,7 +524,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.pushNotifications.NotificationsController.pushNotificationDelivery
      */
     pushNotificationDelivery(id: number): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/notifications/delivery/${id}` });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/notifications/delivery/${id}`});
     }
 
     /**
@@ -517,7 +532,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.pushNotifications.NotificationsController.pushNotificationRequestDenied
      */
     pushNotificationRequestDenied(request: NotificationPermissionRequest): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/notifications/denied`, data: request });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/notifications/denied`, data: request});
     }
 
     /**
@@ -525,7 +540,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.pushNotifications.NotificationsController.pushNotificationNotify
      */
     pushNotificationNotify(request: SendNotificationRequest): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/notifications/notify`, data: request });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/notifications/notify`, data: request});
     }
 
     /**
@@ -533,15 +548,26 @@ export class RestApplicationClient {
      * Java method: com.example.backend.pushNotifications.NotificationsController.getNotificationDeliveryStats
      */
     getNotificationDeliveryStats(queryParams?: { from?: Date; to?: Date; }): RestResponse<NotificationsByDate[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/notifications/stats/delivery`, queryParams: queryParams });
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/notifications/stats/delivery`,
+            queryParams: queryParams
+        });
     }
 
     /**
      * HTTP GET /api/notifications/stats/subscriptions
      * Java method: com.example.backend.pushNotifications.NotificationsController.getNotificationSubscriptionStats
      */
-    getNotificationSubscriptionStats(queryParams?: { from?: Date; to?: Date; }): RestResponse<NotificationSubscribersByDate[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/notifications/stats/subscriptions`, queryParams: queryParams });
+    getNotificationSubscriptionStats(queryParams?: {
+        from?: Date;
+        to?: Date;
+    }): RestResponse<NotificationSubscribersByDate[]> {
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/notifications/stats/subscriptions`,
+            queryParams: queryParams
+        });
     }
 
     /**
@@ -549,7 +575,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.pushNotifications.NotificationsController.pushNotificationSubscribe
      */
     pushNotificationSubscribe(request: SubscriptionRequest): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/notifications/subscribe`, data: request });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/notifications/subscribe`, data: request});
     }
 
     /**
@@ -557,7 +583,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.createUser
      */
     createUser(request: CreateUserRequest): RestResponse<UserResponse> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/users`, data: request });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/users`, data: request});
     }
 
     /**
@@ -565,7 +591,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.forgotPassword
      */
     forgotPassword(req: ForgotPasswordRequest): RestResponse<void> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/users/forgot-password`, data: req });
+        return this.httpClient.request({method: "POST", url: uriEncoding`api/users/forgot-password`, data: req});
     }
 
     /**
@@ -573,7 +599,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.updatePassword
      */
     updatePassword(requestDTO: UpdateUserPasswordRequest): RestResponse<UserResponse> {
-        return this.httpClient.request({ method: "PATCH", url: uriEncoding`api/users/password`, data: requestDTO });
+        return this.httpClient.request({method: "PATCH", url: uriEncoding`api/users/password`, data: requestDTO});
     }
 
     /**
@@ -581,7 +607,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.resetPassword
      */
     resetPassword(requestDTO: UpdateUserPasswordRequest): RestResponse<void> {
-        return this.httpClient.request({ method: "PATCH", url: uriEncoding`api/users/reset-password`, data: requestDTO });
+        return this.httpClient.request({method: "PATCH", url: uriEncoding`api/users/reset-password`, data: requestDTO});
     }
 
     /**
@@ -589,7 +615,11 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.verifyEmail
      */
     verifyEmail(queryParams: { token: string; }): RestResponse<RedirectView> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/users/verify-email`, queryParams: queryParams });
+        return this.httpClient.request({
+            method: "GET",
+            url: uriEncoding`api/users/verify-email`,
+            queryParams: queryParams
+        });
     }
 
     /**
@@ -597,7 +627,7 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.updateUser
      */
     updateUser(id: string, request: Schema): RestResponse<UserResponse> {
-        return this.httpClient.request({ method: "PUT", url: uriEncoding`api/users/${id}`, data: request });
+        return this.httpClient.request({method: "PUT", url: uriEncoding`api/users/${id}`, data: request});
     }
 
     /**
@@ -605,7 +635,11 @@ export class RestApplicationClient {
      * Java method: com.example.backend.users.controller.UsersController.updateProfilePicture
      */
     updateProfilePicture(id: number, queryParams: { file: MultipartFile; }): RestResponse<UserResponse> {
-        return this.httpClient.request({ method: "PATCH", url: uriEncoding`api/users/${id}/profile-picture`, queryParams: queryParams });
+        return this.httpClient.request({
+            method: "PATCH",
+            url: uriEncoding`api/users/${id}/profile-picture`,
+            queryParams: queryParams
+        });
     }
 
     // // Accomidation
@@ -617,7 +651,6 @@ export class RestApplicationClient {
             queryParams: queryParams
         });
     }
-
 
 
     async getAccommodationsbyownerid(
@@ -662,7 +695,65 @@ export class RestApplicationClient {
     }
 
 
+    getReviewsForAccommodation(AccId: Number): Rating[] {
+        const {data} = useSWR<Rating[]>(
+            `api/rating/${AccId}`,
+            () => httpClient.get<PaginatedResponse<Rating>>(`api/ratings/${AccId}`).then(res => res.data.content));
+        if (data == undefined) {
+            return [];
+        }
+        return data;
+    }
 
+    getBookedDatesforAcc(id: number) {
+        return httpClient.get(`api/bookings/bookeddates/${id}`).then(res =>
+            res.data.map((range: any) => ({
+                from: new Date(range.from),
+                to: new Date(range.to),
+            }))
+        );
+    }
+
+
+    getAccommodationbySearchParams(filters: {
+        city?: string;
+        postalCode?: string;
+        type?: AccommodationType;
+        minPrice?: number;
+        maxPrice?: number;
+        bedrooms?: number;
+        bathrooms?: number;
+        people?: number;
+        livingRooms?: number;
+        festivalistId?: number;
+        extras?: Extratype[];
+        features?: (keyof Accommodation["features"])[];
+    }): Promise<Accommodation[]> {
+        const params = new URLSearchParams();
+
+        if (filters.city) params.append("city", filters.city);
+        if (filters.postalCode) params.append("postalCode", filters.postalCode);
+
+        if (filters.minPrice != null) params.append("minBasePrice", String(filters.minPrice));
+        if (filters.maxPrice != null) params.append("maxBasePrice", String(filters.maxPrice));
+
+        if (filters.bedrooms != null) params.append("bedrooms", String(filters.bedrooms));
+        if (filters.bathrooms != null) params.append("bathrooms", String(filters.bathrooms));
+        if (filters.people != null) params.append("people", String(filters.people));
+        if (filters.livingRooms != null) params.append("livingRooms", String(filters.livingRooms));
+
+        if (filters.type) params.append("type", filters.type);
+        if (filters.festivalistId != null) params.append("festivalistId", String(filters.festivalistId));
+
+        filters.extras?.forEach((e) => params.append("extras", e));
+        filters.features?.forEach((f) => params.append("features", f));
+
+        const qs = params.toString() ? `?${params.toString()}` : "";
+
+        return httpClient
+            .get<PaginatedResponse<Accommodation>>(`api/accommodations/search${qs}`)
+            .then(res => res.data.content);
+    }
 
 }
 
@@ -749,7 +840,75 @@ export type Role = "USER" | "ADMIN";
  * - `NOT_EXTENDED`
  * - `NETWORK_AUTHENTICATION_REQUIRED`
  */
-export type HttpStatus = "CONTINUE" | "SWITCHING_PROTOCOLS" | "PROCESSING" | "CHECKPOINT" | "OK" | "CREATED" | "ACCEPTED" | "NON_AUTHORITATIVE_INFORMATION" | "NO_CONTENT" | "RESET_CONTENT" | "PARTIAL_CONTENT" | "MULTI_STATUS" | "ALREADY_REPORTED" | "IM_USED" | "MULTIPLE_CHOICES" | "MOVED_PERMANENTLY" | "FOUND" | "MOVED_TEMPORARILY" | "SEE_OTHER" | "NOT_MODIFIED" | "USE_PROXY" | "TEMPORARY_REDIRECT" | "PERMANENT_REDIRECT" | "BAD_REQUEST" | "UNAUTHORIZED" | "PAYMENT_REQUIRED" | "FORBIDDEN" | "NOT_FOUND" | "METHOD_NOT_ALLOWED" | "NOT_ACCEPTABLE" | "PROXY_AUTHENTICATION_REQUIRED" | "REQUEST_TIMEOUT" | "CONFLICT" | "GONE" | "LENGTH_REQUIRED" | "PRECONDITION_FAILED" | "PAYLOAD_TOO_LARGE" | "REQUEST_ENTITY_TOO_LARGE" | "URI_TOO_LONG" | "REQUEST_URI_TOO_LONG" | "UNSUPPORTED_MEDIA_TYPE" | "REQUESTED_RANGE_NOT_SATISFIABLE" | "EXPECTATION_FAILED" | "I_AM_A_TEAPOT" | "INSUFFICIENT_SPACE_ON_RESOURCE" | "METHOD_FAILURE" | "DESTINATION_LOCKED" | "UNPROCESSABLE_ENTITY" | "LOCKED" | "FAILED_DEPENDENCY" | "TOO_EARLY" | "UPGRADE_REQUIRED" | "PRECONDITION_REQUIRED" | "TOO_MANY_REQUESTS" | "REQUEST_HEADER_FIELDS_TOO_LARGE" | "UNAVAILABLE_FOR_LEGAL_REASONS" | "INTERNAL_SERVER_ERROR" | "NOT_IMPLEMENTED" | "BAD_GATEWAY" | "SERVICE_UNAVAILABLE" | "GATEWAY_TIMEOUT" | "HTTP_VERSION_NOT_SUPPORTED" | "VARIANT_ALSO_NEGOTIATES" | "INSUFFICIENT_STORAGE" | "LOOP_DETECTED" | "BANDWIDTH_LIMIT_EXCEEDED" | "NOT_EXTENDED" | "NETWORK_AUTHENTICATION_REQUIRED";
+export type HttpStatus =
+    "CONTINUE"
+    | "SWITCHING_PROTOCOLS"
+    | "PROCESSING"
+    | "CHECKPOINT"
+    | "OK"
+    | "CREATED"
+    | "ACCEPTED"
+    | "NON_AUTHORITATIVE_INFORMATION"
+    | "NO_CONTENT"
+    | "RESET_CONTENT"
+    | "PARTIAL_CONTENT"
+    | "MULTI_STATUS"
+    | "ALREADY_REPORTED"
+    | "IM_USED"
+    | "MULTIPLE_CHOICES"
+    | "MOVED_PERMANENTLY"
+    | "FOUND"
+    | "MOVED_TEMPORARILY"
+    | "SEE_OTHER"
+    | "NOT_MODIFIED"
+    | "USE_PROXY"
+    | "TEMPORARY_REDIRECT"
+    | "PERMANENT_REDIRECT"
+    | "BAD_REQUEST"
+    | "UNAUTHORIZED"
+    | "PAYMENT_REQUIRED"
+    | "FORBIDDEN"
+    | "NOT_FOUND"
+    | "METHOD_NOT_ALLOWED"
+    | "NOT_ACCEPTABLE"
+    | "PROXY_AUTHENTICATION_REQUIRED"
+    | "REQUEST_TIMEOUT"
+    | "CONFLICT"
+    | "GONE"
+    | "LENGTH_REQUIRED"
+    | "PRECONDITION_FAILED"
+    | "PAYLOAD_TOO_LARGE"
+    | "REQUEST_ENTITY_TOO_LARGE"
+    | "URI_TOO_LONG"
+    | "REQUEST_URI_TOO_LONG"
+    | "UNSUPPORTED_MEDIA_TYPE"
+    | "REQUESTED_RANGE_NOT_SATISFIABLE"
+    | "EXPECTATION_FAILED"
+    | "I_AM_A_TEAPOT"
+    | "INSUFFICIENT_SPACE_ON_RESOURCE"
+    | "METHOD_FAILURE"
+    | "DESTINATION_LOCKED"
+    | "UNPROCESSABLE_ENTITY"
+    | "LOCKED"
+    | "FAILED_DEPENDENCY"
+    | "TOO_EARLY"
+    | "UPGRADE_REQUIRED"
+    | "PRECONDITION_REQUIRED"
+    | "TOO_MANY_REQUESTS"
+    | "REQUEST_HEADER_FIELDS_TOO_LARGE"
+    | "UNAVAILABLE_FOR_LEGAL_REASONS"
+    | "INTERNAL_SERVER_ERROR"
+    | "NOT_IMPLEMENTED"
+    | "BAD_GATEWAY"
+    | "SERVICE_UNAVAILABLE"
+    | "GATEWAY_TIMEOUT"
+    | "HTTP_VERSION_NOT_SUPPORTED"
+    | "VARIANT_ALSO_NEGOTIATES"
+    | "INSUFFICIENT_STORAGE"
+    | "LOOP_DETECTED"
+    | "BANDWIDTH_LIMIT_EXCEEDED"
+    | "NOT_EXTENDED"
+    | "NETWORK_AUTHENTICATION_REQUIRED";
 
 export type SessionTrackingMode = "COOKIE" | "URL" | "SSL";
 

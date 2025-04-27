@@ -1,5 +1,6 @@
-import { RestApplicationClient } from '@/models/backend'
+import {RestApplicationClient} from '@/models/backend'
 import Axios from 'axios'
+
 require('dotenv').config()
 
 const httpClient = Axios.create({
@@ -14,7 +15,7 @@ const httpClient = Axios.create({
     withXSRFToken: true,
 })
 
-const backendClient =  Axios.create({
+const backendClient = Axios.create({
     baseURL: 'http://localhost:8080',
     headers: {
         'X-Requested-With': 'XMLHttpRequest',

@@ -1,5 +1,6 @@
 package com.jgmt.backend.users.data;
 
+import com.jgmt.backend.accommodation.domain.Address;
 import com.jgmt.backend.util.Client;
 import com.jgmt.backend.util.validators.PasswordMatch;
 import com.jgmt.backend.util.validators.Unique;
@@ -28,4 +29,11 @@ public class CreateUserRequest {
     private String firstName;
     @Nullable
     private String lastName;
+
+    @Nullable
+    private String phoneNumber;
+
+    @Nullable
+    private Address profileImageUrl;
+
 }

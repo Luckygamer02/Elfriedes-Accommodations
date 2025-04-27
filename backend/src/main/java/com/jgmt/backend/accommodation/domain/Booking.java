@@ -1,20 +1,22 @@
 package com.jgmt.backend.accommodation.domain;
 
-import com.jgmt.backend.accommodation.application.service.AccommodationService;
 import com.jgmt.backend.accommodation.domain.enums.BookingStatus;
-import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateBooking;
+import com.jgmt.backend.accommodation.infrastructure.controller.data.BookingDTO;
 import com.jgmt.backend.entity.AbstractEntity;
 import com.jgmt.backend.users.User;
 import com.jgmt.backend.util.Client;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -26,21 +28,45 @@ import java.util.List;
 public class Booking extends AbstractEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
+
+    @Column(nullable = true)
+    private String firstName;
+
+    @Column(nullable = true)
+    private String lastName;
+
+    @Column(nullable = true)
+    @Email
+    private String email;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "accommodation_id", nullable = false)
     private Accommodation accommodation;
 
+    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private LocalDate checkInDate;
+    private Date checkInDate;
 
+    @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private LocalDate checkOutDate;
+    private Date checkOutDate;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
+
+    @PositiveOrZero
+    private int adults;
+
+    @PositiveOrZero
+    private int children;
+
+    @PositiveOrZero
+    private int infants;
+
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
@@ -49,7 +75,7 @@ public class Booking extends AbstractEntity{
     @Builder.Default
     private List<BookedExtra> bookedExtras = new ArrayList<>();
 
-    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+   @Embedded
     private Payment payment;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -75,15 +101,22 @@ public class Booking extends AbstractEntity{
         bookedExtra.setQuantity(quantity);
         bookedExtras.add(bookedExtra);
     }
-    public Booking(CreateBooking booking, Accommodation accommodation) {
-        this.user = booking.getUser();
+
+    public Booking(BookingDTO dto, User user, Accommodation accommodation) {
+        this.user = user;
         this.accommodation = accommodation;
-        this.checkInDate = booking.getCheckInDate();
-        this.checkOutDate = LocalDate.now();
-        this.status = booking.getStatus();
-        this.totalPrice = booking.getTotalPrice();
-        this.bookedExtras = booking.getBookedExtras();
-        this.payment = booking.getPayments();
-        this.appliedDiscounts = booking.getAppliedDiscounts();
+        this.firstName = dto.getFirstName();
+        this.lastName = dto.getLastName();
+        this.email = dto.getEmail();
+        this.checkInDate = dto.getCheckInDate();
+        this.checkOutDate = dto.getCheckOutDate();
+        this.status = dto.getStatus();
+        this.adults = dto.getAdults();
+        this.children = dto.getChildren();
+        this.infants = dto.getInfants();
+        this.totalPrice = dto.getTotalPrice();
+        this.bookedExtras = dto.getBookedExtras();
+        this.payment = dto.getPayment();
+        this.appliedDiscounts = dto.getAppliedDiscounts();
     }
 }

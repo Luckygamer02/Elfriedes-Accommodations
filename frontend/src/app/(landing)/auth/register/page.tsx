@@ -1,5 +1,5 @@
 import React from "react";
-import { UserRegisterForm } from "./components/register-form";
+import {UserRegisterForm} from "./components/register-form";
 import Link from "next/link";
 
 export default function RegisterPage() {
@@ -13,7 +13,7 @@ export default function RegisterPage() {
                     Enter the details below to create your account
                 </p>
             </div>
-            <UserRegisterForm />
+            <UserRegisterForm/>
 
             <p className="flex justify-center gap-x-2">
                 Already have an account?

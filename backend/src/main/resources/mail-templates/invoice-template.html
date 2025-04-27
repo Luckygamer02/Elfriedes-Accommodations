@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" charset="UTF-8" content="width=device-width, initial-scale=1.0"/>
+    <title>Invoice #[[${booking.id}]]</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header, .footer {
+            background-color: #4A90E2;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        .company-details {
+            text-align: right;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        .section {
+            margin-top: 20px;
+        }
+        .details, .items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .details th, .details td,
+        .items th, .items td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        .details th {
+            background-color: #f5f5f5;
+            text-align: left;
+            width: 30%;
+        }
+        .items th {
+            background-color: #f0f0f0;
+            text-align: left;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .total-row td {
+            font-weight: bold;
+        }
+        .qr-code {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .qr-code img {
+            width: 120px;
+            height: 120px;
+        }
+    </style>
+</head>
+<body th:with="
+    nights=${T(java.lang.Math).ceil((booking.checkOutDate.time - booking.checkInDate.time) / 86400000.0)},
+    unitPrice=${booking.totalPrice
+                  .divide(
+                    T(java.math.BigDecimal).valueOf(nights),
+                    2,
+                    T(java.math.RoundingMode).HALF_UP
+                  )},
+    vatRate=${T(java.math.BigDecimal).valueOf(0.10)},
+    vat=${booking.totalPrice.multiply(vatRate)
+                 .setScale(2, T(java.math.RoundingMode).HALF_UP)},
+    subtotal=${booking.totalPrice},
+    totalDue=${subtotal.add(vat)}
+">
+<div class="container">
+
+    <!-- Header/company details… -->
+
+    <div class="section">
+        <h3>Invoice #<span th:text="${booking.id}">1234</span></h3>
+        <p>Date: <span th:text="${#temporals.format(T(java.time.LocalDate).now(),'dd MMMM yyyy')}">01 May 2025</span></p>
+    </div>
+
+    <!-- Customer details… -->
+
+    <div class="section">
+        <table class="items">
+            <thead>…</thead>
+            <tbody>
+            <!-- Room charge only, totalPrice already discounted -->
+            <tr>
+                <td>Room rate (per night)</td>
+                <td th:text="${nights}">4</td>
+                <td th:text="${unitPrice}">100.00</td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">360.00</td>
+            </tr>
+
+            <!-- Extras (if you still list them separately) -->
+            <tr th:each="extraItem : ${booking.bookedExtras}">
+                <td th:text="${extraItem.extra.name}">Breakfast</td>
+                <td class="text-right" th:text="${extraItem.quantity}">2</td>
+                <td class="text-right" th:text="${extraItem.extra.price}">15.00</td>
+                <td class="text-right"
+                    th:text="${extraItem.extra.price
+                           .multiply(T(java.math.BigDecimal).valueOf(extraItem.quantity))}">
+                    30.00
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">Net total:</td>
+                <td class="text-right" th:text="${booking.totalPrice}">360.00</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">VAT (10%):</td>
+                <td class="text-right" th:text="${vat}">36.00</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">Total Due:</td>
+                <td class="text-right" th:text="${totalDue}">396.00</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Line items: room + extras -->
+    <div class="section">
+        <table class="items">
+            <thead>
+            <tr>
+                <th>Description</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Unit Price (€)</th>
+                <th class="text-right">Line Total (€)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Room charge -->
+            <!-- Room charge row -->
+            <tr>
+                <td>Room rate (per night)</td>
+                <td th:text="${nights}">4</td>
+                <td th:text="${unitPrice}">100.00</td>
+                <td class="text-right" th:text="${booking.totalPrice}">400.00</td>
+            </tr>
+            <!-- Extras -->
+            <tr th:each="extraItem : ${booking.bookedExtras}">
+                <td th:text="${extraItem.extra.name}">Breakfast</td>
+                <td class="text-right" th:text="${extraItem.quantity}">2</td>
+                <td class="text-right" th:text="${extraItem.extra.price}">15.00</td>
+                <td class="text-right"
+                    th:text="${extraItem.extra.price.multiply(new java.math.BigDecimal(extraItem.quantity.toString()))}">
+                    30.00
+                </td>
+            </tr>
+            <!-- Discounts -->
+            <tr th:each="disc,stat : ${discountList}">
+                <td th:text="'Discount: ' + ${disc.name}">Spring Sale</td>
+                <td class="text-right">–</td>
+                <td class="text-right" th:text="${disc.discountprocent + '%'}">10%</td>
+                <td class="text-right"
+                    th:text="${'-' + #numbers.formatDecimal(discountAmounts[stat.index], 2)}">–40.00
+                </td>
+            </tr>
+            </tbody>
+            <!-- Totals -->
+            <tfoot>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">Subtotal:</td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(subtotal, 1, 2)}">360.00</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">VAT (10%):</td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(vat, 1, 2)}">36.00</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="3" class="text-right">Total Due:</td>
+                <td class="text-right" th:text="${#numbers.formatDecimal(totalDue, 1, 2)}">396.00</td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>Elfriede’s Accommodation Service • Mountainview St 42 • Alpine Village, Austria</p>
+    </div>
+</div>
+</body>
+</html>

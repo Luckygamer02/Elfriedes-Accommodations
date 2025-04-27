@@ -1,12 +1,12 @@
 "use client";
 
 
-import { restClient } from "@/lib/httpClient";
-import { Button, TextInput, Title } from "@mantine/core";
-import React, { useEffect } from "react";
-import { notifications } from "@mantine/notifications";
-import { useForm } from "@mantine/form";
-import { LineChart } from "@mantine/charts";
+import {restClient} from "@/lib/httpClient";
+import {Button, TextInput, Title} from "@mantine/core";
+import React from "react";
+import {notifications} from "@mantine/notifications";
+import {useForm} from "@mantine/form";
+import {LineChart} from "@mantine/charts";
 import useSWR from "swr";
 import Container from '@/components/container';
 
@@ -75,8 +75,8 @@ export default function page() {
                     data={notificationDeliveryData?.data || []}
                     dataKey="date"
                     series={[
-                        { name: "sent", color: "indigo.6" },
-                        { name: "delivered", color: "blue.6" },
+                        {name: "sent", color: "indigo.6"},
+                        {name: "delivered", color: "blue.6"},
                     ]}
                     curveType="linear"
                 />
@@ -91,7 +91,7 @@ export default function page() {
                     data={subscribersData?.data || []}
                     dataKey="date"
                     series={[
-                        { name: "subscribers", color: "indigo.6" },
+                        {name: "subscribers", color: "indigo.6"},
                     ]}
                     curveType="linear"
                 />

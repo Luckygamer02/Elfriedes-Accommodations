@@ -1,5 +1,5 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import {type ClassValue, clsx} from "clsx";
+import {twMerge} from "tailwind-merge";
 import httpClient from "./httpClient";
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,7 +14,7 @@ export async function subscribeToNotifications() {
         );
         await navigator.serviceWorker.ready;
 
-        registration.active?.postMessage({ type: "CONFIG", apiUrl: process.env.NEXT_PUBLIC_BASE_URL });
+        registration.active?.postMessage({type: "CONFIG", apiUrl: process.env.NEXT_PUBLIC_BASE_URL});
 
         // Get push subscription
         const subscription = await registration.pushManager.subscribe({

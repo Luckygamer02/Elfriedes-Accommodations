@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -18,10 +19,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BookingResponse implements Serializable {
-    User user;
-    private Accommodation accommodation;
-    private LocalDate checkInDate;
-    private LocalDateTime checkOutDate;
+    private long id;
+    private AccommodationResponse accommodation;
+    private Date checkInDate;
+    private Date checkOutDate;
     private BookingStatus status;
     private BigDecimal totalPrice;
     private List<BookedExtra> bookedExtras;
@@ -29,9 +30,10 @@ public class BookingResponse implements Serializable {
     private List<AppliedDiscount> appliedDiscounts;
 
     public BookingResponse(Booking booking) {
-        this.user = booking.getUser();
-        this.accommodation = booking.getAccommodation();
+        this.id = booking.getId();
+        this.accommodation = new AccommodationResponse( booking.getAccommodation());
         this.checkInDate = booking.getCheckInDate();
+        this.checkOutDate = booking.getCheckOutDate();
         this.status = booking.getStatus();
         this.totalPrice = booking.getTotalPrice();
         this.bookedExtras = booking.getBookedExtras();

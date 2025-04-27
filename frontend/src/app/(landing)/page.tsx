@@ -1,44 +1,58 @@
 "use client";
 import '@mantine/carousel/styles.css';
-import { Accommodation, AccommodationType } from "@/models/accommodation/accommodation";
-import { Card, Text, Badge, Button, Group } from '@mantine/core';
+import '@mantine/dates/styles.css';
+import { Accommodation, AccommodationType, Festival, FestivalType } from "@/models/accommodation/accommodation";
+import { Text, Title, Card, Group, Badge, Button, Container, Tabs } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
-import { IconStarFilled } from '@tabler/icons-react';
 import useSWR from "swr";
 import { PaginatedResponse } from "@/models/backend";
 import httpClient from "@/lib/httpClient";
 import Loading from "@/components/loading";
-import { RatingBadge } from "@/components/RatingBadge";
 import { useMediaQuery } from "@mantine/hooks";
-import Link from "next/link";
 import OverlappingSearch from "@/components/Searchbar/OverlappingSearch";
-import { AccommodationNav } from "@/components/NavbarElements/accommodationNav";
-import React from "react";
+import React, { useState } from "react";
 import { useAuthGuard } from "@/lib/auth/use-auth";
-import LandingContainer from "@/components/LandingPage/LandingContainer"
+import AccommodationContainer from "@/components/layout/AccommodationContainer";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-    // Alle Hooks werden oben aufgerufen – unabhängig von den Renderbedingungen!
+    // Hooks
+    const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
     const { user } = useAuthGuard({ middleware: "guest" });
-    const { data, error, isLoading } = useSWR<PaginatedResponse<Accommodation>>(
+    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
+    const [activeTab, setActiveTab] = useState<string | null>("all");
+
+    // Fetch accommodations
+    const { data: accommodationsData, error: accommodationsError, isLoading: accommodationsLoading } = useSWR<PaginatedResponse<Accommodation>>(
         "api/accommodations",
-        () =>
-            httpClient
-                .get<PaginatedResponse<Accommodation>>("api/accommodations")
-                .then((res) => res.data)
+        () => httpClient
+            .get<PaginatedResponse<Accommodation>>("api/accommodations")
+            .then((res) => res.data)
     );
 
-    // Nun die bedingten Returns
-    if (error) {
-        console.error("Error fetching accommodations:", error);
-        return <div>Error loading accommodations</div>;
+    // Fetch festivals
+    const { data: festivals, error: festivalsError, isLoading: festivalsLoading } = useSWR<Festival[]>(
+        "api/festivals",
+        () => httpClient
+            .get<Festival[]>("api/festivals")
+            .then((res) => res.data)
+    );
+
+    // Error handling
+    if (accommodationsError || festivalsError) {
+        console.error("Error fetching data:", accommodationsError || festivalsError);
+        return <div>Error loading data</div>;
     }
 
-    if (isLoading || !data) return <Loading />;
+    // Loading state
+    if (accommodationsLoading || festivalsLoading || !accommodationsData || !festivals) {
+        return <Loading />;
+    }
 
-    const accommodations = data.content;
+    const accommodations = accommodationsData.content;
 
+    // Category definitions
     const categories = [
         { title: 'Trending Flats', type: AccommodationType.FLAT },
         { title: 'Luxury Houses', type: AccommodationType.HOUSE },
@@ -46,85 +60,228 @@ export default function Home() {
         { title: 'Unique Stays', type: AccommodationType.UNIQUE },
     ];
 
+    // Group festivals by type
+    const festivalsByType = festivals.reduce((acc, festival) => {
+        if (!acc[festival.festivalType]) {
+            acc[festival.festivalType] = [];
+        }
+        acc[festival.festivalType].push(festival);
+        return acc;
+    }, {} as Record<FestivalType, Festival[]>);
+
+    // Generate a map of festival IDs to their accommodations count
+    const festivalAccommodationsMap = festivals.reduce((acc, festival) => {
+        acc[festival.id] = accommodations.filter(accommodation =>
+            accommodation.festivalistId === festival.id
+        ).length;
+        return acc;
+    }, {} as Record<number, number>);
+
+    // Get all festival types
+    const festivalTypes = Object.keys(festivalsByType) as FestivalType[];
+
+    // Helper function to get festival type color
+    const getFestivalTypeColor = (type: FestivalType): string => {
+        const typeColors: Record<string, string> = {
+            ROCK: 'red',
+            POP: 'pink',
+            JAZZ: 'blue',
+            ELECTRONIC: 'violet',
+            FOLK: 'green',
+            HIP_HOP: 'yellow',
+            CLASSICAL: 'gray',
+            ARTS: 'indigo',
+            FILM: 'cyan',
+            FOOD: 'orange',
+            BEER: 'amber',
+            CULTURAL: 'lime',
+            PRIDE: 'rainbow',
+            TECHNOLOGY: 'teal',
+            GAMING: 'purple',
+            SPORTS: 'emerald',
+        };
+
+        return typeColors[type] || 'blue';
+    };
+
+    // Format date function
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
     return (
         <div className="min-h-screen flex flex-col">
             <OverlappingSearch />
             <main className="flex-grow">
-                <LandingContainer className="py-8">
-                <div className="category-rows">
-                    {categories.map((category) => (
-                        <div key={category.type} className="category-row">
-                            <Text size="xl" mb="md">
-                                {category.title}
-                            </Text>
+                <Container size="xl" py="xl">
+                    {/* SECTION 1: TRENDING CATEGORIES */}
+                    <Title order={1} mb="xl">Find Your Perfect Stay</Title>
+                    <div className="category-rows mb-12">
+                        {categories.map((category) => (
+                            <div key={category.type} className="category-row mb-8">
+                                <Text size="xl" mb="md" w={600}>
+                                    {category.title}
+                                </Text>
 
-                  <Carousel
-                      slideSize={{ base: '100%', sm: '50%', md: '33.333%', lg: '25%' }}
-                      slideGap="md"
-                      align="start"
-                      slidesToScroll={isMobile ? 1 : 2}
-                      dragFree
-                      withControls
-                      withIndicators
-                  >
-                  {accommodations
-                      .filter(acc => acc.type === category.type)
-                      .map((acc) => (
-                          <Carousel.Slide key={acc.id}>
-                            <Card
-                                p="lg"
-                                shadow="md"
-                                className="accommodation-card"
-                                radius="md"
-                            >
-                                <Card.Section className="card-image-section">
-                                    {acc.picturesurls?.length ? (
-                                        <div
-                                            className="card-image"
-                                            style={{ backgroundImage: `url(${acc.picturesurls[0]})` }}
-                                        />
-                                    ) : (
-                                        <div
-                                            className="card-image"
-                                            style={{ backgroundImage: "url(/default-accommodation.jpg)" }}
-                                        />
-                                    )}
-                                    <Badge className="rating-badge" variant="gradient">
-                                        <IconStarFilled size={14} />
-                                        <RatingBadge accommodationId={acc.id} />
+                                <Carousel
+                                    slideSize={{ base: '100%', sm: '50%', md: '33.333%', lg: '25%' }}
+                                    slideGap="md"
+                                    align="start"
+                                    slidesToScroll={isMobile ? 1 : 2}
+                                    dragFree
+                                    withControls
+                                >
+                                    { accommodations?.length > 0 && accommodations
+                                        .filter(acc => acc.type === category.type)
+                                        .map((acc) => (
+                                            <Carousel.Slide key={acc.id}>
+                                                <AccommodationContainer acc={acc} />
+                                            </Carousel.Slide>
+                                        ))}
+                                </Carousel>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* SECTION 2: FESTIVALS */}
+                    <Title order={1} mb="xl">Upcoming Festivals</Title>
+
+                    {/* Tabs for festival types */}
+                    <Tabs
+                        value={activeTab}
+                        onChange={setActiveTab}
+                        mb="xl"
+                    >
+                        <Tabs.List>
+                            <Tabs.Tab value="all">All Festivals</Tabs.Tab>
+                            {festivalTypes.map(type => (
+                                <Tabs.Tab
+                                    key={type}
+                                    value={type}
+                                    color={getFestivalTypeColor(type)}
+                                >
+                                    {type.replace('_', ' ')}
+                                </Tabs.Tab>
+                            ))}
+                        </Tabs.List>
+
+                        {/* All Festivals Tab */}
+                        <Tabs.Panel value="all" pt="md">
+                            <div className="grid grid-cols-1 gap-6">
+                                {festivalTypes.map(type => (
+                                    <div key={type} className="mb-8">
+                                        <Group p="apart" mb="md">
+                                            <Title order={2} style={{ color: getFestivalTypeColor(type) }}>
+                                                {type.replace('_', ' ')} Festivals
+                                            </Title>
+                                            <Badge size="lg" color={getFestivalTypeColor(type)}>
+                                                {festivalsByType[type].length} Events
+                                            </Badge>
+                                        </Group>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {festivalsByType[type].map(festival => {
+                                                const accommodationCount = festivalAccommodationsMap[festival.id] || 0;
+
+                                                return (
+                                                    <Card key={festival.id} shadow="sm" padding="lg" radius="md" withBorder>
+                                                        <Group p="apart" mb="xs">
+                                                            <Text w={500} size="lg">{festival.name}</Text>
+                                                            <Badge color={getFestivalTypeColor(festival.festivalType)}>
+                                                                {festival.festivalType.replace('_', ' ')}
+                                                            </Badge>
+                                                        </Group>
+
+                                                        <Text size="sm" color="dimmed" mb="md">
+                                                            {formatDate(festival.startDate)} - {formatDate(festival.endDate)}
+                                                        </Text>
+
+                                                        <Group p="apart" mt="md">
+                                                            <Badge
+                                                                size="lg"
+                                                                color={accommodationCount > 0 ? "green" : "red"}
+                                                            >
+                                                                {accommodationCount > 0
+                                                                    ? `${accommodationCount} Accommodations`
+                                                                    : "No Accommodations"}
+                                                            </Badge>
+
+                                                            <Button
+                                                                variant="light"
+                                                                color="blue"
+                                                                onClick={() => router.push(`/festivals/${festival.id}`)}
+                                                            >
+                                                                View Details
+                                                            </Button>
+                                                        </Group>
+                                                    </Card>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Tabs.Panel>
+
+                        {/* Individual Type Tabs */}
+                        {festivalTypes.map(type => (
+                            <Tabs.Panel key={type} value={type} pt="md">
+                                <Group position="apart" mb="md">
+                                    <Title order={2} style={{ color: getFestivalTypeColor(type) }}>
+                                        {type.replace('_', ' ')} Festivals
+                                    </Title>
+                                    <Badge size="lg" color={getFestivalTypeColor(type)}>
+                                        {festivalsByType[type].length} Events
                                     </Badge>
-                                </Card.Section>
+                                </Group>
 
-                                                <Group mt="md">
-                                                    <Text>{acc.title}</Text>
-                                                    <Badge color="teal" variant="light">
-                                                        ${acc.basePrice}/night
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    {festivalsByType[type].map(festival => {
+                                        const accommodationCount = festivalAccommodationsMap[festival.id] || 0;
+
+                                        return (
+                                            <Card key={festival.id} shadow="sm" padding="lg" radius="md" withBorder>
+                                                <Group position="apart" mb="xs">
+                                                    <Text weight={500} size="lg">{festival.name}</Text>
+                                                    <Badge color={getFestivalTypeColor(type)}>
+                                                        {type.replace('_', ' ')}
                                                     </Badge>
                                                 </Group>
 
-                                                <Text size="sm" mt="xs">
-                                                    {acc.address.city}
+                                                <Text size="sm" color="dimmed" mb="md">
+                                                    {formatDate(festival.startDate)} - {formatDate(festival.endDate)}
                                                 </Text>
 
-                                                <Button
-                                                    variant="light"
-                                                    fullWidth
-                                                    mt="md"
-                                                    className="quick-view-button"
-                                                    component={Link}
-                                                    href={`/${acc.id}`}
-                                                >
-                                                    Quick View
-                                                </Button>
+                                                <Group position="apart" mt="md">
+                                                    <Badge
+                                                        size="lg"
+                                                        color={accommodationCount > 0 ? "green" : "red"}
+                                                    >
+                                                        {accommodationCount > 0
+                                                            ? `${accommodationCount} Accommodations`
+                                                            : "No Accommodations"}
+                                                    </Badge>
+
+                                                    <Button
+                                                        variant="light"
+                                                        color="blue"
+                                                        onClick={() => router.push(`/festivals/${festival.id}`)}
+                                                    >
+                                                        View Details
+                                                    </Button>
+                                                </Group>
                                             </Card>
-                                        </Carousel.Slide>
-                                    ))}
-                            </Carousel>
-                        </div>
-                    ))}
-                </div>
-                </LandingContainer>
-                <AccommodationNav user={user} />
+                                        );
+                                    })}
+                                </div>
+                            </Tabs.Panel>
+                        ))}
+                    </Tabs>
+                </Container>
             </main>
         </div>
     );

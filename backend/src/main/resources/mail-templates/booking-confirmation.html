@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Booking Confirmation</title>
+    <style>
+        body { font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0; }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #4A90E2; color: white; padding: 20px; text-align: center; }
+        .content { background-color: #ffffff; padding: 20px; }
+        .footer { font-size: 0.9em; color: #666; text-align: center; padding: 20px; }
+        .details { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .details th, .details td { padding: 8px 12px; border: 1px solid #ddd; }
+        .details th { background-color: #f5f5f5; text-align: left; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 th:text="'Booking Confirmation #' + ${booking.id}">Booking Confirmation</h1>
+    </div>
+    <div class="content">
+        <p>Hello <span th:text="${booking.firstName}">FirstName</span> <span th:text="${booking.lastName}">LastName</span>,</p>
+        <p>Thank you for booking <strong th:text="${booking.accommodation.title}">Accommodation Title</strong> with us. Here are your booking details:</p>
+
+        <table class="details">
+            <tr>
+                <th>Check‑In Date</th>
+                <td th:text="${#dates.format(booking.checkInDate, 'dd MMMM yyyy')}">01 January 2025</td>
+            </tr>
+            <tr>
+                <th>Check‑Out Date</th>
+                <td th:text="${#dates.format(booking.checkOutDate, 'dd MMMM yyyy')}">05 January 2025</td>
+            </tr>
+            <tr>
+                <th>Adults</th>
+                <td th:text="${booking.adults}">2</td>
+                <th>Adults</th>
+                <td th:text="${booking.children}">2</td>
+                <th>Adults</th>
+                <td th:text="${booking.infants}">2</td>
+            </tr>
+            <tr>
+                <th>Total Price</th>
+                <td>&euro;<span th:text="${booking.totalPrice}">250.00</span></td>
+            </tr>
+        </table>
+
+        <p>If you have any questions or need to modify your booking, please contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+        <p>We look forward to hosting you!</p>
+    </div>
+    <div class="footer">
+        <p>&copy; <span th:text="${#temporals.format(T(java.time.LocalDate).now(), 'yyyy')}">2025</span>Elfriedes Accommodations. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

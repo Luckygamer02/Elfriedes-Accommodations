@@ -1,15 +1,20 @@
 package com.jgmt.backend.accommodation.infrastructure.controller.data;
 
-import com.jgmt.backend.accommodation.domain.Accommodation;
-import com.jgmt.backend.accommodation.domain.Address;
-import com.jgmt.backend.accommodation.domain.Rating;
+import com.jgmt.backend.accommodation.domain.*;
 import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
+import com.jgmt.backend.s3.UploadedFile;
 import jakarta.persistence.Column;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
+@Slf4j
 @Data
 @Builder
 @AllArgsConstructor
@@ -26,10 +31,19 @@ public class AccommodationResponse implements Serializable {
     int bathrooms;
     int people;
     int livingRooms;
+    Long ownerId;
     AccommodationType type;
     Address address;
     Long festivalistId;
-    int Rating;
+    AccommodationFeature features;
+    List<Extra> extras;
+    List<DiscountResponse> discounts;
+    double avgRating;
+    /**
+     * Image URLS
+     */
+    List<String> picturesurls;
+    private LocalDateTime createdAt;
 
 
     public AccommodationResponse(Accommodation accommodation) {
@@ -44,6 +58,11 @@ public class AccommodationResponse implements Serializable {
         this.type = accommodation.getType();
         this.address = accommodation.getAddress();
         this.festivalistId = accommodation.getFestivalistId();
-
+        this.features = accommodation.getFeatures();
+        this.extras = accommodation.getExtras();
+        this.ownerId = accommodation.getOwner().getId();
+        this.picturesurls = accommodation.getPictures();
+        this.createdAt = accommodation.getCreatedAt();
+        this.discounts =  accommodation.getDiscounts().stream().map(DiscountResponse::new).collect(Collectors.toList());
     }
 }

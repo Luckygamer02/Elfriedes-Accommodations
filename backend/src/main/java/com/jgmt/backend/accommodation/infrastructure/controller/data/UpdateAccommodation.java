@@ -26,6 +26,6 @@ public class UpdateAccommodation implements Serializable {
     Long ownerId;
     CreateAddressRequest address;
     CreateAccommodationFeatureRequest features;
-    List<CreateAppliedDiscountRequest> appliedDiscounts;
+    List<CreateDiscountRequest> discounts;
     List<CreateExtraRequest> extras;
 }

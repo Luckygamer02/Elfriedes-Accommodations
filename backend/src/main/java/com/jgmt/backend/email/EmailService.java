@@ -5,6 +5,7 @@ import jakarta.mail.internet.MimeMessage;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -37,6 +38,26 @@ public class EmailService {
         message.setSubject(subject);
         message.setText(content);
         emailSender.send(message);
+    }
+    public void sendHtmlMessageWithAttachment(
+            List<String> to,
+            String subject,
+            String htmlBody,
+            byte[] attachmentBytes,
+            String attachmentFilename
+    ) throws Exception {
+        MimeMessage msg = emailSender.createMimeMessage();
+        // true = multipart
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
+
+        helper.setTo(to.toArray(new String[0]));
+        helper.setSubject(subject);
+        helper.setText(htmlBody, true);
+
+        ByteArrayResource pdf = new ByteArrayResource(attachmentBytes);
+        helper.addAttachment(attachmentFilename, pdf);
+
+        emailSender.send(msg);
     }
 
 }

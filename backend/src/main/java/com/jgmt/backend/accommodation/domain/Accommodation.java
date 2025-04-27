@@ -4,18 +4,19 @@ package com.jgmt.backend.accommodation.domain;
 
 import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
-import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAppliedDiscountRequest;
+import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateDiscountRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateExtraRequest;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.entity.AbstractEntity;
-import com.jgmt.backend.s3.UploadedFile;
 import com.jgmt.backend.users.User;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,9 @@ public class Accommodation extends AbstractEntity {
     @Positive
     @Column(nullable = false, name = "baseprice")
     private int basePrice;
-    @Positive
+    @PositiveOrZero
     private int bedrooms;
-    @Positive
+    @PositiveOrZero
     private int bathrooms;
     @Positive
     private int people;
@@ -68,7 +69,7 @@ public class Accommodation extends AbstractEntity {
             orphanRemoval = true
     )
     @Builder.Default
-    private List<AppliedDiscount> appliedDiscounts = new ArrayList<>();
+    private List<Discount> discounts = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "accommodation")
@@ -88,13 +89,19 @@ public class Accommodation extends AbstractEntity {
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(
 
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
     @Builder.Default
-    private List<UploadedFile> pictures = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(
+            name = "accommodation_pictures",
+            joinColumns = @JoinColumn(name = "accommodation_id")
+    )
+    @Column(name = "url", length = 512)
+    private List<String> pictures = new ArrayList<>();
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
 
 
@@ -135,12 +142,12 @@ public class Accommodation extends AbstractEntity {
             this.features = new AccommodationFeature(request.getFeatures());
         }
 
-        if (request.getAppliedDiscounts() != null) {
-            this.appliedDiscounts = new ArrayList<>();
-            for (CreateAppliedDiscountRequest discountRequest : request.getAppliedDiscounts()) {
-                AppliedDiscount discount = new AppliedDiscount(discountRequest);
+        if (request.getDiscounts() != null) {
+            this.discounts = new ArrayList<>();
+            for (CreateDiscountRequest discountRequest : request.getDiscounts()) {
+                Discount discount = new Discount(discountRequest);
                 discount.setAccommodation(this);
-                this.appliedDiscounts.add(discount);
+                this.discounts.add(discount);
             }
         }
 
@@ -174,17 +181,17 @@ public class Accommodation extends AbstractEntity {
         this.people = request.getPeople();
         this.livingRooms = request.getLivingRooms();
         this.type = request.getType();
-        this.festivalistId = request.getFestivalistId();
+        this.festivalistId = request.getFestivalId();
         this.address = new Address(request.getAddress());
         this.features = new AccommodationFeature(request.getFeatures());
 
         // Convert Applied Discounts
-        this.appliedDiscounts = new ArrayList<>();
-        if (request.getAppliedDiscounts() != null) {
-            for (CreateAppliedDiscountRequest discountRequest : request.getAppliedDiscounts()) {
-                AppliedDiscount discount = new AppliedDiscount(discountRequest);
+        this.discounts = new ArrayList<>();
+        if (request.getDiscounts() != null) {
+            for (CreateDiscountRequest discountRequest : request.getDiscounts()) {
+                Discount discount = new Discount(discountRequest);
                 discount.setAccommodation(this);
-                this.appliedDiscounts.add(discount);
+                this.discounts.add(discount);
             }
         }
 

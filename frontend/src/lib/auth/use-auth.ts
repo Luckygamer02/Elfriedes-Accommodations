@@ -1,12 +1,12 @@
 "use client"
 
 import useSWR from "swr";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import httpClient, { restClient } from "../httpClient";
-import { HttpErrorResponse } from "@/models/http/HttpErrorResponse";
-import { UserResponse } from "@/models/user/UserResponse";
-import { LoginRequest } from "@/models/backend";
+import {useEffect} from "react";
+import {useRouter} from "next/navigation";
+import httpClient, {restClient} from "../httpClient";
+import {HttpErrorResponse} from "@/models/http/HttpErrorResponse";
+import {UserResponse} from "@/models/user/UserResponse";
+import {LoginRequest} from "@/models/backend";
 
 interface AuthProps {
     middleware?: "auth" | "guest";

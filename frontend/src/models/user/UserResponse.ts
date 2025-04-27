@@ -14,7 +14,7 @@ export interface UserResponse {
 }
 
 interface ConnectedAccount {
-    provider: 'google' | 'github' | 'facebook' | 'okta' ;
+    provider: 'google' | 'github' | 'facebook' | 'okta';
     connectedAt: string;
 }
 

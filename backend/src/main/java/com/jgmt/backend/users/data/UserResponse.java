@@ -25,6 +25,8 @@ public class UserResponse {
     private String profileImageUrl;
     private List<ConnectedAccountResponse> connectedAccounts = new ArrayList<>();
     private List<String> authorities = new ArrayList<>();
+    private Integer unreadCount;
+
 
     public UserResponse(User user) {
         this.id = user.getId();
@@ -36,6 +38,8 @@ public class UserResponse {
         user.getConnectedAccounts().forEach((provider) -> {
             this.connectedAccounts.add(new ConnectedAccountResponse(provider.getProvider(), provider.getConnectedAt()));
         });
+        Integer unreadCount;
+
     }
 
     public UserResponse(User user, Collection<? extends GrantedAuthority> authorities) {

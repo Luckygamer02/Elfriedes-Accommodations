@@ -1,6 +1,7 @@
 package com.jgmt.backend.users;
 
 import com.jgmt.backend.entity.AbstractEntity;
+import com.jgmt.backend.supportchat.Message;
 import com.jgmt.backend.users.data.CreateUserRequest;
 import com.jgmt.backend.users.data.UpdateUserRequest;
 import com.jgmt.backend.util.ApplicationContextProvider;
@@ -47,6 +48,12 @@ public class User extends AbstractEntity implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserConnectedAccount> connectedAccounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<Message> sentMessages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL)
+    private List<Message> receivedMessages = new ArrayList<>();
+
 
     public User(CreateUserRequest data) {
         PasswordEncoder passwordEncoder = ApplicationContextProvider.bean(PasswordEncoder.class);
@@ -90,7 +97,10 @@ public class User extends AbstractEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        String roleName = (this.role != null)
+                ? this.role.name()
+                : "ROLE_USER";
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + roleName.toUpperCase()));
     }
 
     @Override

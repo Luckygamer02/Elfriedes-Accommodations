@@ -1,162 +1,251 @@
-"use client"
-import { useEffect, useState } from "react";
+"use client";
+import {useParams, useRouter} from "next/navigation";
+import {useForm, zodResolver} from "@mantine/form";
+import {
+    Accommodation,
+    AccommodationType,
+    CreateAccommodationRequest,
+    Extratype
+} from "@/models/accommodation/accommodation";
 import useSWR from "swr";
+import {Button, Checkbox, Loader, Notification, NumberInput, Select, Textarea, TextInput} from "@mantine/core";
 import httpClient from "@/lib/httpClient";
-import {PagedResponse} from "@/models/http/PagedResponse";
-import {UserResponse} from "@/models/user/UserResponse";
+import {useEffect, useState} from "react";
+import {useAuthGuard} from "@/lib/auth/use-auth";
+import {z} from "zod";
+import {showNotification} from "@mantine/notifications"; // Your existing schema
+import UplaodandDeleteImages from "@/components/upload/UplaodandDeleteImages";
 
-type Accommodation = {
-    id: number;
-    name: string;
-    location: string;
-    price: string;
-    image: string;
-};
-
-type Booking = {
-    id: number;
-    guestName: string;
-    checkIn: string;
-    checkOut: string;
-};
-
-import { useRouter } from "next/router";
-import {RestApplicationClient} from "@/models/backend";
-
-
-const apiClient = new RestApplicationClient(httpClient);
-
-export default function AccommodationsList() {
-    const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
-    const [selectedAccommodation, setSelectedAccommodation] = useState<Accommodation | null>(null);
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+export default function UpdateAccommodationPage() {
     const router = useRouter();
-    const page = 1; // Aktuell statische Seite, kann dynamisch gemacht werden
+    const {user} = useAuthGuard({middleware: "auth"});
+    const {id} = useParams<{ id: string }>();
+    const {data, error, isLoading} = useSWR<Accommodation>(
+        `api/accommodations/${id}`,
+        (url: string) => httpClient.get<Accommodation>(url).then(res => res.data)
+    );
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
-    // const { data, error } = useSWR(`/api/admin/users?page=${page}`, async () => {
-    //     try {
-    //         const response = await apiClient.admin_getUsers({ page });
-    //         return response.data;
-    //     } catch (err) {
-    //         console.error("Fehler beim Laden der Benutzer:", err);
-    //         return null;
-    //     }
-    // });
-    //
-    // useEffect(() => {
-    //     const loadAccommodations = async () => {
-    //         if (!data) {
-    //             router.push("/upload"); // Weiterleitung zur Upload-Seite, falls keine Daten vorhanden
-    //             return;
-    //         }
-    //         try {
-    //             setAccommodations(data.items || []);
-    //         } catch (error) {
-    //             console.error("Error fetching accommodations:", error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     loadAccommodations();
-    // }, [data, router]);
+    const toNumber = (field: string) =>
+        z.union([z.string(), z.number()])
+            .transform(val => Number(val))
+            .refine(n => !isNaN(n), {message: `${field} must be a number`});
 
-    // const handleSelectAccommodation = async (acc: Accommodation) => {
-    //     setSelectedAccommodation(acc);
-    //     try {
-    //         const response = await apiClient.getSession(); // Hier evtl. andere Methode nutzen
-    //         setBookings(response.data.bookings || []);
-    //     } catch (error) {
-    //         console.error("Error fetching bookings:", error);
-    //     }
-    // };
+    const validationSchema = z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+        basePrice: z.number().positive(),
+        bedrooms: z.number().nonnegative(),
+        bathrooms: z.number().nonnegative(),
+        people: z.number().positive(),
+        livingRooms: z.number().nonnegative(),
+        type: z.nativeEnum(AccommodationType),
+        festivalistId: z.number().positive(),
+        ownerId: z.number().positive(),
+        address: z.object({
+            street: z.string().min(1),
+            houseNumber: z.string().min(1),
+            city: z.string().min(1),
+            postalCode: z.string().min(1),
+            country: z.string().min(1),
+        }),
+        features: z.object({
+            ac: z.boolean(),
+            garden: z.boolean(),
+            kitchen: z.boolean(),
+            microwave: z.boolean(),
+            meetingTable: z.boolean(),
+            pool: z.boolean(),
+            tv: z.boolean(),
+            washingMachine: z.boolean(),
+            wifi: z.boolean(),
+        }),
+        discount: z.object({
+            discountprocent: z.number().min(0).max(100),
+            name: z.string().min(1),
+            expioringdate: z.date(),
+        }).optional(),
 
-    // const handleUpdateAccommodation = async () => {
-    //     if (!selectedAccommodation) return;
-    //     try {
-    //         await apiClient.updateUser(selectedAccommodation.id.toString(), selectedAccommodation);
-    //         alert("Accommodation updated successfully!");
-    //     } catch (error) {
-    //         console.error("Error updating accommodation:", error);
-    //     }
-    // };
 
-    if (loading) {
-        return <div className="p-6 text-center text-xl">Loading...</div>;
+        extras: z.array(z.object({
+            type: z.nativeEnum(Extratype),
+            price: z.number().positive(),
+        }))
+    });
+
+
+    const form = useForm<CreateAccommodationRequest>({
+        validate: zodResolver(validationSchema),
+    });
+
+    // Set initial values when data loads
+    useEffect(() => {
+        if (data) {
+            form.setValues({
+                title: data.title,
+                description: data.description,
+                basePrice: data.basePrice,
+                bedrooms: data.bedrooms,
+                bathrooms: data.bathrooms,
+                people: data.people,
+                livingRooms: data.livingRooms,
+                type: data.type,
+                festivalistId: data.festivalistId,
+                ownerId: data.ownerId,
+                address: data.address,
+                features: data.features,
+                discount: data.discount,
+                extras: data.extras
+            });
+        }
+    }, [data]);
+
+
+    const handleSubmit = async (values: CreateAccommodationRequest) => {
+        setSubmitError(null);
+
+        try {
+            const response = await httpClient.patch(
+                `api/accommodations/${id}`,
+                values
+            );
+
+            if (response.status === 200) {
+                // 1. Erfolgsmeldung anzeigen
+                showNotification({
+                    title: 'Success',
+                    message: 'Accommodation updated successfully!',
+                    color: 'green',
+                    autoClose: 2000, // automatically closes after 2 seconds
+                });
+
+
+                router.push('http://localhost:3000/accommodation/manage/');
+
+            } else {
+                setSubmitError('Failed to update accommodation');
+            }
+        } catch (error: any) {
+            console.error('Update failed:', error);
+            setSubmitError(
+                error.response?.data?.message || 'An error occurred'
+            );
+        }
+    };
+
+    if (isLoading) return <Loader/>;
+    if (error) return <div>Error loading accommodation</div>;
+    if (data?.ownerId !== user?.id) {
+        return <div>You are not authorized to edit this accommodation</div>;
     }
 
     return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-4">Accommodations</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {accommodations.map((acc) => (
-                    <div
-                        key={acc.id}
-                        className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer"
-                        onClick={() => handleSelectAccommodation(acc)}
-                    >
-                        <img src={acc.image} alt={acc.name} className="w-full h-48 object-cover" />
-                        <div className="p-4">
-                            <h3 className="text-xl font-semibold">{acc.name}</h3>
-                            <p className="text-gray-600">{acc.location}</p>
-                            <p className="text-blue-500 font-bold mt-2">{acc.price}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div className="max-w-2xl mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-6">Update Accommodation</h1>
 
-            {selectedAccommodation && (
-                <div className="mt-6 p-6 bg-gray-100 rounded-lg shadow-md">
-                    <h3 className="text-xl font-bold">Edit Accommodation</h3>
-                    <input
-                        type="text"
-                        value={selectedAccommodation.name}
-                        onChange={(e) =>
-                            setSelectedAccommodation({ ...selectedAccommodation, name: e.target.value })
-                        }
-                        className="block w-full p-2 mt-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        value={selectedAccommodation.location}
-                        onChange={(e) =>
-                            setSelectedAccommodation({ ...selectedAccommodation, location: e.target.value })
-                        }
-                        className="block w-full p-2 mt-2 border rounded"
-                    />
-                    <input
-                        type="text"
-                        value={selectedAccommodation.price}
-                        onChange={(e) =>
-                            setSelectedAccommodation({ ...selectedAccommodation, price: e.target.value })
-                        }
-                        className="block w-full p-2 mt-2 border rounded"
-                    />
-                    <button
-                        onClick={handleUpdateAccommodation}
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-                    >
-                        Save Changes
-                    </button>
-
-                    <h3 className="text-xl font-bold mt-6">Bookings</h3>
-                    {bookings.length > 0 ? (
-                        <ul className="mt-2">
-                            {bookings.map((booking) => (
-                                <li key={booking.id} className="p-2 bg-white border rounded mt-2">
-                                    {booking.guestName} - {booking.checkIn} to {booking.checkOut}
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p className="text-gray-600 mt-2">No bookings found.</p>
-                    )}
-                </div>
+            {submitError && (
+                <Notification color="red" onClose={() => setSubmitError(null)} mb="md">
+                    {submitError}
+                </Notification>
             )}
+
+            <form
+                onSubmit={form.onSubmit(
+                    (values) => {
+                        console.log("Form is valid. Submitting…");
+                        handleSubmit(values);
+                    },
+                    (validationErrors) => {
+                        console.warn("Validation failed:", validationErrors);
+                    }
+                )}
+            >
+                <TextInput
+                    label="Title"
+                    {...form.getInputProps('title')}
+                    mb="md"
+                />
+
+                <Textarea
+                    label="Description"
+                    {...form.getInputProps('description')}
+                    mb="md"
+                    minRows={4}
+                />
+
+                <NumberInput
+                    label="Base Price"
+                    {...form.getInputProps('basePrice')}
+                    mb="md"
+                />
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <NumberInput
+                        label="Bedrooms"
+                        {...form.getInputProps('bedrooms')}
+                    />
+                    <NumberInput
+                        label="Bathrooms"
+                        {...form.getInputProps('bathrooms')}
+                    />
+                    <NumberInput
+                        label="Max Guests"
+                        {...form.getInputProps('people')}
+                    />
+                    <Select
+                        label="Accommodation Type"
+                        data={Object.values(AccommodationType)}
+                        {...form.getInputProps('type')}
+                    />
+                </div>
+
+                {/* Address Fields */}
+                <div className="space-y-4 mb-6">
+                    <TextInput
+                        label="Street"
+                        {...form.getInputProps('address.street')}
+                    />
+                    <TextInput
+                        label="House Number"
+                        {...form.getInputProps('address.houseNumber')}
+                    />
+                    <TextInput
+                        label="City"
+                        {...form.getInputProps('address.city')}
+                    />
+                    <TextInput
+                        label="Postal Code"
+                        {...form.getInputProps('address.postalCode')}
+                    />
+                    <TextInput
+                        label="Country"
+                        {...form.getInputProps('address.country')}
+                    />
+                </div>
+
+                {/* Features Checklist */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                    {Object.entries(form.values.features || {}).map(([feature, value]) => (
+                        <Checkbox
+                            key={feature}
+                            label={feature.charAt(0).toUpperCase() + feature.slice(1)}
+                            checked={value}
+                            onChange={e => form.setFieldValue(`features.${feature}`, e.target.checked)}
+                        />
+                    ))}
+                </div>
+
+                <Button
+                    type="submit"
+                    fullWidth
+                    size="lg"
+                >
+                    Update Accommodation
+                </Button>
+            </form>
+            <form>
+                <UplaodandDeleteImages id={id}/>
+            </form>
         </div>
     );
 }
-
-
-
-

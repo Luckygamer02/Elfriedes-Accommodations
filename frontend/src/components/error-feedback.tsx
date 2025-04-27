@@ -1,12 +1,13 @@
 "use client"
 
-import { cn } from '@/lib/utils'
-import { HttpErrorResponse } from '@/models/http/HttpErrorResponse'
+import {cn} from '@/lib/utils'
+import {HttpErrorResponse} from '@/models/http/HttpErrorResponse'
 import React from 'react'
 
-interface ErrorFeedbackProps extends React.HTMLAttributes<HTMLDivElement>{
+interface ErrorFeedbackProps extends React.HTMLAttributes<HTMLDivElement> {
     data: HttpErrorResponse | undefined
 }
+
 export default function ErrorFeedback({data, className}: ErrorFeedbackProps) {
     if (!data) return <></>
 

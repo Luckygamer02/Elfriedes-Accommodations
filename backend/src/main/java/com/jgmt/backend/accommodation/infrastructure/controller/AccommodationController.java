@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.jgmt.backend.accommodation.domain.Accommodation;
+import com.jgmt.backend.accommodation.domain.Extra;
+import com.jgmt.backend.accommodation.domain.enums.AccommodationType;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.AccommodationResponse;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.CreateAccommodationRequest;
+import com.jgmt.backend.accommodation.infrastructure.controller.data.FilterAccommodationDTO;
 import com.jgmt.backend.accommodation.infrastructure.controller.data.UpdateAccommodation;
 import com.jgmt.backend.accommodation.application.service.AccommodationService;
 import com.jgmt.backend.users.data.UserResponse;
@@ -104,20 +107,18 @@ public class AccommodationController {
     }
 
     @GetMapping("/search")
-    @Operation(summary = "Search accommodations", description = "Full-text search with multiple criteria")
+    @Operation(summary = "Search accommodations", description = "Search with filters")
     public ResponseEntity<Page<AccommodationResponse>> searchAccommodations(
-            @RequestParam String query,
-            Pageable pageable) {
-        return ResponseEntity.ok(accommodationService.searchAccommodations(query, pageable));
+            @ModelAttribute FilterAccommodationDTO filter
+    ) {
+        Page<AccommodationResponse> result = accommodationService.searchWithFilters(filter);
+        return ResponseEntity.ok(result);
     }
+
     @GetMapping("/getbyUserid/{ownerId}")
     public ResponseEntity<Page<AccommodationResponse>> getAccommodationByUserid(@PathVariable Long ownerId,  @PageableDefault(size = 100) Pageable pageable)
     {
         return ResponseEntity.ok(accommodationService.getAccommodationByOwnerId(ownerId, pageable));
-    }
-    @GetMapping("rating/{accommodationid}")
-    public ResponseEntity<Integer> getRating(@PathVariable Long accommodationid) {
-        return ResponseEntity.ok(accommodationService.getRating(accommodationid));
     }
 
     @PatchMapping("/{id}/profile-picture")
@@ -125,6 +126,37 @@ public class AccommodationController {
             @PathVariable Long id, @RequestParam("file") MultipartFile file) {
         AccommodationResponse accommodation = accommodationService.updateAccommodationPicture( file, id);
         return ResponseEntity.ok(accommodation);
+    }
+
+    /**
+     * Upload a new image file for the given accommodation.
+     * Matches front-end PATCH /api/accommodations/{id}/image
+     */
+    @PatchMapping(
+            path = "/{id}/image",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @Operation(summary = "Upload accommodation image", description = "Add one image to an accommodation")
+    public ResponseEntity<AccommodationResponse> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        AccommodationResponse updated = accommodationService.updateAccommodationPicture(file, id);
+        return ResponseEntity.ok(updated);
+    }
+
+    /**
+     * Delete a single image by its position in the list.
+     * Matches front-end DELETE /api/accommodations/{id}/images/{index}
+     */
+    @DeleteMapping("/{id}/images/{index}")
+    @Operation(summary = "Delete accommodation image", description = "Remove one image from an accommodation by index")
+    @ApiResponse(responseCode = "200", description = "Image removed and accommodation returned")
+    public ResponseEntity<AccommodationResponse> deleteImage(
+            @PathVariable Long id,
+            @PathVariable int index) {
+        AccommodationResponse updated = accommodationService.deleteAccommodationImage(id, index);
+        return ResponseEntity.ok(updated);
     }
 
 }

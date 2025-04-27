@@ -1,59 +1,79 @@
-"use client"
-import React, {useEffect, useState} from 'react';
-import {Button} from "@mantine/core";
-import {restClient} from "@/lib/httpClient";
+"use client";
+import React from "react";
+import {Button, Group} from "@mantine/core";
+import httpClient from "@/lib/httpClient";
 import {useAuthGuard} from "@/lib/auth/use-auth";
 import Loading from "@/components/loading";
 import {Accommodation} from "@/models/accommodation/accommodation";
-import useSWR, {BareFetcher} from "swr";
-import {PaginatedResponse, RestResponse} from "@/models/backend";
-
-
+import useSWR, {mutate} from "swr";
+import {PaginatedResponse} from "@/models/backend";
+import {showNotification} from "@mantine/notifications";
+import {openConfirmModal} from "@mantine/modals";
 
 export default function ManageAccommodation() {
+    const {user} = useAuthGuard({middleware: "auth"});
 
-
-    const {user} =  useAuthGuard({middleware: "auth"});
+    // Fixed SWR implementation
     const {
-        data: accommodationresponse,
+        data,
         error,
-        mutate,
         isLoading
-    } = useSWR<PaginatedResponse<Accommodation>>(user ? `api/accommodations/getbyUserid/${user.id}` : undefined,
-        user
-            ? () => restClient.getAccommodationsbyownerid(user.id).then(res => res.data) :
-            () => restClient.getAccommodationsbyownerid(0).then(res => res.data)
+    } = useSWR<PaginatedResponse<Accommodation>>(
+        user?.id ? `api/accommodations/getbyUserid/${user.id}` : null,
+        (url) => httpClient.get<PaginatedResponse<Accommodation>>(url).then(res => res.data),
+        {
+            revalidateOnFocus: false,
+            shouldRetryOnError: false,
+        }
     );
-    console.log(accommodationresponse)
-    console.log(user)
-    if (!user) {
-        return;
-    }
-    if (!user) return <Loading/>;
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-    if (!accommodationresponse) {
-        return;
-    }
+    const handleDelete = (id: number) => {
+        openConfirmModal({
+            title: 'Delete Accommodation',
+            centered: true,
+            children: (
+                <p>Are you sure you want to delete this accommodation? This action cannot be undone.</p>
+            ),
+            labels: { confirm: 'Delete', cancel: "Cancel" },
+            confirmProps: { color: 'red' },
+            onConfirm: async () => {
+                try {
+                    await httpClient.delete(`/api/accommodations/${id}`);
+                    mutate(`api/accommodations/getbyUserid/${user?.id}`);
+                    showNotification({
+                        title: "Deleted",
+                        message: "Accommodation deleted successfully",
+                        color: "green",
+                    });
+                } catch (err) {
+                    console.error("Failed to delete accommodation", err);
+                    showNotification({
+                        title: "Error",
+                        message: "Failed to delete accommodation. Please try again.",
+                        color: "red",
+                    });
+                }
+            },
+        });
+    };
 
-    const accommodations = accommodationresponse.content || [];
+
+    // Optimized loading state handling
+    if (!user || !user.id || isLoading) return <Loading/>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    const accommodations = data?.content || [];
 
     return (
         <div className="container mx-auto p-6">
             <h2 className="text-2xl font-bold mb-4">Your Accommodations</h2>
-            <Button
-                component="a"
-                href="/accommodation/create"
-                className="mb-6 float-right"
-            >
-                Add New Accommodation
-            </Button>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {accommodations.length > 0 ? (
+                {accommodations.length > 0 && (
                     accommodations.map((acc) => (
-                        <div key={acc.id}
-                             className="rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                        <div
+                            key={acc.id}
+                            className="rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                        >
                             <a href={`/accommodation/manage/${acc.id}`}>
                                 <div className="p-4">
                                     <h3 className="text-xl font-semibold mb-2">{acc.title}</h3>
@@ -74,29 +94,42 @@ export default function ManageAccommodation() {
                                             <p className="text-gray-600">
                                                 <strong>Address:</strong><br/>
                                                 {acc.address.street} {acc.address.houseNumber}<br/>
-                                                {acc.address.zipCode} {acc.address.city}<br/>
+                                                {acc.address.postalCode} {acc.address.city}<br/>
                                                 {acc.address.country}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </a>
+                            <Group p="right" className="p-4">
+                                <Button
+                                    component="a"
+                                    href={`/accommodation/manage/${acc.id}/bookings`}
+                                    size="xs"
+                                >
+                                    View Bookings
+                                </Button>
+                                <Button
+                                    color="red"
+                                    size="xs"
+                                    onClick={() => handleDelete(acc.id)}
+                                >
+                                    Delete
+                                </Button>
+                            </Group>
                         </div>
-                    ))
-                ) : (
+                    )))
+                }
+
                     <div className="col-span-full text-center py-8">
-                        <p className="text-gray-500 text-lg">
-                            You haven't listed any accommodations yet.
-                        </p>
                         <Button
                             component="a"
-                            href="/accommodation/create"
+                            href="/accommodation/upload"
                             className="mt-4"
                         >
-                            Create Your First Listing
+                            Add Accommodation
                         </Button>
                     </div>
-                )}
             </div>
         </div>
     );
