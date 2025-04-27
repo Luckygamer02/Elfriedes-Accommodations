@@ -26,7 +26,7 @@ public class Extra extends AbstractEntity {
     private Accommodation accommodation;
 
     public Extra(CreateExtraRequest extraRequest) {
-        this.type = new Extratype(extraRequest.getType());
+        this.type = extraRequest.getType();
         this.price = extraRequest.getPrice();
     }
 

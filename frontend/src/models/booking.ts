@@ -1,4 +1,10 @@
-import {Accommodation, CreateAppliedDiscountRequest, CreateDiscountRequest, Extra} from "./accommodation/accommodation";
+import {
+    Accommodation,
+    AccommodationType,
+    CreateAppliedDiscountRequest,
+    CreateDiscountRequest,
+    Extra, FestivalType
+} from "./accommodation/accommodation";
 import {AbstractEntity} from "@/models/backend";
 
 export interface Payment {
@@ -26,7 +32,27 @@ export enum BookingStatus {
     CANCELLED  = "CANCELLED",
     COMPLETED  = "COMPLETED",
 }
-
+export interface FilterAccommodationDTO {
+    city?: string;
+    postalCode?: string;
+    minBasePrice?: number;
+    maxBasePrice?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    people?: number;
+    livingRooms?: number;
+    type?: AccommodationType;
+    festivalType?: FestivalType;
+    festivalistId?: number;
+    extras?: string[];
+    features?: string[];
+    name?: string;
+    minRating?: number;
+    maxRating?: number;
+    page?: number;
+    size?: number;
+    sortBy?: string;
+}
 export enum PaymentMethod {
     CREDIT_CARD = "CREDIT_CARD",
     PAYPAL      = "PAYPAL",

@@ -21,7 +21,7 @@ export default function Navbar() {
 
     return (
 
-        <Group position="apart" align="center" sx={{ height: '100%' }} nowrap>
+        <Group p="apart" align="center" sx={{ height: '100%' }}>
                 {/* Brand */}
                  <Link href="/">
                     <Text
@@ -41,7 +41,7 @@ export default function Navbar() {
                         Home
                     </Button>
 
-                    <Button component={Link} href="/accommodations" variant="subtle">
+                    <Button component={Link} href="/search" variant="subtle">
                         Accommodations
                     </Button>
 

@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,7 @@ public class RatingService {
 
     @Transactional
     public Page<Rating> getratingforAcc(Long accommodationid, Pageable pageable) {
-       return( ratingRepository.findByaccommodationid(accommodationid, pageable ) );
+       return( ratingRepository.findByaccommodationId(accommodationid, pageable ) );
     }
     @Transactional
     public Optional<Rating> createRating(@Valid RatingDto rating) {
@@ -27,7 +26,7 @@ public class RatingService {
         return Optional.of(ratingRepository.save(ratingEntity));
     }
     @Transactional
-    public Integer getRating(Long accommodationid) {
+    public Double getRating(Long accommodationid) {
         return  ratingRepository.getRatingforAccommodation(accommodationid);
     }
 }

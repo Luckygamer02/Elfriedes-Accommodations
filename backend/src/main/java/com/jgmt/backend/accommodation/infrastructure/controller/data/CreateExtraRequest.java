@@ -12,6 +12,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CreateExtraRequest implements Serializable {
     Long id;
-    String type;
+    Extratype type;
     int price;
 }

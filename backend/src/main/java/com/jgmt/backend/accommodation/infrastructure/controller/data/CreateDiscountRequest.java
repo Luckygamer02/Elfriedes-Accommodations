@@ -15,5 +15,6 @@ import java.util.Date;
 public class CreateDiscountRequest implements Serializable {
     private float discountprocent;
     private String name;
-    private Date expioringdate;
+    private Date expiringDate;
+    private Date startDate;
 }

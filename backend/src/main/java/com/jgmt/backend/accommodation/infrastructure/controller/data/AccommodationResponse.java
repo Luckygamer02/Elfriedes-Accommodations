@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,11 +36,13 @@ public class AccommodationResponse implements Serializable {
     Long festivalistId;
     AccommodationFeature features;
     List<Extra> extras;
+    List<Discount> discounts;
+    double avgRating;
     /**
      * Image URLS
      */
     List<String> picturesurls;
-
+    private LocalDateTime createdAt;
 
 
     public AccommodationResponse(Accommodation accommodation) {
@@ -58,5 +61,7 @@ public class AccommodationResponse implements Serializable {
         this.extras = accommodation.getExtras();
         this.ownerId = accommodation.getOwner().getId();
         this.picturesurls = accommodation.getPictures();
+        this.createdAt = accommodation.getCreatedAt();
+        this.discounts = accommodation.getDiscounts();
     }
 }

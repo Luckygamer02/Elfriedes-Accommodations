@@ -751,8 +751,8 @@ export class RestApplicationClient {
         const qs = params.toString() ? `?${params.toString()}` : "";
 
         return httpClient
-            .get<Accommodation[]>(`api/accommodations/search${qs}`)
-            .then(res => res.data);
+            .get<PaginatedResponse<Accommodation>>(`api/accommodations/search${qs}`)
+            .then(res => res.data.content);
     }
 
 }

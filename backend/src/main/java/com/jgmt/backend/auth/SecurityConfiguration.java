@@ -69,6 +69,7 @@ public class SecurityConfiguration {
                     .requestMatchers("/api/accommodations/**").permitAll()
                     .requestMatchers("/api/bookings/**").permitAll()
                     .requestMatchers("api/ratings/**").permitAll()
+                    .requestMatchers("/api/festivals/**").permitAll()
 
                     .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                     .requestMatchers(antMatcher("/swagger-ui.html")).permitAll()

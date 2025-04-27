@@ -108,12 +108,13 @@ public class AccommodationController {
 
     @GetMapping("/search")
     @Operation(summary = "Search accommodations", description = "Search with filters")
-    public ResponseEntity<List<AccommodationResponse>> searchAccommodations(
+    public ResponseEntity<Page<AccommodationResponse>> searchAccommodations(
             @ModelAttribute FilterAccommodationDTO filter
     ) {
-        List<AccommodationResponse> result = accommodationService.searchWithFilters(filter);
+        Page<AccommodationResponse> result = accommodationService.searchWithFilters(filter);
         return ResponseEntity.ok(result);
     }
+
     @GetMapping("/getbyUserid/{ownerId}")
     public ResponseEntity<Page<AccommodationResponse>> getAccommodationByUserid(@PathVariable Long ownerId,  @PageableDefault(size = 100) Pageable pageable)
     {

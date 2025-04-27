@@ -28,7 +28,7 @@ public class ratingcontroller {
     }
 
     @GetMapping("rating/{accommodationid}")
-    public ResponseEntity<Integer> getRating(@PathVariable Long accommodationid) {
+    public ResponseEntity<Double> getRating(@PathVariable Long accommodationid) {
         return ResponseEntity.ok(ratingService.getRating(accommodationid));
     }
 

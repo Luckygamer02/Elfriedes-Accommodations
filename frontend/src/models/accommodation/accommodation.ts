@@ -95,7 +95,7 @@ export interface Address {
 }
 
 
-interface AccommodationFeatures {
+export interface AccommodationFeatures {
     ac: boolean;
     garden: boolean;
     kitchen: boolean;
@@ -131,7 +131,7 @@ export interface CreateAccommodationRequest {
     people: number;
     livingRooms: number;
     type: AccommodationType;
-    festivalistId: number;
+    festivalistId?: number;
     ownerId: number;
     address: Address;
     features: AccommodationFeatures;

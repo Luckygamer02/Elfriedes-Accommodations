@@ -22,7 +22,7 @@ export default function Footer() {
         >
             <Container size="lg">
                 <Grid gutter="lg">
-                    <Grid.Col span={{base:12, md:4}} >
+                    <Grid.Col span={{base:12, md:3}} >
                         <Title order={4} mb="xs">
                             Elfriedes Accommodations
                         </Title>
@@ -31,7 +31,7 @@ export default function Footer() {
                         </Text>
                     </Grid.Col>
 
-                    <Grid.Col span={{base:12, md:4}}>
+                    <Grid.Col span={{base:12, md:3}}>
                         <Title order={5} mb="xs">
                             About us
                         </Title>
@@ -47,7 +47,7 @@ export default function Footer() {
                         </Text>
                     </Grid.Col>
 
-                    <Grid.Col span={{base:12, md:4}}>
+                    <Grid.Col span={{base:12, md:3}}>
                         <Title order={5} mb="xs">
                             Legal
                         </Title>

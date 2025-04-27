@@ -216,7 +216,7 @@ export default function CreateAccommodationForm({
             people: 0,
             livingRooms: 1,
             type: AccommodationType.FLAT,
-            festivalistId: 0,
+            festivalistId: undefined,
             ownerId: userid,
             address: {
                 street: '',
@@ -428,27 +428,26 @@ export default function CreateAccommodationForm({
                             {festivalsError ? (
                                   <Text c="red">Failed to load festivals</Text>
                                ) : (
-                                  <Select
+                                <Select
                                     label="Festival"
-                                    placeholder={festivalsLoading ? "Loading…" : "Select festival"}
+                                    placeholder={festivalsLoading ? "Loading..." : "Select festival"}
                                     required
                                     searchable
                                     data={
-                                      festivals?.map(f => ({
-                                        value: f.id.toString(),
-                                        label: f.name,
-                                      })) ?? []
+                                        festivals?.map(f => ({
+                                            value: f.id.toString(),
+                                            label: f.name,
+                                        })) ?? []
                                     }
-                                // the form field is a number, so we coerce the string back to number
-                                    {...form.getInputProps('festivalistId', {
-                                      valueProp: 'value',
-                                      onChange: (val) =>
-                                        form.setFieldValue(
-                                          'festivalistId',
-                                          val ? Number(val) : 0
-                                        ),
+                                    {...form.getInputProps('festivalId', {
+                                        valueProp: 'value',
+                                        onChange: (val) =>
+                                            form.setFieldValue(
+                                                'festivalId',
+                                                val ? Number(val) : undefined
+                                            ),
                                     })}
-                                  />
+                                />
                                 )}
                         </div>
                     </Fieldset>

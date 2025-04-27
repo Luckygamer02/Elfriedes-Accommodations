@@ -2,17 +2,13 @@
 import React from "react";
 import { Container, Title, Text, Image, Grid, Card, List, ThemeIcon, Button, Center, Space } from "@mantine/core";
 import { IconHome, IconUsers, IconHeart, IconMail } from "@tabler/icons-react";
+import LogoCanvas from "@/components/layout/logocom";
 
 export default function AboutPage() {
     return (
         <Container size="md" my="xl">
             <Center>
-                <Image
-                    src="/logo.svg"
-                    alt="Elfriedes Accommodation Service Logo"
-                    width={120}
-                    mb="md"
-                />
+                <LogoCanvas />
             </Center>
             <Title  order={1} mb="sm">
                 About Elfriedes Accommodation Service
