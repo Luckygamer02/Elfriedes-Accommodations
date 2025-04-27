@@ -8,6 +8,7 @@ import {MantineProvider,} from "@mantine/core";
 import {ThemeProvider} from "@/components/theme-provider";
 import {Notifications} from '@mantine/notifications';
 import {ModalsProvider} from "@mantine/modals";
+import {CookieBanner} from "@/components/CookieBanner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -40,7 +41,8 @@ export default function RootLayout({
             <MantineProvider>
                 <Notifications/>
                 <ModalsProvider>
-                {children}
+                    {children}
+                    <CookieBanner />
                 </ModalsProvider>
             </MantineProvider>
         </ThemeProvider>

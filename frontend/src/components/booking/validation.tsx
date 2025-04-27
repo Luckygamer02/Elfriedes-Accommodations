@@ -31,7 +31,7 @@ export const BookingSchema = z.object({
 
     bookedExtras: z.array(z.any()), // ideally a proper schema here
     payments: z.object({
-        method: z.enum(["CREDITCARD", "BANKTRANSFER", "PAYPAL"]),
+        method: z.enum(["CREDIT_CARD", "BANK_TRANSFER", "PAYPAL"]),
         amount: z.number(),
         transactionDate: z.string(),
 
@@ -41,20 +41,21 @@ export const BookingSchema = z.object({
         accountNumber: z.string().optional(),
         routingNumber: z.string().optional(),
     }),
-
-    appliedDiscounts: z.array(z.any()),
+    discounts: z.array(z.any()),
 });
 
 
 export const BookingParamsSchema = z.object({
     checkIn: z.string().transform(val => new Date(decodeURIComponent(val))),
     checkOut: z.string().transform(val => new Date(decodeURIComponent(val))),
-    guests: z.string().transform(Number),
     total: z.string().transform(Number),
     firstName: z.string().transform(decodeURIComponent),
     lastName: z.string().transform(decodeURIComponent),
     email: z.string().transform(val => decodeURIComponent(val)).pipe(z.string().email()),
     address: z.string().transform(decodeURIComponent),
+    adults: z.string().transform(Number),
+    children: z.string().transform(Number),
+    infants: z.string().transform(Number),
 });
 
 export type ParsedBookingParams = z.infer<typeof BookingParamsSchema>;

@@ -14,6 +14,7 @@ import {useAuthGuard} from "@/lib/auth/use-auth";
 import {PaymentDetails} from "@/components/upload/PaymentDetails";
 import {BankTransferSchema, BookingParamsSchema, CreditCardSchema} from "@/components/booking/validation";
 import {Accommodation} from "@/models/accommodation/accommodation";
+import { string } from "zod";
 
 export default function BookingPage() {
     const {user} = useAuthGuard({middleware: "guest"});
@@ -31,12 +32,14 @@ export default function BookingPage() {
     const {
         checkIn,
         checkOut,
-        guests,
         total,
         firstName,
         lastName,
         email,
-        address
+        address,
+        children,
+        adults,
+        infants
     } = result.data;
 
     const parsedDates = {
@@ -44,7 +47,7 @@ export default function BookingPage() {
         checkOut
     };
 
-    const [paymentMethod, setPaymentMethod] = useState("creditCard");
+    const [paymentMethod, setPaymentMethod] = useState("CREDIT_CARD");
 
     const [cardDetails, setCardDetails] = useState({
         number: "",
@@ -54,8 +57,10 @@ export default function BookingPage() {
     });
 
     const [bankDetails, setBankDetails] = useState({
-        accountNumber: "",
-        routingNumber: ""
+            bic: "",
+            name: "",
+            iban: "",
+            remittance: "",
     });
 
     const handleCardChange = (field: string, value: string) => {
@@ -84,14 +89,14 @@ export default function BookingPage() {
         }
 
         const basePayment = {
-            method: paymentMethod.toUpperCase(),
+            method: paymentMethod,
             amount: total,
             paymentDate: new Date().toISOString().split('.')[0],
         };
 
         let payment: any = {...basePayment};
 
-        if (paymentMethod === "creditCard") {
+        if (paymentMethod === "CREDIT_CARD") {
             const creditValidation = CreditCardSchema.safeParse(cardDetails);
             if (!creditValidation.success) {
                 alert("Please fill in valid credit card details");
@@ -102,7 +107,7 @@ export default function BookingPage() {
                 last4: cardDetails.number.slice(-4),
                 expiry: cardDetails.expiry,
             };
-        } else if (paymentMethod === "bankTransfer") {
+        } else if (paymentMethod === "BANK_TRANSFER") {
             const bankValidation = BankTransferSchema.safeParse(bankDetails);
             if (!bankValidation.success) {
                 alert("Please provide valid bank transfer info");
@@ -110,8 +115,9 @@ export default function BookingPage() {
             }
             payment = {
                 ...payment,
-                accountNumber: bankDetails.accountNumber,
-                routingNumber: bankDetails.routingNumber,
+                bic: bankDetails.bic,
+                name: bankDetails.name,
+                iban: bankDetails.iban,
             };
         }
 
@@ -124,11 +130,13 @@ export default function BookingPage() {
             checkInDate: parsedDates.checkIn.toISOString(),
             checkOutDate: parsedDates.checkOut.toISOString(),
             status: "CONFIRMED",
-            people: guests,
+            adults: adults,
+            children: children,
+            infants: infants,
             totalPrice: total,
             bookedExtras: [],
             payment: payment,
-            appliedDiscounts: [],
+            discounts: [],
         };
 
         try {
@@ -154,9 +162,9 @@ export default function BookingPage() {
                     label="Select payment method"
                 >
                     <Stack mt="xs">
-                        <Radio value="creditCard" label="Credit Card"/>
-                        <Radio value="paypal" label="PayPal"/>
-                        <Radio value="bankTransfer" label="Bank Transfer"/>
+                        <Radio value="CREDIT_CARD" label="Credit Card"/>
+                        <Radio value="PAYPAL" label="PayPal"/>
+                        <Radio value="BANK_TRANSFER" label="Bank Transfer"/>
                     </Stack>
                 </Radio.Group>
 
@@ -166,6 +174,7 @@ export default function BookingPage() {
                     onBankDetailsChange={handleBankChange}
                     cardDetails={cardDetails}
                     bankDetails={bankDetails}
+                    amount={total.toString()}
                 />
 
                 <Paper p="lg" shadow="sm" withBorder>
@@ -183,7 +192,9 @@ export default function BookingPage() {
 
                             <Group gap="sm">
                                 <IconUsers size={20}/>
-                                <Text>{guests} guests</Text>
+                                <Text>{adults} Adults</Text>
+                                <Text>{children} Children</Text>
+                                <Text>{infants} Infants</Text>
                             </Group>
                         </Group>
 

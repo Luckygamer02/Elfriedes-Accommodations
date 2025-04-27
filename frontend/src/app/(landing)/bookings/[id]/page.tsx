@@ -151,7 +151,7 @@ export default function BookingDetailsPage() {
                     </>
                 )}
 
-                {booking.appliedDiscounts.length > 0 && (
+                {booking.discounts.length > 0 && (
                     <>
                         <Divider label="Discounts" />
                         <Table withBorder>
@@ -163,7 +163,7 @@ export default function BookingDetailsPage() {
                             </tr>
                             </thead>
                             <tbody>
-                            {booking.appliedDiscounts.map((d, i) => (
+                            {booking.discounts.map((d, i) => (
                                 <tr key={i}>
                                     <td>{d.discount.name}</td>
                                     <td>{d.discount.discountprocent}%</td>

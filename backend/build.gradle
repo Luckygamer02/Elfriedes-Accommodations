@@ -51,6 +51,8 @@ dependencies {
 	implementation 'org.springframework.modulith:spring-modulith-starter-jpa'
 	implementation 'org.modelmapper:modelmapper:2.1.1'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.0-rc2'
+	implementation("org.xhtmlrenderer:flying-saucer-pdf:9.12.0")
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
 	testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
 

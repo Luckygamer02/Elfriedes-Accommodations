@@ -47,7 +47,13 @@ public class BookingDTO {
         private BookingStatus status;
 
         @Positive
-        private int people;
+        private int adults;
+
+        @Positive
+        private int children;
+
+        @Positive
+        private int infants;
 
         @NotNull
         private BigDecimal totalPrice;
@@ -72,7 +78,9 @@ public class BookingDTO {
         this.checkInDate = booking.getCheckInDate();
         this.checkOutDate = booking.getCheckOutDate();
         this.status = booking.getStatus();
-        this.people = booking.getPeople();
+        this.adults = booking.getAdults();
+        this.children = booking.getChildren();
+        this.infants = booking.getInfants();
         this.totalPrice = booking.getTotalPrice();
 
         this.bookedExtras = booking.getBookedExtras();

@@ -1,7 +1,7 @@
 // app/accommodations/[id]/page.tsx
 "use client";
 import '@mantine/dates/styles.css';
-import {Accommodation} from "@/models/accommodation/accommodation";
+import {Accommodation, Extra} from "@/models/accommodation/accommodation";
 import {Badge, Grid, Group, Image, Paper, Stack, Text, Title,} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
 import useSWR from "swr";
@@ -17,11 +17,12 @@ import Highlights from "@/components/layout/Highlights";
 import Sidebar from "@/components/layout/Sidebar";
 import {modals} from "@mantine/modals";
 import {ClickablePreviewImage} from "@/components/image/ClickablePreviewImage";
+import {useState} from "react";
 
 
 export default function AccommodationDetailPage() {
     const id = Number(useParams<{ id: string }>().id);
-
+    const [selectedExtras, setSelectedExtras] = useState<Extra[]>([]);
 
     const AccommodationMap = dynamic(
         () => import('@/components/Map/AccommodationMap').then((mod) => mod.default),
@@ -81,7 +82,7 @@ export default function AccommodationDetailPage() {
                                 </Group>
                                 <Group gap="xs">
                                     <IconUsers size={18}/>
-                                    <Text>{accommodation.people} guests</Text>
+                                    <Text>{accommodation.people} Maximum Guests</Text>
                                 </Group>
                             </Group>
                         </Paper>
@@ -105,7 +106,11 @@ export default function AccommodationDetailPage() {
 
                     <Grid.Col span={{base: 12, md: 4}}>
                         <Paper p="lg" shadow="md" withBorder>
-                            <Sidebar accommodation={accommodation}/>
+                            <Sidebar
+                                accommodation={accommodation}
+                                selectedExtras={selectedExtras}
+                                setSelectedExtras={setSelectedExtras}
+                            />
                         </Paper>
                     </Grid.Col>
                     <Grid.Col>
@@ -113,6 +118,9 @@ export default function AccommodationDetailPage() {
                             <Highlights
                                 festivals={accommodation.festivalistId}
                                 extras={accommodation.extras}
+                                discounts={accommodation.discount}
+                                selectedExtras={selectedExtras}
+                                setSelectedExtras={setSelectedExtras}
 
                             />
                         </Paper>

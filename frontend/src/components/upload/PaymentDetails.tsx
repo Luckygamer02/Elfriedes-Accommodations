@@ -1,13 +1,21 @@
 // components/PaymentDetails.tsx
 "use client";
-import {Group, Paper, Stack, TextInput, Title} from '@mantine/core';
-import {IconCreditCard, IconTransfer} from '@tabler/icons-react';
-import {ReactNode} from 'react';
-
+import {Group, LoadingOverlay, Paper, Stack, TextInput, Title} from '@mantine/core';
+import {IconCreditCard, IconTransfer, IconBan, IconBrandPaypal} from '@tabler/icons-react';
+import {
+    PayPalScriptProvider,
+    PayPalButtons,
+    FUNDING,
+    ReactPayPalScriptOptions,
+} from "@paypal/react-paypal-js";
+import {ReactNode, useEffect, useMemo} from 'react';
+import QRCode from 'react-qr-code';
+import {showNotification} from "@mantine/notifications";
 interface PaymentDetailsProps {
     paymentMethod: string;
     onCardDetailsChange: (field: string, value: string) => void;
     onBankDetailsChange: (field: string, value: string) => void;
+    onPaypalApproval: (details: any) => void;
     cardDetails: {
         number: string;
         expiry: string;
@@ -15,9 +23,11 @@ interface PaymentDetailsProps {
         name: string;
     };
     bankDetails: {
-        accountNumber: string;
-        routingNumber: string;
+        bic: string;
+        name: string;
+        iban:string;
     };
+    amount: string;
 }
 
 export function PaymentDetails({
@@ -25,11 +35,41 @@ export function PaymentDetails({
                                    onCardDetailsChange,
                                    onBankDetailsChange,
                                    cardDetails,
-                                   bankDetails
+                                   bankDetails,
+                                    onPaypalApproval,
+                                    amount
                                }: PaymentDetailsProps) {
+    const paypalOptions: ReactPayPalScriptOptions = {
+        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, // must be present
+        currency: "EUR",
+        intent: "capture",
+        components: "buttons",
+    };
+
+    const epcPayload = useMemo(() => {
+    // Build EPC QR payload according to EPC069-12 V3.1:
+        const lines = [
+            'BCD',                                // Service tag (fixed)
+            '002',                                // Version: only EEA
+            '1',                                  // Charset: UTF-8
+            'SCT',                                // SEPA Credit Transfer
+            'GENODEF1ZZZ',                        // BIC
+            'Elfriedes Accommodation GmbH',       // Beneficiary name
+            'AT611904300234573201',               // IBAN
+            `EUR${amount}`,                           // Amount prefixed with “EUR”
+            '',                                   // Purpose (max 4 chars) – left empty
+            'Booking #0001/2025',                 // Unstructured remittance information
+            ''                                    // Structured remittance information – left empty
+        ].join('\r\n');
+           // Join with CRLF; spec allows LF or CRLF but requires consistency :contentReference[oaicite:9]{index=9}
+            return lines;
+    }, [bankDetails, amount]);
+    const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+
+
     const renderPaymentContent = (): ReactNode => {
         switch (paymentMethod) {
-            case 'creditCard':
+            case 'CREDIT_CARD':
                 return (
                     <>
                         <Title order={4} mb="sm" className="flex items-center gap-2">
@@ -71,32 +111,74 @@ export function PaymentDetails({
                     </>
                 );
 
-            case 'bankTransfer':
+            case 'PAYPAL':
                 return (
-                    <>
-                        <Title order={4} mb="sm" className="flex items-center gap-2">
-                            <IconTransfer size={20}/>
-                            Bank Transfer Details
+                    <PayPalScriptProvider options={paypalOptions}>
+                        <Stack gap="md">
+                            <Title order={4} className="flex items-center gap-2">
+                                <IconBrandPaypal size={20} color="#003087" />
+                                PayPal Payment
+                            </Title>
+                            <PayPalButtons
+                                style={{ layout: "vertical", color: "gold", shape: "rect", label: "paypal" }}
+                             createOrder={(data, actions) => {
+                               // now includes intent
+                                   return actions.order.create({
+                                     intent: "CAPTURE",
+                                     purchase_units: [
+                                       {
+                                         amount: { value: amount, currency_code: "EUR" }
+                                   }
+                                 ]
+                               });
+                             }}
+                             onApprove={async (data, actions) => {
+                               // remove optional chaining so TS knows this always returns a Promise
+                                 const details = await actions.order.capture();
+                               onPaypalApproval(details);
+                               showNotification({ title: "Success", message: "Payment received!", color: "green" });
+                               //router.push("/booking");
+                             }}
+                            />
+                            <p className="text-sm text-gray-600">You’ll be redirected to PayPal to complete payment.</p>
+                        </Stack>
+                    </PayPalScriptProvider>
+                );
+            case 'BANK_TRANSFER':
+                return(
+                    <Stack gap="md">
+                        <Title order={4} className="flex items-center gap-2">
+                            <IconTransfer size={20}/> Bank Transfer
                         </Title>
                         <Stack gap="sm">
                             <TextInput
-                                label="Account Number"
-                                placeholder="123456789"
+                                label="Beneficiary BIC"
+                                value={bankDetails.bic}
+                                onChange={(e) => onBankDetailsChange('bic', e.target.value)}
                                 required
-                                value={bankDetails.accountNumber}
-                                onChange={(e) => onBankDetailsChange('accountNumber', e.target.value)}
                             />
                             <TextInput
-                                label="Routing Number"
-                                placeholder="082000549"
+                                label="Beneficiary Name"
+                                value={bankDetails.name}
+                                onChange={(e) => onBankDetailsChange('name', e.target.value)}
                                 required
-                                value={bankDetails.routingNumber}
-                                onChange={(e) => onBankDetailsChange('routingNumber', e.target.value)}
+                            />
+                            <TextInput
+                                label="IBAN"
+                                value={bankDetails.iban}
+                                onChange={(e) => onBankDetailsChange('iban', e.target.value)}
+                                required
                             />
                         </Stack>
-                    </>
+                        <Title order={4}>
+                            Or Pay with QR Code
+                        </Title>
+                        {/* EPC QR code */}
+                        <div className="qr-code">
+                            <QRCode value={epcPayload} size={160}/>
+                        </div>
+                    </Stack>
                 );
-
             default:
                 return null;
         }

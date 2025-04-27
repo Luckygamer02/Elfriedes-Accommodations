@@ -16,7 +16,9 @@ export default function ContactDetailsPage() {
     // Get booking parameters
     const checkIn = searchParams.get('checkIn');
     const checkOut = searchParams.get('checkOut');
-    const guests = searchParams.get('guests');
+    const adults = searchParams.get('adults');
+    const children = searchParams.get('children');
+    const infants = searchParams.get('infants');
     const total = searchParams.get('total');
 
     // State for contact details
@@ -30,7 +32,9 @@ export default function ContactDetailsPage() {
         const query = new URLSearchParams({
             checkIn: checkIn || '',
             checkOut: checkOut || '',
-            guests: guests || '',
+            adults: adults || '',
+            children: children || '',
+            infants: infants || '',
             total: total || '',
             firstName: encodeURIComponent(firstName),
             lastName: encodeURIComponent(lastName),
@@ -41,7 +45,7 @@ export default function ContactDetailsPage() {
         router.push(`/${id}/book?${query}`);
     };
 
-    if (!checkIn || !checkOut || !guests || !total) {
+    if (!checkIn || !checkOut || !adults || !children || !infants  || !total) {
         return <Text>Invalid booking parameters</Text>;
     }
 

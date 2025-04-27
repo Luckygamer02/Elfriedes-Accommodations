@@ -1,4 +1,4 @@
-import {Accommodation, CreateAppliedDiscountRequest, Extra} from "./accommodation/accommodation";
+import {Accommodation, CreateAppliedDiscountRequest, CreateDiscountRequest, Extra} from "./accommodation/accommodation";
 import {AbstractEntity} from "@/models/backend";
 
 export interface Payment {
@@ -17,7 +17,7 @@ export interface Booking extends AbstractEntity {
     totalPrice:   number;
     bookedExtras: Extra[];               // re-use your Extra type
     payments:     Payment;
-    appliedDiscounts: CreateAppliedDiscountRequest[];
+    discounts: CreateDiscountRequest[];
 }
 
 export enum BookingStatus {
@@ -30,7 +30,7 @@ export enum BookingStatus {
 export enum PaymentMethod {
     CREDIT_CARD = "CREDIT_CARD",
     PAYPAL      = "PAYPAL",
-    CASH        = "CASH",
+    BankTransfer        = "BANK_TRANSFER",
     // …etc
 }
 

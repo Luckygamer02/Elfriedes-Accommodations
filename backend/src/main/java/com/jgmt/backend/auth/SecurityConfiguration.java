@@ -64,6 +64,8 @@ public class SecurityConfiguration {
                     .requestMatchers(antMatcher(HttpMethod.POST, "/api/notifications/delivery/**")).permitAll()
                     .requestMatchers(HttpMethod.PATCH, "/**").permitAll()
 
+                    .requestMatchers("/api/support/**").permitAll()
+
                     .requestMatchers("/api/accommodations/**").permitAll()
                     .requestMatchers("/api/bookings/**").permitAll()
                     .requestMatchers("api/ratings/**").permitAll()

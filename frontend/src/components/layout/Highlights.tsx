@@ -1,14 +1,22 @@
 import {CreateDiscountRequest, Extra,} from "@/models/accommodation/accommodation";
-import {Badge, Card, Group, Highlight, Stack, Text, Title} from "@mantine/core";
+import {Badge, Card, Checkbox, Group, Highlight, Stack, Text, Title} from "@mantine/core";
+
 
 type HighlightsProps = {
     festivals?: number;
     extras?: Extra[];
     discounts?: CreateDiscountRequest[];
+    selectedExtras: Extra[];
+    setSelectedExtras: (extras: Extra[]) => void;
 };
 
-
-export default function Highlights({festivals, extras, discounts}: HighlightsProps) {
+export default function Highlights({
+                                       festivals,
+                                       extras = [],
+                                       discounts = [],
+                                       selectedExtras,
+                                       setSelectedExtras,
+                                   }: HighlightsProps) {
     return (
         <Stack>
             {/* Festivals Section */}
@@ -25,19 +33,28 @@ export default function Highlights({festivals, extras, discounts}: HighlightsPro
 
             {/* Extras Section */}
             <Card shadow="sm" padding="lg">
-                <Title order={3}>Extras</Title>
-                <Stack mt="sm">
-                    {extras && extras.length > 0 ? (
-                        extras.map((extra, index) => (
-                            <Text key={index}>
-                                <Highlight highlight={extra.type}>{extra.type}</Highlight> – €
-                                {extra.price.toFixed(2)}
-                            </Text>
-                        ))
-                    ) : (
-                        <Text>No extras added.</Text>
+                <Title order={5} mt="md">
+                    Extras
+                </Title>
+                {extras && extras.length > 0 ? (
+                <Checkbox.Group
+                    value={selectedExtras.map((e) => e.type)}
+                    onChange={(types) => {
+                        setSelectedExtras(
+                            extras.filter((e) => types.includes(e.type))
+                        );
+                    }}
+                >
+                    {extras.map((extra) => (
+                        <Checkbox
+                            key={extra.type}
+                            value={extra.type}
+                            label={`${extra.type} (+€${extra.price.toFixed(2)}/night)`}
+                        />
+                    ))}
+                </Checkbox.Group> ) : (
+                    <Text>No available Extras.</Text>
                     )}
-                </Stack>
             </Card>
 
 

@@ -34,8 +34,12 @@
                 <td th:text="${#dates.format(booking.checkOutDate, 'dd MMMM yyyy')}">05 January 2025</td>
             </tr>
             <tr>
-                <th>Guests</th>
-                <td th:text="${booking.people}">2</td>
+                <th>Adults</th>
+                <td th:text="${booking.adults}">2</td>
+                <th>Adults</th>
+                <td th:text="${booking.children}">2</td>
+                <th>Adults</th>
+                <td th:text="${booking.infants}">2</td>
             </tr>
             <tr>
                 <th>Total Price</th>

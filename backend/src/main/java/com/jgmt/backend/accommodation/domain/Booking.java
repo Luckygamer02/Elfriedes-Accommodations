@@ -8,6 +8,7 @@ import com.jgmt.backend.util.Client;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,9 +58,15 @@ public class Booking extends AbstractEntity{
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
 
-    @Positive
-    @Column(nullable = false)
-    private int people;
+    @PositiveOrZero
+    private int adults;
+
+    @PositiveOrZero
+    private int children;
+
+    @PositiveOrZero
+    private int infants;
+
 
     @Column(nullable = false)
     private BigDecimal totalPrice;
@@ -104,7 +111,9 @@ public class Booking extends AbstractEntity{
         this.checkInDate = dto.getCheckInDate();
         this.checkOutDate = dto.getCheckOutDate();
         this.status = dto.getStatus();
-        this.people = dto.getPeople();
+        this.adults = dto.getAdults();
+        this.children = dto.getChildren();
+        this.infants = dto.getInfants();
         this.totalPrice = dto.getTotalPrice();
         this.bookedExtras = dto.getBookedExtras();
         this.payment = dto.getPayment();

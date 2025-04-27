@@ -60,14 +60,13 @@ export default function UpdateAccommodationPage() {
             washingMachine: z.boolean(),
             wifi: z.boolean(),
         }),
-        appliedDiscounts: z.array(z.object({
-            discount: z.object({
-                discountprocent: z.number().min(0).max(100),
-                name: z.string().min(1),
-                expioringdate: z.date(),
-            }),
-            appliedDate: z.date(),
-        })).optional(),
+        discount: z.object({
+            discountprocent: z.number().min(0).max(100),
+            name: z.string().min(1),
+            expioringdate: z.date(),
+        }).optional(),
+
+
         extras: z.array(z.object({
             type: z.nativeEnum(Extrastype),
             price: z.number().positive(),
@@ -95,7 +94,7 @@ export default function UpdateAccommodationPage() {
                 ownerId: data.ownerId,
                 address: data.address,
                 features: data.features,
-                appliedDiscounts: data.appliedDiscounts,
+                discount: data.discount,
                 extras: data.extras
             });
         }

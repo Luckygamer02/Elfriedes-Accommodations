@@ -23,9 +23,68 @@ export enum Extrastype {
     LAUNDRY_SERVICE = 'LAUNDRY_SERVICE',
     CITY_TOUR = 'CITY_TOUR',
     CONCIERGE_SERVICE = 'CONCIERGE_SERVICE',
+}
+export enum FestivalType {
+    // Music genres
+    ROCK = 'ROCK',
+    POP = 'POP',
+    JAZZ = 'JAZZ',
+    ELECTRONIC = 'ELECTRONIC',
+    FOLK = 'FOLK',
+    HIP_HOP = 'HIP_HOP',
+    CLASSICAL = 'CLASSICAL',
+    WORLD = 'WORLD',
 
+    // Arts & culture
+    ARTS = 'ARTS',
+    FILM = 'FILM',
+    THEATER = 'THEATER',
+    LITERATURE = 'LITERATURE',
+    DANCE = 'DANCE',
+    COMEDY = 'COMEDY',
+    FASHION = 'FASHION',
+
+    // Food & drink
+    FOOD = 'FOOD',
+    WINE = 'WINE',
+    BEER = 'BEER',
+    STREET_FOOD = 'STREET_FOOD',
+    CHOCOLATE = 'CHOCOLATE',
+
+    // Cultural & community
+    CULTURAL = 'CULTURAL',
+    RELIGIOUS = 'RELIGIOUS',
+    PRIDE = 'PRIDE',
+    CARNIVAL = 'CARNIVAL',
+    PARADE = 'PARADE',
+
+    // Seasonal & outdoors
+    SPRING = 'SPRING',
+    SUMMER = 'SUMMER',
+    AUTUMN = 'AUTUMN',
+    WINTER = 'WINTER',
+    FLOWER = 'FLOWER',
+    LIGHT = 'LIGHT',
+    FOOD_TRUCK = 'FOOD_TRUCK',
+
+    // Specialized / niche
+    TECHNOLOGY = 'TECHNOLOGY',
+    SCIENCE = 'SCIENCE',
+    GAMING = 'GAMING',
+    WELLNESS = 'WELLNESS',
+    ENVIRONMENT = 'ENVIRONMENT',
+    FAMILY = 'FAMILY',
+    SPORTS = 'SPORTS',
+    MOTOR = 'MOTOR',
 }
 
+export interface Festival{
+    id: number,
+    name: string,
+    startDate: string,
+    endDate: string,
+    festivalType: FestivalType
+}
 
 export interface Address {
     street: string;
@@ -51,18 +110,17 @@ interface AccommodationFeatures {
 export interface CreateDiscountRequest {
     discountprocent: number;
     name: string;
+    startDate: string;
     expiringDate: string;
 }
 
-export interface CreateAppliedDiscountRequest {
-    discount: CreateDiscountRequest;
-    appliedDate: string;
-}
 
 export interface Extra {
     type: Extrastype;
     price: number;
 }
+
+
 
 export interface CreateAccommodationRequest {
     title: string;
@@ -77,7 +135,7 @@ export interface CreateAccommodationRequest {
     ownerId: number;
     address: Address;
     features: AccommodationFeatures;
-    appliedDiscounts: CreateAppliedDiscountRequest[];
+    discounts: CreateDiscountRequest[];
     extras: Extra[];
     pictures: MultipartFile[];
 }
@@ -96,7 +154,7 @@ export interface Accommodation extends AbstractEntity {
     ownerId: number,
     address: Address,
     features: AccommodationFeatures,
-    appliedDiscounts: CreateAppliedDiscountRequest[],
+    discount: CreateDiscountRequest[],
     extras: Extra[],
     picturesurls: string[]
 }
