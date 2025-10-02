@@ -13,7 +13,6 @@ import {
     Button,
     Tabs,
     Skeleton,
-    Image,
     Stack,
     Alert,
     Divider,
@@ -22,7 +21,6 @@ import {
 import {
     CalendarCheck as IconCalendarEvent,
     MapPin as IconMapPin,
-    Music as IconMusic,
     Ticket as IconTicket,
     Bed as IconBed,
     Info as IconInfoCircle
@@ -36,20 +34,16 @@ import {
     AccommodationType
 } from "@/models/accommodation/accommodation";
 import { PaginatedResponse } from "@/models/backend";
-import { useAuthGuard } from "@/lib/auth/use-auth";
 import AccommodationContainer from "@/components/layout/AccommodationContainer";
 
 // Type definitions for helper function returns and records
 type FestivalTypeColorMap = Record<FestivalType | string, string>;
 type AccommodationsByTypeMap = Partial<Record<AccommodationType, Accommodation[]>>;
 type PriceRange = { min: number; max: number };
-type FestivalImageMap = Partial<Record<FestivalType, string>>;
 
 export default function FestivalDetailsPage() {
     const params = useParams();
-    const router = useRouter();
     const festivalId = params?.id ? String(params.id) : "";
-    const { user } = useAuthGuard({ middleware: "guest" });
     const [activeTab, setActiveTab] = useState<string | null>("overview");
 
     // Fetch festival data
@@ -217,12 +211,6 @@ export default function FestivalDetailsPage() {
     const formatAccommodationType = (type: string): string => {
         if (!type) return 'Unknown';
         return type.charAt(0) + type.slice(1).toLowerCase();
-    };
-
-    // Get appropriate accent image based on festival type
-    const getFestivalImage = (type: FestivalType): string => {
-        // Since we're using a placeholder API, we don't need the actual mappings
-        return '/api/placeholder/1200/400';
     };
 
     // Safe festival name access

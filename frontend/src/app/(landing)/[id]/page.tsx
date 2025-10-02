@@ -1,7 +1,7 @@
 "use client";
 import '@mantine/dates/styles.css';
 import {Accommodation, Extra} from "@/models/accommodation/accommodation";
-import {Badge, Grid, Group, Image, Paper, Stack, Text, Title,} from '@mantine/core';
+import {Badge, Grid, Group, Paper, Stack, Text, Title,} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
 import useSWR from "swr";
 import httpClient from "@/lib/httpClient";

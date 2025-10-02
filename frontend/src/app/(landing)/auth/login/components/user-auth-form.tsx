@@ -13,10 +13,6 @@ import {useForm, zodResolver} from "@mantine/form";
 import {Button, TextInput} from "@mantine/core";
 
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
-}
-
 const loginFormSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8),

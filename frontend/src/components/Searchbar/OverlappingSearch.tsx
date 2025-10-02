@@ -109,7 +109,7 @@ const OverlappingSearch: React.FC<OverlappingSearchProps> = () => {
 
                         <GuestSelectionPopover
                             adults={guests.adults}
-                            children={guests.children}
+                            childrenCount={guests.children}
                             rooms={guests.rooms}
                             onChange={handleGuestChange}
                         />

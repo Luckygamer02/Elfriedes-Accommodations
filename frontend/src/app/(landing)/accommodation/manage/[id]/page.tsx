@@ -26,11 +26,6 @@ export default function UpdateAccommodationPage() {
     );
     const [submitError, setSubmitError] = useState<string | null>(null);
 
-    const toNumber = (field: string) =>
-        z.union([z.string(), z.number()])
-            .transform(val => Number(val))
-            .refine(n => !isNaN(n), {message: `${field} must be a number`});
-
     const validationSchema = z.object({
         title: z.string().min(1),
         description: z.string().min(1),
@@ -98,7 +93,7 @@ export default function UpdateAccommodationPage() {
                 extras: data.extras
             });
         }
-    }, [data]);
+    }, [data, form]);
 
 
     const handleSubmit = async (values: CreateAccommodationRequest) => {

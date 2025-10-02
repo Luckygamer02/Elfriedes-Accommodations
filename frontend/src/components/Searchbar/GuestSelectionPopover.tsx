@@ -6,14 +6,14 @@ import {IconMinus, IconPlus} from '@tabler/icons-react';
 
 interface GuestSelectionPopoverProps {
     adults: number;
-    children: number;
+    childrenCount: number;
     rooms: number;
     onChange: (values: { adults: number; children: number; rooms: number }) => void;
 }
 
 export default function GuestSelectionPopover({
                                                   adults,
-                                                  children: childrenCount,
+                                                  childrenCount,
                                                   rooms,
                                                   onChange,
                                               }: GuestSelectionPopoverProps) {

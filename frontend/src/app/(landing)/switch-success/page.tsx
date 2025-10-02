@@ -7,7 +7,7 @@ import Link from 'next/link'
 import React, {useEffect} from 'react'
 
 export default function Page() {
-    const {user, mutate} = useAuthGuard({middleware: 'auth'})
+    const {user} = useAuthGuard({middleware: 'auth'})
 
     useEffect(() => {
         console.log('Page init', user)
