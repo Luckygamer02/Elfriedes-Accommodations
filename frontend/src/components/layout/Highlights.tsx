@@ -1,5 +1,5 @@
-import { Festival, FestivalType, Extra, CreateDiscountRequest } from "@/models/accommodation/accommodation";
-import { Badge, Card, Checkbox, Group, Highlight, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { Festival, Extra, CreateDiscountRequest } from "@/models/accommodation/accommodation";
+import { Badge, Card, Checkbox, Group, Highlight, Stack, Text, Title } from "@mantine/core";
 import useSWR from "swr";
 import httpClient from "@/lib/httpClient";
 

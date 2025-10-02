@@ -21,7 +21,6 @@ import {
     Extratype,
     AccommodationType,
     FestivalType,
-    AccommodationFeatures
 } from '@/models/accommodation/accommodation';
 import React from 'react';
 
@@ -205,8 +204,8 @@ export default function SearchSideBar() {
     // Updated to use backend parameter names
     const [minBasePrice, setMinBasePrice] = useState<number | undefined>(getNumberParam('minBasePrice'));
     const [maxBasePrice, setMaxBasePrice] = useState<number | undefined>(getNumberParam('maxBasePrice'));
-    const [minRating, setMinRating] = useState<number | undefined>(getNumberParam('minRating'));
-    const [maxRating, setMaxRating] = useState<number | undefined>(getNumberParam('maxRating'));
+    const minRating = getNumberParam('minRating');
+    const maxRating = getNumberParam('maxRating');
 
     const [bedrooms, setBedrooms] = useState<string | null>(searchParams.get('bedrooms'));
     const [bathrooms, setBathrooms] = useState<string | null>(searchParams.get('bathrooms'));

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Image, Modal, useMantineTheme } from '@mantine/core';
+import { Image, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 export function ClickablePreviewImage( {ImageURl} :{ImageURl : string}) {
@@ -8,7 +8,6 @@ export function ClickablePreviewImage( {ImageURl} :{ImageURl : string}) {
     const [opened, { open, close }] = useDisclosure(false);
     // 2. State für die aktuelle Bild-URL
     const [previewSrc, setPreviewSrc] = React.useState<string>('');
-    const theme = useMantineTheme();
 
     // Handler, der Bild-URL setzt und Modal öffnet
     const handleClick = (url: string) => {

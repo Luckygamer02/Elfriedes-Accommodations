@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
@@ -76,6 +76,45 @@ function ChatInterface({ user }: ChatInterfaceProps) {
 
     // Check if user is admin
     const isAdmin = user?.role === Role.ADMIN;
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    const fetchUsers = async () => {
+        try {
+            const response = await httpClient.get("/api/support/users");
+            setUsers(response.data);
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
+
+    const handleNewMessage = useCallback((data: WebSocketMessage) => {
+        // For all users: validate message relevance
+        const isRelevant = isAdmin
+            ? (activeChat === data.senderId || activeChat === data.recipientId)
+            : (data.senderId === adminId || data.recipientId === adminId);
+
+        if (isRelevant) {
+            setMessages(prev => {
+                // Filter out temporary optimistic messages
+                const existingIds = new Set(prev.map(m => m.id));
+                return existingIds.has(data.id)
+                    ? prev
+                    : [...prev, data as MessageDto];
+            });
+        }
+    }, [isAdmin, activeChat, adminId]);
+
+    const fetchChatHistory = async (userId: number) => {
+        try {
+            const response = await httpClient.get(`/api/support/chat/${userId}`);
+            setMessages(response.data);
+        } catch (error) {
+            console.error("Error fetching chat history:", error);
+        }
+    };
 
     // Fetch admin ID when component mounts for regular users
     useEffect(() => {
@@ -175,41 +214,6 @@ function ChatInterface({ user }: ChatInterfaceProps) {
         scrollToBottom();
     }, [messages]);
 
-    const fetchUsers = async () => {
-        try {
-            const response = await httpClient.get("/api/support/users");
-            setUsers(response.data);
-        } catch (error) {
-            console.error("Error fetching users:", error);
-        }
-    };
-
-    const handleNewMessage = (data: WebSocketMessage) => {
-        // For all users: validate message relevance
-        const isRelevant = isAdmin
-            ? (activeChat === data.senderId || activeChat === data.recipientId)
-            : (data.senderId === adminId || data.recipientId === adminId);
-
-        if (isRelevant) {
-            setMessages(prev => {
-                // Filter out temporary optimistic messages
-                const existingIds = new Set(prev.map(m => m.id));
-                return existingIds.has(data.id)
-                    ? prev
-                    : [...prev, data as MessageDto];
-            });
-        }
-    };
-
-    const fetchChatHistory = async (userId: number) => {
-        try {
-            const response = await httpClient.get(`/api/support/chat/${userId}`);
-            setMessages(response.data);
-        } catch (error) {
-            console.error("Error fetching chat history:", error);
-        }
-    };
-
     const selectChat = (userId: number) => {
         setActiveChat(userId);
         fetchChatHistory(userId);
@@ -239,10 +243,6 @@ function ChatInterface({ user }: ChatInterfaceProps) {
         // Optimistically add to messages
         setMessages(prev => [...prev, newMessage as unknown as MessageDto]);
         setMessage("");
-    };
-
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     // Show loading while fetching admin ID for regular users

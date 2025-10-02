@@ -11,7 +11,6 @@ import Loading from "@/components/loading";
 import { useMediaQuery } from "@mantine/hooks";
 import OverlappingSearch from "@/components/Searchbar/OverlappingSearch";
 import React, { useState } from "react";
-import { useAuthGuard } from "@/lib/auth/use-auth";
 import AccommodationContainer from "@/components/layout/AccommodationContainer";
 import { useRouter } from "next/navigation";
 

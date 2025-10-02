@@ -2,12 +2,10 @@
 "use client";
 
 import React from "react";
-import NextLink from "next/link";
 import {
     Group,
     Button,
     Text,
-    useMantineTheme,
 } from "@mantine/core";
 import { useAuthGuard } from "@/lib/auth/use-auth";
 import ModeToggle from "@/components/ModeToggle";
@@ -17,7 +15,6 @@ import Link from "next/link";
 
 export default function Navbar() {
     const { user } = useAuthGuard({ middleware: "guest" });
-    const theme = useMantineTheme();
 
     return (
 

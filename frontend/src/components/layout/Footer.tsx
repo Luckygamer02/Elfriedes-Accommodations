@@ -10,11 +10,9 @@ import {
     Text,
     Anchor,
     Divider,
-    useMantineTheme,
 } from "@mantine/core";
 
 export default function Footer() {
-    const theme = useMantineTheme();
 
     return (
         <Box

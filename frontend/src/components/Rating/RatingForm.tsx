@@ -36,7 +36,7 @@ export default function RatingForm({accommodationId}: RatingFormProps) {
             form.reset();
             setError(null);
             toast.success("Review submitted successfully!");
-        } catch (err) {
+        } catch {
             setError("Failed to submit review");
         } finally {
             setIsSubmitting(false);
