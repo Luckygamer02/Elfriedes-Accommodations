@@ -14,7 +14,6 @@ import {useAuthGuard} from "@/lib/auth/use-auth";
 import {PaymentDetails} from "@/components/upload/PaymentDetails";
 import {BankTransferSchema, BookingParamsSchema, CreditCardSchema} from "@/components/booking/validation";
 import {Accommodation} from "@/models/accommodation/accommodation";
-import { string } from "zod";
 
 export default function BookingPage() {
     const {user} = useAuthGuard({middleware: "guest"});
@@ -24,7 +23,32 @@ export default function BookingPage() {
     const searchParams = useSearchParams();
     const rawParams = Object.fromEntries(searchParams.entries());
 
+    // Parse parameters first
     const result = BookingParamsSchema.safeParse(rawParams);
+
+    // Initialize state hooks before any early returns
+    const [paymentMethod, setPaymentMethod] = useState("CREDIT_CARD");
+
+    const [cardDetails, setCardDetails] = useState({
+        number: "",
+        expiry: "",
+        cvv: "",
+        name: ""
+    });
+
+    const [bankDetails, setBankDetails] = useState({
+        bic: "",
+        name: "",
+        iban: "",
+        remittance: "",
+    });
+
+    const {data: accommodation, error, isLoading} = useSWR<Accommodation>(
+        id ? `api/accommodations/${id}` : null,
+        () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then((res) => res.data)
+    );
+
+    // Now check validation after all hooks
     if (!result.success) {
         return <Text>Invalid or missing booking parameters</Text>;
     }
@@ -36,7 +60,6 @@ export default function BookingPage() {
         firstName,
         lastName,
         email,
-        address,
         children,
         adults,
         infants
@@ -47,22 +70,6 @@ export default function BookingPage() {
         checkOut
     };
 
-    const [paymentMethod, setPaymentMethod] = useState("CREDIT_CARD");
-
-    const [cardDetails, setCardDetails] = useState({
-        number: "",
-        expiry: "",
-        cvv: "",
-        name: ""
-    });
-
-    const [bankDetails, setBankDetails] = useState({
-            bic: "",
-            name: "",
-            iban: "",
-            remittance: "",
-    });
-
     const handleCardChange = (field: string, value: string) => {
         setCardDetails((prev) => ({...prev, [field]: value}));
     };
@@ -70,11 +77,6 @@ export default function BookingPage() {
     const handleBankChange = (field: string, value: string) => {
         setBankDetails((prev) => ({...prev, [field]: value}));
     };
-
-    const {data: accommodation, error, isLoading} = useSWR<Accommodation>(
-        `api/accommodations/${id}`,
-        () => httpClient.get<Accommodation>(`api/accommodations/${id}`).then((res) => res.data)
-    );
 
     if (isLoading) return <Loading/>;
     if (error) return <Text>Error loading booking details</Text>;
@@ -94,7 +96,7 @@ export default function BookingPage() {
             paymentDate: new Date().toISOString().split('.')[0],
         };
 
-        let payment: any = {...basePayment};
+        let payment: Record<string, string | number> = {...basePayment};
 
         if (paymentMethod === "CREDIT_CARD") {
             const creditValidation = CreditCardSchema.safeParse(cardDetails);
@@ -140,7 +142,7 @@ export default function BookingPage() {
         };
 
         try {
-            const response = await httpClient.post("/api/bookings", bookingPayload);
+            await httpClient.post("/api/bookings", bookingPayload);
             alert("Booking successful!");
             // router.push('/bookings/' + response.data.id);
         } catch (error) {
