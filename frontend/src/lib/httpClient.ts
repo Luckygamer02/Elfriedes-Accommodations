@@ -1,8 +1,6 @@
 import {RestApplicationClient} from '@/models/backend'
 import Axios from 'axios'
 
-require('dotenv').config()
-
 const httpClient = Axios.create({
     baseURL: 'http://localhost:8080',
     headers: {

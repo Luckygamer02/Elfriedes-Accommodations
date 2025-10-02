@@ -119,17 +119,12 @@ function ChatInterface({ user }: ChatInterfaceProps) {
         const socket = new SockJS(process.env.NEXT_PUBLIC_WS_URL || "http://localhost:8080/ws");
         const client = new Client({
             webSocketFactory: () => socket,
-            debug: function (str) {
-                console.log(str);
-            },
             reconnectDelay: 5000,
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
         });
 
         client.onConnect = () => {
-            console.log("Connected to STOMP WebSocket");
-
             // Subscribe to personal messages
             client.subscribe(`/user/queue/messages`, message => {
                 const receivedMessage = JSON.parse(message.body);
@@ -226,18 +221,17 @@ function ChatInterface({ user }: ChatInterfaceProps) {
         if (!message.trim() || !stompClient || !stompClient.connected) return;
 
         // Make sure we have valid recipient ID
-        const recipientId = isAdmin ? activeChat : 1;
+        const recipientId = isAdmin ? activeChat : adminId;
 
         if (!recipientId) return;
         const newMessage: WebSocketMessage = {
             type: "message",
             content: message,
-            senderId: isAdmin ? 1 : user.id,
+            senderId: user.id,
             senderName: isAdmin ? `Admin` : `${user.firstName} ${user.lastName}`,
             timestamp: new Date().toISOString(),
             recipientId: recipientId
         };
-        console.log("Sending message:", newMessage);
         stompClient.publish({
             destination: '/app/chat',
             body: JSON.stringify(newMessage)
@@ -250,7 +244,6 @@ function ChatInterface({ user }: ChatInterfaceProps) {
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-
     };
 
     // Show loading while fetching admin ID for regular users

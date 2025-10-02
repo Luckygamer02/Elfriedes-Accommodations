@@ -85,7 +85,6 @@ export default function ContactDetailsPage() {
                             placeholder="your@email.com"
                         />
 
-
                         <TextInput
                             label="Billing Address"
                             required
