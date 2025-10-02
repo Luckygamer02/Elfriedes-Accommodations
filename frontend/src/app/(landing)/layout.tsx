@@ -8,7 +8,7 @@ import {useDisclosure} from '@mantine/hooks';
 import React, {useEffect} from 'react';
 import LandingContainer from "@/components/LandingPage/LandingContainer";
 
-export default function layout({children}: { children: React.ReactNode }) {
+export default function Layout({children}: { children: React.ReactNode }) {
     const [opened, {toggle}] = useDisclosure(false);
 
     const {subscribe, subscription} = useSubscribeToPushNotifications();
@@ -17,7 +17,7 @@ export default function layout({children}: { children: React.ReactNode }) {
         if (!subscription) {
             subscribe()
         }
-    }, [subscription])
+    }, [subscription, subscribe])
 
     return (
         <AppShell

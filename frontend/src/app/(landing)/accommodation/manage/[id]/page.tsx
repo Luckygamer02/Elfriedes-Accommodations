@@ -125,10 +125,10 @@ export default function UpdateAccommodationPage() {
             } else {
                 setSubmitError('Failed to update accommodation');
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Update failed:', error);
             setSubmitError(
-                error.response?.data?.message || 'An error occurred'
+                (error as {response?: {data?: {message?: string}}})?.response?.data?.message || 'An error occurred'
             );
         }
     };

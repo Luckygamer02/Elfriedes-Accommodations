@@ -25,7 +25,6 @@ const fetcher = (url: string) =>
 
 export default function AccommodationBookingsPage() {
     const params = useParams();          // { id: string }
-    const router = useRouter();
     const accid = params.id;
 
     const { data: bookings, error, isLoading } = useSWR<Booking[]>(

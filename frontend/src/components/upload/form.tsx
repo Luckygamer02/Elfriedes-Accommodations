@@ -3,7 +3,6 @@ import {Button, Checkbox, Fieldset, Group, NumberInput, Select, Text, Textarea, 
 import {useForm, zodResolver} from "@mantine/form";
 import {z} from "zod";
 import {
-    Accommodation,
     AccommodationType,
     CreateAccommodationRequest,
     CreateDiscountRequest,
@@ -318,7 +317,7 @@ export default function CreateAccommodationForm({
             );
 
             // Append files properly
-            filesOnly.forEach((file, index) => {
+            filesOnly.forEach((file) => {
                 const fileObj = new File(
                     [new Uint8Array(file.bytes)],
                     file.originalFilename,

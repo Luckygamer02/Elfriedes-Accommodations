@@ -15,7 +15,7 @@ interface SidebarProps {
     setSelectedExtras: (extras: Extra[]) => void;
 }
 
-export default function sidebar({accommodation, selectedExtras, setSelectedExtras } : SidebarProps) {
+export default function Sidebar({accommodation, selectedExtras, setSelectedExtras } : SidebarProps) {
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [adults, setAdults] = useState(1);
     const [children, setChildren] = useState(0);
@@ -103,8 +103,7 @@ export default function sidebar({accommodation, selectedExtras, setSelectedExtra
         router.push(`/${accommodation.id}/details?${params.toString()}`);
     }
 
-
-    // @ts-ignore
+    // @ts-expect-error - MathML content requires dangerouslySetInnerHTML
     return (
         <Stack>
             <Title order={3}>€ {accommodation.basePrice} / night</Title>

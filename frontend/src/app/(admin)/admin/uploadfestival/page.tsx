@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import httpClient from '@/lib/httpClient';
 
 import { Festival, FestivalType } from '@/models/accommodation/accommodation';
@@ -17,7 +17,6 @@ import {
     Text,
     Box,
     Loader,
-    Input,
 } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { showNotification } from '@mantine/notifications';

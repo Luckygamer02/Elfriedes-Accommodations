@@ -23,7 +23,7 @@ const schema = z
 
 type Schema = z.infer<typeof schema>;
 export default function UpdatePasswordForm() {
-    const {user, mutate} = useAuthGuard({middleware: "auth"});
+    const {mutate} = useAuthGuard({middleware: "auth"});
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(
         undefined
     );

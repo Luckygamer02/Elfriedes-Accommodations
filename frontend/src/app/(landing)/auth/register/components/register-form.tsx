@@ -12,6 +12,7 @@ import React from "react";
 import {toast} from "sonner";
 import {z} from "zod";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 

@@ -11,7 +11,7 @@ import {MultipartFile} from "@/models/backend";
 import {convertFileToMultipart} from "@/components/upload/form";
 
 interface Props {
-    id: String;
+    id: string;
 }
 
 const fetcher = (url: string) =>
@@ -38,7 +38,7 @@ export default function UploadandDeleteImages({id}: Props) {
     // 2) Upload mutation via generated client
     const {trigger: uploadImage, isMutating: uploading} = useSWRMutation<
         void,
-        any,
+        Error,
         FileWithPath
     >(
         `/api/accommodations/${id}/image`,
@@ -69,7 +69,7 @@ export default function UploadandDeleteImages({id}: Props) {
     // 3) Delete mutation
     const {trigger: deleteImage, isMutating: deleting} = useSWRMutation<
         void,
-        any,
+        Error,
         string
     >(
         `/api/accommodations/${id}/images`,
@@ -142,7 +142,7 @@ export default function UploadandDeleteImages({id}: Props) {
                 >
                     {images.map((url, idx) => {
                         // We don't have per-image IDs, so use index for the delete URL
-                        const deleteUrl : String = `/api/accommodations/${id}/images/${idx}`;
+                        const deleteUrl: string = `/api/accommodations/${id}/images/${idx}`;
                         return (
                             <Card key={idx} p={0} shadow="sm" style={{position: "relative"}}>
                                 <MantineImage src={url} alt={`Accommodation image`}/>

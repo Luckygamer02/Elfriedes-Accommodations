@@ -19,6 +19,7 @@ import LandingContainer from "@/components/LandingPage/LandingContainer";
 import GuestSelectionPopover from "@/components/Searchbar/GuestSelectionPopover";
 import {useRouter} from 'next/navigation';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface OverlappingSearchProps {
     // Add any props here if needed
 }

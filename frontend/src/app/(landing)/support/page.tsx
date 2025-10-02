@@ -5,7 +5,6 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { UserResponse } from "@/models/backend";
 import { Role } from "@/models/user/UserResponse";
-import Axios from "axios";
 import httpClient from "@/lib/httpClient";
 
 
@@ -19,7 +18,7 @@ interface WebSocketMessage {
     content?: string;
     timestamp?: string;
     role?: string;
-    data?: any;
+    data?: Record<string, unknown>;
 }
 
 interface MessageDto {
@@ -169,7 +168,7 @@ function ChatInterface({ user }: ChatInterfaceProps) {
                 client.deactivate();
             }
         };
-    }, [user, isAdmin]);
+    }, [user, isAdmin, handleNewMessage]);
 
     // Scroll to bottom when messages change
     useEffect(() => {

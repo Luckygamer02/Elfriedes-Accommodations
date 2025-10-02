@@ -1,21 +1,20 @@
 // components/PaymentDetails.tsx
 "use client";
-import {Group, LoadingOverlay, Paper, Stack, TextInput, Title} from '@mantine/core';
-import {IconCreditCard, IconTransfer, IconBan, IconBrandPaypal} from '@tabler/icons-react';
+import {Group, Paper, Stack, TextInput, Title} from '@mantine/core';
+import {IconCreditCard, IconTransfer, IconBrandPaypal} from '@tabler/icons-react';
 import {
     PayPalScriptProvider,
     PayPalButtons,
-    FUNDING,
     ReactPayPalScriptOptions,
 } from "@paypal/react-paypal-js";
-import {ReactNode, useEffect, useMemo} from 'react';
+import {ReactNode, useMemo} from 'react';
 import QRCode from 'react-qr-code';
 import {showNotification} from "@mantine/notifications";
 interface PaymentDetailsProps {
     paymentMethod: string;
     onCardDetailsChange: (field: string, value: string) => void;
     onBankDetailsChange: (field: string, value: string) => void;
-    onPaypalApproval: (details: any) => void;
+    onPaypalApproval: (details: Record<string, unknown>) => void;
     cardDetails: {
         number: string;
         expiry: string;
@@ -63,8 +62,7 @@ export function PaymentDetails({
         ].join('\r\n');
            // Join with CRLF; spec allows LF or CRLF but requires consistency :contentReference[oaicite:9]{index=9}
             return lines;
-    }, [bankDetails, amount]);
-    const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+    }, [amount]);
 
 
     const renderPaymentContent = (): ReactNode => {
