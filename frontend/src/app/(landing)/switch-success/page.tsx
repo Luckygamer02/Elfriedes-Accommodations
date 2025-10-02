@@ -6,12 +6,12 @@ import {Button} from '@mantine/core'
 import Link from 'next/link'
 import React, {useEffect} from 'react'
 
-export default function page() {
-    const {user, mutate} = useAuthGuard({middleware: 'auth'})
+export default function Page() {
+    const {user} = useAuthGuard({middleware: 'auth'})
 
     useEffect(() => {
         console.log('Page init', user)
-    }, [])
+    }, [user])
 
     return (
         <Container size='md'>

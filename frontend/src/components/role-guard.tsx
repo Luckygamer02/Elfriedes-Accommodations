@@ -8,9 +8,10 @@ interface RoleGuardProps {
 }
 
 export default function RoleGuard({rolesAllowed, children}: RoleGuardProps) {
-    if (!rolesAllowed) return null
-
     const {user} = useAuthGuard({middleware: 'guest'})
+    
+    if (!rolesAllowed) return null
+    
     const isAllowed = rolesAllowed.includes(user?.role as Role)
     if (isAllowed) return children
 }

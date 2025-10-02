@@ -6,24 +6,24 @@ import {IconMinus, IconPlus} from '@tabler/icons-react';
 
 interface GuestSelectionPopoverProps {
     adults: number;
-    children: number;
+    childrenCount: number;
     rooms: number;
     onChange: (values: { adults: number; children: number; rooms: number }) => void;
 }
 
 export default function GuestSelectionPopover({
                                                   adults,
-                                                  children,
+                                                  childrenCount,
                                                   rooms,
                                                   onChange,
                                               }: GuestSelectionPopoverProps) {
     const [opened, setOpened] = React.useState(false);
 
     const handleChange = (field: 'adults' | 'children' | 'rooms', value: number) => {
-        onChange({adults, children, rooms, [field]: value});
+        onChange({adults, children: childrenCount, rooms, [field]: value});
     };
 
-    const totalPeople = adults + children;
+    const totalPeople = adults + childrenCount;
     const label = `${totalPeople} ${totalPeople === 1 ? 'person' : 'people'}, ${rooms} ${rooms === 1 ? 'room' : 'rooms'}`;
 
     return (
@@ -58,8 +58,8 @@ export default function GuestSelectionPopover({
                                 <Group gap="xs" align="center">
                                     <ActionIcon
                                         variant="default"
-                                        onClick={() => handleChange(field, Math.max(0, field === 'rooms' ? rooms - 1 : adults - 1))}
-                                        disabled={field === 'rooms' ? rooms === 0 : adults === 0}
+                                        onClick={() => handleChange(field, Math.max(0, field === 'rooms' ? rooms - 1 : field === 'adults' ? adults - 1 : childrenCount - 1))}
+                                        disabled={field === 'rooms' ? rooms === 0 : field === 'adults' ? adults === 0 : childrenCount === 0}
                                         size="md"
                                         radius="xl"
                                     >
@@ -67,7 +67,7 @@ export default function GuestSelectionPopover({
                                     </ActionIcon>
 
                                     <NumberInput
-                                        value={field === 'adults' ? adults : field === 'children' ? children : rooms}
+                                        value={field === 'adults' ? adults : field === 'children' ? childrenCount : rooms}
                                         onChange={(val) => handleChange(field, Number(val))}
                                         hideControls
                                         min={0}
@@ -78,7 +78,7 @@ export default function GuestSelectionPopover({
 
                                     <ActionIcon
                                         variant="default"
-                                        onClick={() => handleChange(field, (field === 'adults' ? adults : field === 'children' ? children : rooms) + 1)}
+                                        onClick={() => handleChange(field, (field === 'adults' ? adults : field === 'children' ? childrenCount : rooms) + 1)}
                                         size="md"
                                         radius="xl"
                                     >

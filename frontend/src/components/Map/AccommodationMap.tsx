@@ -35,6 +35,7 @@ export default function AccommodationMap({addressList}: AccommodationMapProps) {
         // only load and patch Leaflet once we're on the client
         let L: typeof import('leaflet');
         if (typeof window !== 'undefined') {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             L = require('leaflet');
             // fix the default icon paths
             L.Marker.prototype.options.icon = L.icon({
@@ -71,7 +72,7 @@ export default function AccommodationMap({addressList}: AccommodationMapProps) {
                     return null;
                 })
             );
-            setLocations(results.filter((r) => r !== null) as any);
+            setLocations(results.filter((r): r is {lat: number; lng: number; address: string} => r !== null));
             setLoading(false);
         }
 

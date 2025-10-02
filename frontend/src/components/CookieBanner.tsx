@@ -15,6 +15,7 @@ import {
 } from "@mantine/core";
 import { IconCookie } from "@tabler/icons-react";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 export function CookieBanner() {
     const [visible, setVisible] = useState(false);
@@ -64,12 +65,12 @@ export function CookieBanner() {
                         <Text size="sm">
                             To give you the best experience, we and our partners store cookies
                             on your device.{" "}
-                            <a
+                            <Link
                                 href="/privacy"
                                 style={{ color: "inherit", textDecoration: "underline" }}
                             >
                                 Learn more
-                            </a>
+                            </Link>
                             .
                         </Text>
                     </Stack>

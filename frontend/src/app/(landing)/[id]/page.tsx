@@ -1,7 +1,7 @@
 "use client";
 import '@mantine/dates/styles.css';
-import {Accommodation, Extra, FestivalType} from "@/models/accommodation/accommodation";
-import {Badge, Grid, Group, Image, Paper, Stack, Text, Title,} from '@mantine/core';
+import {Accommodation, Extra} from "@/models/accommodation/accommodation";
+import {Badge, Grid, Group, Paper, Stack, Text, Title,} from '@mantine/core';
 import {Carousel} from '@mantine/carousel';
 import useSWR from "swr";
 import httpClient from "@/lib/httpClient";
@@ -14,7 +14,6 @@ import dynamic from 'next/dynamic';
 import ReviewContainer from "@/components/Rating/RatingContainer";
 import Highlights from "@/components/layout/Highlights";
 import Sidebar from "@/components/layout/Sidebar";
-import {modals} from "@mantine/modals";
 import {ClickablePreviewImage} from "@/components/image/ClickablePreviewImage";
 import {useState} from "react";
 

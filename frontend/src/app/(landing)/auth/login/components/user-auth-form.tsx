@@ -13,9 +13,6 @@ import {useForm, zodResolver} from "@mantine/form";
 import {Button, TextInput} from "@mantine/core";
 
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
-}
-
 const loginFormSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8),
@@ -23,8 +20,8 @@ const loginFormSchema = z.object({
 
 type Schema = z.infer<typeof loginFormSchema>;
 
-export function UserAuthForm({className, ...props}: UserAuthFormProps) {
-    const [isLoading, setIsLoading] = React.useState<boolean>(false);
+export function UserAuthForm(): React.JSX.Element {
+    const [isLoading] = React.useState<boolean>(false);
     const {login} = useAuthGuard({middleware: 'guest', redirectIfAuthenticated: '/profile'});
     const [errors, setErrors] = React.useState<HttpErrorResponse | undefined>(undefined);
 

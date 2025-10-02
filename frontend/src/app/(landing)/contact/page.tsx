@@ -11,7 +11,7 @@ export default function ContactPage() {
                 <Divider/>
 
                 <Text>
-                    <strong>Company Name:</strong> Elfriede's Accommodation
+                    <strong>Company Name:</strong> Elfriede&apos;s Accommodation
                 </Text>
 
                 <Text>

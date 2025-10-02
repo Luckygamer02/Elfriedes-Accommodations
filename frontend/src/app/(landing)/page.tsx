@@ -19,8 +19,6 @@ export default function Home() {
     // Hooks
     const router = useRouter();
     const isMobile = useMediaQuery('(max-width: 768px)');
-    const { user } = useAuthGuard({ middleware: "guest" });
-    const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [activeTab, setActiveTab] = useState<string | null>("all");
 
     // Fetch accommodations

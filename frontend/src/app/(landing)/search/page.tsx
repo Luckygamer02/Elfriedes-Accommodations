@@ -3,9 +3,9 @@
 import { Suspense, useState } from "react";
 import { Grid, Loader, Container, Title, Text, Alert, Pagination, Group } from "@mantine/core";
 import AccommodationMap from "@/components/Map/AccommodationMap";
-import httpClient, { restClient } from "@/lib/httpClient";
+import httpClient from "@/lib/httpClient";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Accommodation, AccommodationType, Extratype, FestivalType } from "@/models/accommodation/accommodation";
+import { Accommodation, AccommodationType, FestivalType } from "@/models/accommodation/accommodation";
 import SearchSideBar from "@/components/Searchbar/SearchSideBar";
 import AccommodationRaster from "@/components/layout/AccommodationRaster";
 import useSWR from "swr";
@@ -51,27 +51,27 @@ export default function SearchPage() {
     const sortByParam = searchParams.get("sortBy") || "price_asc";
 
     // Build filter object with only set parameters
-    const filters: FilterAccommodationDTO = {
-        city: cityParam || undefined,
-        postalCode: postalCodeParam || undefined,
-        name: nameParam || undefined,
-        minBasePrice: minPriceParam ? Number(minPriceParam) : undefined,
-        maxBasePrice: maxPriceParam ? Number(maxPriceParam) : undefined,
-        minRating: minRatingParam ? Number(minRatingParam) : undefined,
-        maxRating: maxRatingParam ? Number(maxRatingParam) : undefined,
-        bedrooms: bedroomsParam ? Number(bedroomsParam) : undefined,
-        bathrooms: bathroomsParam ? Number(bathroomsParam) : undefined,
-        people: peopleParam ? Number(peopleParam) : undefined,
-        livingRooms: roomsParam ? Number(roomsParam) : undefined,
-        type: typeParam || undefined,
-        festivalType: festivalTypeParam || undefined,
-        festivalistId: festivalistParam ? Number(festivalistParam) : undefined,
-        extras: extrasParam.length > 0 ? extrasParam : undefined,
-        features: featuresParam.length > 0 ? featuresParam : undefined,
-        page: Number(pageParam),
-        size: Number(sizeParam),
-        sortBy: sortByParam
-    };
+    // const filters: FilterAccommodationDTO = {
+    //     city: cityParam || undefined,
+    //     postalCode: postalCodeParam || undefined,
+    //     name: nameParam || undefined,
+    //     minBasePrice: minPriceParam ? Number(minPriceParam) : undefined,
+    //     maxBasePrice: maxPriceParam ? Number(maxPriceParam) : undefined,
+    //     minRating: minRatingParam ? Number(minRatingParam) : undefined,
+    //     maxRating: maxRatingParam ? Number(maxRatingParam) : undefined,
+    //     bedrooms: bedroomsParam ? Number(bedroomsParam) : undefined,
+    //     bathrooms: bathroomsParam ? Number(bathroomsParam) : undefined,
+    //     people: peopleParam ? Number(peopleParam) : undefined,
+    //     livingRooms: roomsParam ? Number(roomsParam) : undefined,
+    //     type: typeParam || undefined,
+    //     festivalType: festivalTypeParam || undefined,
+    //     festivalistId: festivalistParam ? Number(festivalistParam) : undefined,
+    //     extras: extrasParam.length > 0 ? extrasParam : undefined,
+    //     features: featuresParam.length > 0 ? featuresParam : undefined,
+    //     page: Number(pageParam),
+    //     size: Number(sizeParam),
+    //     sortBy: sortByParam
+    // };
 
     // Track the paginated response state
     const [paginatedData, setPaginatedData] = useState<PaginatedResponse<Accommodation> | null>(null);

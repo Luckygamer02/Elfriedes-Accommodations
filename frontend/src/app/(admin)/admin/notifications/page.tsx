@@ -10,7 +10,7 @@ import {LineChart} from "@mantine/charts";
 import useSWR from "swr";
 import Container from '@/components/container';
 
-export default function page() {
+export default function Page() {
     const form = useForm({
         initialValues: {
             message: "",

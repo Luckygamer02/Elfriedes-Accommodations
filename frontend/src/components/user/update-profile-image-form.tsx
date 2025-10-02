@@ -23,7 +23,7 @@ export default function UpdateProfileImageForm() {
                 toast.success("Profile picture updated successfully");
                 mutate();
             })
-            .catch((error) => {
+            .catch(() => {
                 toast.error("Failed to update profile picture");
             });
     };

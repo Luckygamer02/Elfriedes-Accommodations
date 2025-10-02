@@ -61,7 +61,7 @@ export default function UpdateBasicDetailsForm() {
             );
 
         }
-    }, [user])
+    }, [user, form])
 
     const form = useForm({
         initialValues: {

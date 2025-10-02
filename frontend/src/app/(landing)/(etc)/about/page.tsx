@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Container, Title, Text, Image, Grid, Card, List, ThemeIcon, Button, Center, Space } from "@mantine/core";
+import { Container, Title, Text, Grid, Card, List, ThemeIcon, Button, Center, Space } from "@mantine/core";
 import { IconHome, IconUsers, IconHeart, IconMail } from "@tabler/icons-react";
 import LogoCanvas from "@/components/layout/logocom";
 

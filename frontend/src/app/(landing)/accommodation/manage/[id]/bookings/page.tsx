@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import useSWR from "swr";
 import {
     Table,
@@ -25,7 +25,6 @@ const fetcher = (url: string) =>
 
 export default function AccommodationBookingsPage() {
     const params = useParams();          // { id: string }
-    const router = useRouter();
     const accid = params.id;
 
     const { data: bookings, error, isLoading } = useSWR<Booking[]>(

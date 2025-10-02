@@ -1,7 +1,6 @@
 import {
     Accommodation,
     AccommodationType,
-    CreateAppliedDiscountRequest,
     CreateDiscountRequest,
     Extra, FestivalType
 } from "./accommodation/accommodation";
