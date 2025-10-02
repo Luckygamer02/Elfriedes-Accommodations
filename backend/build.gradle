@@ -13,7 +13,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(23)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -65,6 +65,7 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'com.h2database:h2'
 
 	runtimeOnly 'org.springframework.modulith:spring-modulith-actuator'
 	runtimeOnly 'org.springframework.modulith:spring-modulith-observability'
