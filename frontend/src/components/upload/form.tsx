@@ -298,7 +298,8 @@ export default function CreateAccommodationForm({
                 expiringDate: discount.expiringDate
             }));
 
-            const { pictures, ...jsonData } = values;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { pictures: _pictures, ...jsonData } = values;
             const submitData = {
                 ...jsonData,
                 discounts: formattedDiscounts,
@@ -546,6 +547,7 @@ export default function CreateAccommodationForm({
                             {form.values.pictures.map((pic, index) => (
                                 <div key={index} className="relative border rounded p-2">
                                     <div className="relative">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                         <img
                                             src={URL.createObjectURL(new Blob([new Uint8Array(pic.file.bytes)]))}
                                             alt={`Preview ${index}`}

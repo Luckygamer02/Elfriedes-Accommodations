@@ -5,50 +5,19 @@ import { Grid, Loader, Container, Title, Text, Alert, Pagination, Group } from "
 import AccommodationMap from "@/components/Map/AccommodationMap";
 import httpClient from "@/lib/httpClient";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Accommodation, AccommodationType, FestivalType } from "@/models/accommodation/accommodation";
+import { Accommodation } from "@/models/accommodation/accommodation";
 import SearchSideBar from "@/components/Searchbar/SearchSideBar";
 import AccommodationRaster from "@/components/layout/AccommodationRaster";
 import useSWR from "swr";
 import { IconAlertCircle } from '@tabler/icons-react';
-import {FilterAccommodationDTO} from "@/models/booking";
 import {PaginatedResponse} from "@/models/backend";
 
 export default function SearchPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    // Parse URL parameters with type safety
-    const cityParam = searchParams.get("city");
-    const postalCodeParam = searchParams.get("postalCode");
-    const nameParam = searchParams.get("name");
-
-    // Type and festival params
-    const typeParam = searchParams.get("type") as AccommodationType | null;
-    const festivalTypeParam = searchParams.get("festivalType") as FestivalType | null;
-
-    // Price range params (using correct backend parameter names)
-    const minPriceParam = searchParams.get("minBasePrice");
-    const maxPriceParam = searchParams.get("maxBasePrice");
-
-    // Rating range params
-    const minRatingParam = searchParams.get("minRating");
-    const maxRatingParam = searchParams.get("maxRating");
-
-    // Room details params
-    const roomsParam = searchParams.get("livingRooms");
-    const bedroomsParam = searchParams.get("bedrooms");
-    const bathroomsParam = searchParams.get("bathrooms");
-    const peopleParam = searchParams.get("people");
-
-    // Festival and feature params
-    const festivalistParam = searchParams.get("festivalistId");
-    const extrasParam = searchParams.getAll("extras");
-    const featuresParam = searchParams.getAll("features");
-
     // Pagination and sorting params
     const pageParam = searchParams.get("page") || "0";
-    const sizeParam = searchParams.get("size") || "20";
-    const sortByParam = searchParams.get("sortBy") || "price_asc";
 
     // Build filter object with only set parameters
     // const filters: FilterAccommodationDTO = {
